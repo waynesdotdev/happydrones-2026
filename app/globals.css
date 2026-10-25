@@ -1509,7 +1509,7 @@ body.menu-open { overflow: hidden; }
 /* =========================================================
    PROPERTY PACKAGES (homepage cards)
    ========================================================= */
-.packages { padding: var(--section) 0; background: var(--mist); }
+.packages { padding: var(--section) 0; background: var(--mist);margin-top: 128px}
 .packages-head .section-sub { max-width: 60ch; }
 .intro-tag { display: inline-block; margin-left: 10px; padding: 2px 10px; border-radius: 999px; background: var(--navy); color: var(--white); font-size: 0.82rem; font-weight: 700; vertical-align: 2px; }
 .pk-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 44px; align-items: stretch; }
