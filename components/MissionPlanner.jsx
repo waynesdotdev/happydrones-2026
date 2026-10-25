@@ -1,11 +1,13 @@
 "use client";
 /* Plan a mission: pick the job, its scale, how often, extras and where.
    A live flight-plan card shows the guide price and a mission code.
-   Sends to Netlify Forms (form name "mission"). The hidden copy of this
-   form lives in public/__forms.html: keep the field names the same. */
+   Sent by lib/sendForm.js (email via Web3Forms, backup in Netlify Forms,
+   form name "mission"). The hidden copy of this form lives in
+   public/__forms.html: keep the field names the same. */
 import { useEffect, useMemo, useState } from "react";
 import { PLANNER, SITE, money, whatsappLink } from "@/lib/site";
 import { Arrow } from "./TIcons";
+import { sendEnquiry } from "@/lib/sendForm";
 
 const INCLUDED = ["NE", "SR", "DH", "TS", "DL"];
 const NEARBY = ["CA", "YO", "HG", "DG", "TD"];
@@ -67,10 +69,9 @@ export default function MissionPlanner() {
     if (!st.name.trim() || (!st.email.trim() && st.phone.replace(/\D/g, "").length < 10)) { setMsg("Add your name and an email or phone number so I can send the plan."); return; }
     if (!pc.ok) { setMsg("Add the site postcode so I can check the airspace."); return; }
     setStatus("sending"); setMsg("");
-    const body = new URLSearchParams({ "form-name": "mission", subject: `Mission ${fullCode} · ${q.m.name} · ${money(q.total)}`, code: fullCode, plan: summary, total: money(q.total), ...Object.fromEntries(Object.entries(st).map(([k, v]) => [k, Array.isArray(v) ? v.join(", ") : v])), "bot-field": "" });
+    const fields = { "form-name": "mission", subject: `Mission ${fullCode} · ${q.m.name} · ${money(q.total)}`, code: fullCode, plan: summary, total: money(q.total), ...Object.fromEntries(Object.entries(st).map(([k, v]) => [k, Array.isArray(v) ? v.join(", ") : v])), "bot-field": "" };
     try {
-      const r = await fetch("/__forms.html", { method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded" }, body: body.toString() });
-      if (!r.ok) throw new Error(String(r.status));
+      await sendEnquiry(fields);
       setStatus("sent");
     } catch {
       setStatus("error"); setMsg("That didn't send. Use WhatsApp below and your plan goes with it.");

@@ -1,12 +1,14 @@
 "use client";
 /* "Ready to book?" contact section and enquiry form.
-   Uses Netlify Forms: the matching hidden form lives in public/__forms.html.
+   Sending is handled by lib/sendForm.js (email via Web3Forms, backup copy in
+   Netlify Forms). The matching hidden form lives in public/__forms.html.
    If you add or rename a field here, add/rename it there too. */
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { SITE, whatsappLink } from "@/lib/site";
 import { useQuote } from "./QuoteContext";
+import { sendEnquiry } from "@/lib/sendForm";
 
 // Options for "I am a…". Rename freely, but keep them short.
 const ROLES = ["Estate agent", "Homeowner selling", "Landlord or holiday let", "Business", "Something else"];
@@ -32,14 +34,9 @@ export default function ContactSection() {
   async function onSubmit(e) {
     e.preventDefault();
     setStatus("sending");
-    const data = new FormData(e.currentTarget);
+    const data = Object.fromEntries(new FormData(e.currentTarget));
     try {
-      const res = await fetch("/__forms.html", {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: new URLSearchParams(data).toString(),
-      });
-      if (!res.ok) throw new Error(String(res.status));
+      await sendEnquiry(data);
       setPlan(null);
       router.push("/thanks/");
     } catch {
@@ -81,7 +78,7 @@ export default function ContactSection() {
           <input type="hidden" name="form-name" value="quote" />
           <input type="hidden" name="quote-summary" value={plan?.summary || ""} />
           <input type="hidden" name="quote-total" value={plan?.total || ""} />
-          {/* The subject line of the email Netlify sends you */}
+          {/* The subject line of the enquiry email you receive */}
           <input type="hidden" name="subject" value={`New enquiry${role ? " from " + role.toLowerCase() : ""}${plan ? " · " + plan.total : ""}`} />
           <p className="bot"><label>Leave this empty <input name="bot-field" tabIndex={-1} autoComplete="off" /></label></p>
 
