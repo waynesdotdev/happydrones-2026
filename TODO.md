@@ -14,8 +14,11 @@
 - [ ] **Reviews.** Add real reviews to `reviews` in `lib/site.js` and the section appears by itself.
 - [ ] **Real photos.** Add photos of real shoots (property, aerial, construction) to replace the illustrations.
 - [ ] **Credentials.** Add A2 CofC or GVC to `credentials` in `lib/site.js` once you have it.
+- [ ] **Business email.** Set up hello@happydrones.co.uk (free forwarding or Zoho). Then make a new Web3Forms key for it and update `formKey` in `lib/site.js`.
 
 ## Done
 - [x] Spacing between the paths section and the property packages, now using the site's own spacing that adjusts on phones (25 Oct 2026)
 - [x] Favicon, app icon and Apple touch icon (25 Oct 2026)
 - [x] Social links: YouTube, TikTok, LinkedIn and X (25 Oct 2026)
+- [x] Netlify form detection switched on, so the quote and mission forms register (25 Oct 2026)
+- [x] Enquiries emailed via Web3Forms, with a backup copy in Netlify Forms (25 Oct 2026)
