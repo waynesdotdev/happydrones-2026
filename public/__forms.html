@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<!--
+  DON'T DELETE THIS FILE.
+  Netlify reads this hidden copy of the contact form when the site is
+  deployed, so it knows to collect "quote" form submissions.
+  The real form is in components/ContactSection.jsx.
+  If you add, remove or rename a field there, do the same here.
+-->
+<html lang="en">
+<body>
+  <form name="quote" data-netlify="true" netlify-honeypot="bot-field" hidden>
+    <input type="hidden" name="form-name" value="quote" />
+    <input name="bot-field" />
+    <input name="subject" />
+    <input name="role" />
+    <input name="name" />
+    <input name="company" />
+    <input type="email" name="email" />
+    <input type="tel" name="phone" />
+    <input name="postcode" />
+    <input type="date" name="date" />
+    <textarea name="message"></textarea>
+    <input name="quote-summary" />
+    <input name="quote-total" />
+  </form>
+<form name="mission" data-netlify="true" netlify-honeypot="bot-field" hidden>
+  <input name="subject"><input name="code"><textarea name="plan"></textarea><input name="total">
+  <input name="mission"><input name="scale"><input name="freq"><input name="extras">
+  <input name="postcode"><input name="date"><input name="name"><input name="company">
+  <input name="email"><input name="phone"><textarea name="notes"></textarea><input name="bot-field">
+</form>
+</body>
+</html>
