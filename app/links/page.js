@@ -111,6 +111,7 @@ export default function LinksPage() {
 
         <footer className="lp-foot">
           {SITE.phone && <a href={`tel:${SITE.phone}`}>{SITE.phoneDisplay}</a>}
+          {SITE.email && <a href={`mailto:${SITE.email}`}>{SITE.email}</a>}
           <Link href="/">{SITE.url.replace(/^https?:\/\//, "")}</Link>
           <p>
             {SITE.insurance.publicLiability} public liability · {SITE.insurance.professionalIndemnity} professional indemnity
