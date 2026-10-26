@@ -114,7 +114,7 @@ export default function LinksPage() {
           {SITE.email && <a href={`mailto:${SITE.email}`}>{SITE.email}</a>}
           <Link href="/">{SITE.url.replace(/^https?:\/\//, "")}</Link>
           <p>
-            {SITE.insurance.publicLiability} public liability · {SITE.insurance.professionalIndemnity} professional indemnity
+            {SITE.insurance.publicLiability} public liability · {SITE.insurance.professionalIndemnity} professional indemnity{SITE.insurance.note ? ` · ${SITE.insurance.note.toLowerCase()}` : ""}
             <br />CAA registered · ICO registered
           </p>
         </footer>

@@ -13,7 +13,7 @@ export default function Promises() {
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6z" /><path d="M8.5 12l2.5 2.5 4.5-5" /></svg>
           <div>
             <strong>{SITE.insurance.publicLiability} insured</strong>
-            <span>Public liability, plus {SITE.insurance.professionalIndemnity} professional indemnity. CAA registered. ICO Registered.</span>
+            <span>Public liability, plus {SITE.insurance.professionalIndemnity} professional indemnity{SITE.insurance.note ? ` (${SITE.insurance.note.toLowerCase()})` : ""}. CAA registered. ICO Registered.</span>
           </div>
         </div>
         <div className="promise">

@@ -1178,6 +1178,7 @@ body.menu-open { overflow: hidden; }
 .cover-card { padding: 22px; border-radius: 20px; background: rgba(255, 255, 255, 0.08); }
 .cover-card b { display: block; font-family: var(--font-display); font-weight: 800; font-size: clamp(2.6rem, 6vw, 4rem); line-height: 1; color: var(--orange); }
 .cover-card span { display: block; margin-top: 6px; font-weight: 700; }
+.cover-adjust { grid-column: 1 / -1; margin: 0; font-size: 0.92rem; opacity: 0.8; }
 .cover-list {
   grid-column: 1 / -1;
   list-style: none;
@@ -1453,6 +1454,7 @@ body.menu-open { overflow: hidden; }
 .footer-brand p { margin: 14px 0 0; max-width: 32ch; }
 .footer-cover { color: var(--white); font-weight: 700; }
 .footer-cover span { color: var(--orange); }
+.footer-cover .cover-note { display: block; margin-top: 4px; font-weight: 400; font-size: 0.85rem; color: rgba(255, 255, 255, 0.7); }
 .footer-col h2 { font-size: 1.3rem; color: var(--white); }
 .footer-col ul { list-style: none; margin: 12px 0 0; padding: 0; display: grid; gap: 8px; }
 .footer-col a { color: rgba(255, 255, 255, 0.8); text-decoration: none; }

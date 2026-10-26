@@ -80,7 +80,7 @@ export default function TermsPage() {
             <li><b>If the weather or safety rules stop the flight, we reschedule at no cost.</b> I make the call on whether it&apos;s safe and legal to fly.</li>
             <li><b>You need to give access and get any permissions</b> the property or site needs.</li>
             <li><b>I keep the copyright.</b> You get a licence to use the images and video for the purpose in your Job Details once you&apos;ve paid in full.</li>
-            <li><b>I&apos;m insured</b> with {SITE.insurance.publicLiability.replace("m", " million")} public liability cover.</li>
+            <li><b>I&apos;m insured</b> with £10 million public liability and £50,000 professional indemnity cover, adjustable per contract if required.</li>
           </ul>
 
           <h2>1. Who we are</h2>
@@ -178,7 +178,7 @@ export default function TermsPage() {
           <C n="9.5" t="My own use:">I can use the work to show what I do, on my website, social media and in my portfolio. I won&apos;t show a full address, house number or people&apos;s faces. If you&apos;d rather I didn&apos;t use it at all, just tell me before the shoot.</C>
 
           <h2>10. Liability and insurance</h2>
-          <C n="10.1" t="Insurance:">I hold {SITE.insurance.publicLiability.replace("m", " million")} public liability insurance for drone operations. If I damage your property or injure someone while working, it&apos;s there to cover it. I&apos;ll show you the certificate if you ask.</C>
+          <C n="10.1" t="Insurance:">I hold £10 million public liability and £50,000 professional indemnity insurance for drone operations. If I damage your property or injure someone while working, it&apos;s there to cover it. Cover can be adjusted per contract if a job requires it; any change is written into the Job Details. I&apos;ll show you the certificate if you ask.</C>
           <C n="10.2" t="Nothing in this agreement limits my liability">for death or personal injury caused by my negligence, for fraud, or for anything else the law doesn&apos;t allow me to limit. If you&apos;re a consumer, your legal rights under the Consumer Rights Act 2015 aren&apos;t affected.</C>
           <C n="10.3" t="Businesses:">apart from 10.1 and 10.2, my total liability for anything to do with a job is limited to the price of that job. I&apos;m not liable for loss of profit, revenue, sales, commission, business or opportunity, or for indirect losses.</C>
           <C n="10.4" t="Consumers:">I&apos;m responsible for losses you suffer that are a foreseeable result of me breaking this agreement or not using reasonable care. I&apos;m not responsible for losses that weren&apos;t foreseeable, or for business losses.</C>

@@ -93,6 +93,7 @@ export default function ServicesPage() {
           <div className="cover-cards">
             <div className="cover-card"><b>{SITE.insurance.publicLiability}</b><span>Public liability insurance</span></div>
             <div className="cover-card"><b>{SITE.insurance.professionalIndemnity}</b><span>Professional indemnity insurance</span></div>
+            {SITE.insurance.note && <p className="cover-adjust">{SITE.insurance.note}.</p>}
             <ul className="cover-list">{SITE.credentials.map((c) => <li key={c}>{c}</li>)}</ul>
           </div>
         </div>

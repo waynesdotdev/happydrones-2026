@@ -15,6 +15,7 @@ export default function Footer() {
           <p className="footer-cover">
             <span>{SITE.insurance.publicLiability}</span> public liability<br />
             <span>{SITE.insurance.professionalIndemnity}</span> professional indemnity
+            {SITE.insurance.note && <small className="cover-note">{SITE.insurance.note}</small>}
           </p>
         </div>
 
