@@ -51,7 +51,7 @@ export default function Packages() {
         </div>
 
         <ul className="pk-pay" aria-label="How payment works">
-          <li><b>{PAYMENT.depositPct}% deposit</b> secures your date</li>
+          <li><b>{PAYMENT.depositPct}% deposit</b> secures your date (non-refundable if you cancel)</li>
           <li><b>Balance before full files</b> are released, after you&apos;ve seen the previews</li>
           <li><b>Jobs of £{PAYMENT.largeFrom.toLocaleString("en-GB")}+</b> and repeat visits: invoiced on {PAYMENT.termsDays}-day terms</li>
         </ul>
