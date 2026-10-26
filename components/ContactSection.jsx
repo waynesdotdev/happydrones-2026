@@ -122,7 +122,7 @@ export default function ContactSection() {
           <button className="btn btn-orange btn-block" type="submit" disabled={status === "sending"}>
             {status === "sending" ? "Sending…" : "Send my enquiry"}
           </button>
-          <p className="form-note">I&apos;ll only use your details to reply. <Link href="/privacy/">Privacy policy</Link></p>
+          <p className="form-note">I&apos;ll only use your details to reply. <Link href="/privacy/">Privacy policy</Link> · <Link href="/terms/">Read the booking agreement</Link></p>
         </form>
       </div>
     </section>

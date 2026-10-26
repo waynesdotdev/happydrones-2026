@@ -31,6 +31,7 @@ export default function Footer() {
             <li><Link href="/safety/">Safety</Link></li>
             <li><Link href="/journal/">Viewing Room</Link></li>
             <li><Link href="/#quote">Get a quote</Link></li>
+            <li><Link href="/terms/">Booking agreement</Link></li>
             <li><Link href="/privacy/">Privacy</Link></li>
           </ul>
         </nav>

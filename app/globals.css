@@ -1550,6 +1550,8 @@ body.menu-open { overflow: hidden; }
 .pk-pay li { position: relative; padding-left: 16px; }
 .pk-pay li::before { content: ""; position: absolute; left: 0; top: 0.55em; width: 8px; height: 8px; border-radius: 50%; background: var(--orange); }
 .pk-pay b { font-weight: 700; }
+.pk-terms { margin: 10px 0 0; font-size: 0.92rem; }
+.pk-terms a { color: var(--navy); font-weight: 700; }
 .pk-singles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 18px; }
 .pk-single {
   display: block;
@@ -2086,3 +2088,27 @@ h2.t-sub { font-size: var(--t-s2); font-weight: 700; }
 /* One button language across the whole site: Happy Drones pills */
 .t-btn { border-radius: 999px; text-transform: none; letter-spacing: 0; font-family: var(--font-display); font-weight: 700; font-size: 1rem; }
 .t-btn-small { font-size: 0.92rem; }
+
+/* =========================================================
+   BOOKING AGREEMENT (/terms)
+   ========================================================= */
+.tm hr { border: 0; border-top: 1px solid var(--line, #dfe6ee); margin: 28px 0; }
+.tm .tm-c { margin: 10px 0; }
+.tm .tm-n { display: inline-block; min-width: 2.4em; font-weight: 700; color: var(--navy); }
+.tm ul, .tm ol { padding-left: 1.3em; }
+.tm-blank { display: inline-block; padding: 0 8px; border-bottom: 1px dashed var(--ink-soft); color: var(--ink-soft); font-style: italic; }
+.tm-table-wrap { overflow-x: auto; margin: 14px 0 6px; }
+.tm-table { width: 100%; max-width: 760px; border-collapse: collapse; font-size: 0.95rem; }
+.tm-table th, .tm-table td { border: 1px solid #d5dde7; padding: 10px 12px; text-align: left; vertical-align: top; }
+.tm-table tbody th { width: 38%; background: var(--mist); color: var(--navy); font-weight: 700; }
+.tm-table td { min-height: 40px; height: 42px; }
+.tm-sign thead th { background: var(--navy); color: var(--white); }
+.tm-sign tbody th { width: 22%; }
+.tm-sign td { height: 56px; }
+.tm-hint { color: var(--ink-soft); font-size: 0.88rem; }
+.tm-tick { padding: 12px 14px; border-radius: 12px; background: var(--mist); }
+@media print {
+  .topbar, .footer, .dock, .simple-actions { display: none !important; }
+  .simple { padding: 0; }
+  .tm-table th, .tm-table td { border-color: #999; }
+}
