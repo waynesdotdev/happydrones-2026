@@ -86,6 +86,23 @@ export default function EstateAgentsPage() {
         </div>
       </section>
 
+      <section className="brand-choice" aria-labelledby="brand-title">
+        <div className="wrap">
+          <h2 id="brand-title" className="section-title">Your brand, not mine.</h2>
+          <p className="section-sub">Choose how each listing is branded. Agency-branded is included on every shoot. White label takes Happy Drones out of the picture completely.</p>
+          <div className="brand-grid">
+            {AGENT_OFFER.branding.map((b) => (
+              <article key={b.id} className={`brand-card${b.featured ? " is-featured" : ""}`}>
+                <span className="brand-tag">{b.tag}</span>
+                <h3>{b.name}</h3>
+                <ul>{b.points.map((p) => <li key={p}>{p}</li>)}</ul>
+              </article>
+            ))}
+          </div>
+          <p className="brand-note">You choose per listing, and it&apos;s written into the booking agreement. I keep the copyright either way; you get the licence to market the property. <Link href="/terms/">Read the agreement</Link></p>
+        </div>
+      </section>
+
       <section className="faq" aria-labelledby="agent-faq-title">
         <div className="wrap faq-grid">
           <h2 id="agent-faq-title" className="section-title">Questions from agents</h2>

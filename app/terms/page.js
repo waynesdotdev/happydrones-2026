@@ -44,6 +44,7 @@ const JOB_ROWS = [
   ["Balance (standard terms only)", "£, due before full files are released"],
   ["Costs invoiced in advance (invoice terms only)", ""],
   ["Licence (section 9)", "Property marketing / Personal / Business"],
+  ["Branding, estate agents (9.6)", "Standard / Agency-branded (included) / White label (+£29 per listing)"],
   ["Permitted uses (business licence only)", ""],
   ["Extras agreed", ""],
   ["Special notes", "access, site rules, inductions, anything else"],
@@ -172,10 +173,16 @@ export default function TermsPage() {
             <li>selling, licensing or giving the work to anyone else (portals, printers and designers working for you are fine);</li>
             <li>using it to market a different property, or after the property moves to another agent (the new agent will need their own licence);</li>
             <li>stock libraries, competitions, merchandise, or training AI;</li>
-            <li>claiming the work as your own, or removing my credit where one is shown.</li>
+            <li>claiming the work as your own, or removing my credit where one is shown (unless the Job Details say Agency-branded or White label).</li>
           </ul>
           <C n="9.4" t="Using it outside the licence">means you&apos;ll pay my standard fee for that use, on top of anything else the law allows me to claim.</C>
           <C n="9.5" t="My own use:">I can use the work to show what I do, on my website, social media and in my portfolio. I won&apos;t show a full address, house number or people&apos;s faces. If you&apos;d rather I didn&apos;t use it at all, just tell me before the shoot.</C>
+          <C n="9.6" t="Branding (estate agents):">the Job Details say which applies.</C>
+          <ul>
+            <li><b>Standard:</b> my credit may appear on the video end card, and 9.5 applies.</li>
+            <li><b>Agency-branded (included):</b> your logo goes on the video intro and end cards, and my credit doesn&apos;t appear on any file. I only use the work under 9.5 after the property has sold or let.</li>
+            <li><b>White label (paid add-on):</b> everything is delivered in your branding with no mention of Happy Drones, and I may contact the vendor and attend as your photographer. I won&apos;t credit myself or show the work anywhere, and 9.5 doesn&apos;t apply. I still own the copyright, and your licence is the same as in 9.2.</li>
+          </ul>
 
           <h2>10. Liability and insurance</h2>
           <C n="10.1" t="Insurance:">I hold £10 million public liability and £50,000 professional indemnity insurance for drone operations. If I damage your property or injure someone while working, it&apos;s there to cover it. Cover can be adjusted per contract if a job requires it; any change is written into the Job Details. I&apos;ll show you the certificate if you ask.</C>
