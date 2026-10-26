@@ -1,5 +1,12 @@
 # Happy Drones website: notes for Claude
 
+## Publishing (Netlify credits)
+Netlify's free plan gives 300 credits a month, and each live deploy costs 15. When they run out, the site goes offline.
+- **Netlify only deploys the `live` branch.** Everyday work goes on `main`. Pushing to `main` is free and doesn't change the website.
+- **Never push to `live` unless Wayne says to publish.** To publish: `git checkout live && git merge --ff-only main && git push origin live && git checkout main`.
+- Group changes together, and test locally (`npm run dev` or `npx next build`) before publishing.
+- Builds are skipped when a commit only changes notes files (see `ignore` in `netlify.toml`).
+
 ## Log every change
 Every change to this site gets an entry at the top of `lib/changelog.js`.
 That includes code, content and settings done outside the code (Netlify, Google, Web3Forms).

@@ -2,6 +2,9 @@
 [build]
   command = "npm run build"
   publish = "out"
+  # Skip the build (and save credits) when only notes files changed since the last deploy.
+  # Exit code 0 = skip. Netlify only builds the "live" branch; see CLAUDE.md.
+  ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF -- . ':(exclude)TODO.md' ':(exclude)CLAUDE.md' ':(exclude)README.md' ':(exclude)README.txt' ':(exclude)**/README.txt'"
 
 [build.environment]
   NODE_VERSION = "22"
