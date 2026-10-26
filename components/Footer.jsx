@@ -41,7 +41,7 @@ export default function Footer() {
           <h2>Services</h2>
           <ul>
             {SERVICE_PAGES.map((s) => (
-              <li key={s.id}><Link href={`/services/${s.id}/`}>{s.nav}</Link></li>
+              <li key={s.id}><Link href={`/services/${s.id}/`}>{s.nav}{s.soon ? " (soon)" : ""}</Link></li>
             ))}
           </ul>
         </nav>

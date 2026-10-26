@@ -27,12 +27,12 @@ export default async function ServiceDetail({ params }) {
   const others = SERVICE_PAGES.filter((x) => x.group === s.group && x.id !== s.id).slice(0, 3);
   const kit = (s.kit || []).map(kitById).filter(Boolean);
   const schema = [
-    { "@context": "https://schema.org", "@type": "Service", name: s.title, description: s.lede, areaServed: SITE.areaServed, provider: { "@type": "LocalBusiness", name: SITE.name, url: SITE.url }, offers: { "@type": "Offer", price: fromPrice(s), priceCurrency: "GBP" } },
+    s.soon ? null : { "@context": "https://schema.org", "@type": "Service", name: s.title, description: s.lede, areaServed: SITE.areaServed, provider: { "@type": "LocalBusiness", name: SITE.name, url: SITE.url }, offers: { "@type": "Offer", price: fromPrice(s), priceCurrency: "GBP" } },
     { "@context": "https://schema.org", "@type": "FAQPage", mainEntity: s.faq.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })) },
   ];
   return (
     <div className="sub-page">
-      <JsonLd data={schema} />
+      <JsonLd data={schema.filter(Boolean)} />
       <PageHero small crumbs={[{ label: "Services", href: "/services/" }, { label: s.title }]} eyebrow={`${homes ? "Homes" : "Commercial"} · ${s.code} · ALT ${s.alt} m`} title={s.hero} lede={s.lede}>
         <ul className="t-chips" aria-label="Who it's for">{s.forWho.map((w) => <li key={w}>{w}</li>)}</ul>
       </PageHero>
@@ -49,7 +49,7 @@ export default async function ServiceDetail({ params }) {
             </div>
             {kit.length > 0 && (
               <div className="t-stack">
-                <h2 className="t-sub">Flown with</h2>
+                <h2 className="t-sub">{s.soon ? "Will be flown with" : "Flown with"}</h2>
                 <div className="flown">{kit.map((k) => <Link key={k.id} href="/fleet/" className="flown-item"><span className="flown-icon"><KitIcon id={k.id} /></span><span><b>{k.name}</b><small>{k.role}</small></span></Link>)}</div>
               </div>
             )}
@@ -59,12 +59,18 @@ export default async function ServiceDetail({ params }) {
             </div>
           </div>
           <aside className="t-spec t-frame" aria-label="Service spec">
-            <span className="t-tag">{homes ? "Fixed price" : "Mission spec"}</span>
-            <div className="t-spec-price">{money(fromPrice(s))}<small>FROM{s.fromLabel ? " · PER VISIT" : ""}{homes ? "" : " · GUIDE PRICE"}</small></div>
+            <span className="t-tag">{s.soon ? "Coming soon" : homes ? "Fixed price" : "Mission spec"}</span>
+            {s.soon
+              ? <div className="t-spec-price">Soon<small>NOT BOOKABLE YET</small></div>
+              : <div className="t-spec-price">{money(fromPrice(s))}<small>FROM{s.fromLabel ? " · PER VISIT" : ""}{homes ? "" : " · GUIDE PRICE"}</small></div>}
             {s.facts.map(([k, v]) => <div className="t-spec-row" key={k}><span>{k}</span><span>{v}</span></div>)}
             <div className="t-spec-row"><span>Area</span><span>{SITE.areaServed}</span></div>
-            <Link className="t-btn t-btn-primary t-btn-block" href={priceHref}>{homes ? "Get my price" : "Price this mission"} <Arrow /></Link>
-            {SITE.whatsapp && <a className="t-btn t-btn-ghost t-btn-block" href={whatsappLink(`Hi Happy Drones, I'd like to ask about ${s.title.toLowerCase()}.`)} target="_blank" rel="noopener">Ask on WhatsApp</a>}
+            {s.soon
+              ? (SITE.whatsapp && <a className="t-btn t-btn-primary t-btn-block" href={whatsappLink(`Hi Happy Drones, please let me know when ${s.title.toLowerCase()} launches.`)} target="_blank" rel="noopener">Tell me when it launches <Arrow /></a>)
+              : <>
+                  <Link className="t-btn t-btn-primary t-btn-block" href={priceHref}>{homes ? "Get my price" : "Price this mission"} <Arrow /></Link>
+                  {SITE.whatsapp && <a className="t-btn t-btn-ghost t-btn-block" href={whatsappLink(`Hi Happy Drones, I'd like to ask about ${s.title.toLowerCase()}.`)} target="_blank" rel="noopener">Ask on WhatsApp</a>}
+                </>}
             {s.know && <p className="t-pc-note">{s.know}</p>}
           </aside>
         </div>

@@ -13,11 +13,11 @@ import { SERVICE_PAGES, KIT, MISSION_STEPS, SITE, fromPrice } from "@/lib/site";
 
 export const metadata = {
   title: "Commercial & construction drone services",
-  description: "Construction progress records, mapping and 3D models, aerial film, inspections and events across the North East, flown on the Mavic 4 Pro, Mavic 3 and Matrice 4E.",
+  description: "Construction progress records, aerial film, inspections and events across the North East, with mapping and 3D models coming soon.",
   alternates: { canonical: "/commercial/" },
 };
 
-const TICKER = ["Construction progress", "Mapping & 3D models", "Aerial film", "Roof & building inspections", "Events & venues", "Written RAMS every mission", `${SITE.insurance.publicLiability} public liability`, "Backup date for weather", "Fixed quote within a day"];
+const TICKER = ["Construction progress", "Mapping & 3D (coming soon)", "Aerial film", "Roof & building inspections", "Events & venues", "Written RAMS every mission", `${SITE.insurance.publicLiability} public liability`, "Backup date for weather", "Fixed quote within a day"];
 const COMMERCIAL_FAQ = [
   { q: "Can you work on live construction sites?", a: "Yes. I bring my own insurance and RAMS, complete your induction and follow your permit-to-work process." },
   { q: "Are your maps survey-grade?", a: "Without ground control, maps and models are for planning, marketing and progress. Ground control points can be added when you need higher accuracy." },
@@ -29,7 +29,9 @@ const COMMERCIAL_FAQ = [
 export default function Commercial() {
   const missions = SERVICE_PAGES.filter((s) => s.group === "commercial");
   const heavy = KIT.filter((k) => k.tier === "heavy" || k.tier === "flagship");
-  const schema = { "@context": "https://schema.org", "@graph": missions.map((s) => ({ "@type": "Service", name: s.title, description: s.lede, areaServed: SITE.areaServed, provider: { "@type": "LocalBusiness", name: SITE.name, url: SITE.url }, offers: { "@type": "Offer", price: fromPrice(s), priceCurrency: "GBP" } })) };
+  const liveCount = missions.filter((s) => !s.soon).length;
+  const WORDS = ["None", "One", "Two", "Three", "Four", "Five", "Six", "Seven"];
+  const schema = { "@context": "https://schema.org", "@graph": missions.filter((s) => !s.soon).map((s) => ({ "@type": "Service", name: s.title, description: s.lede, areaServed: SITE.areaServed, provider: { "@type": "LocalBusiness", name: SITE.name, url: SITE.url }, offers: { "@type": "Offer", price: fromPrice(s), priceCurrency: "GBP" } })) };
   return (
     <QuoteProvider>
       <JsonLd data={schema} />
@@ -42,7 +44,7 @@ export default function Commercial() {
         <section className="t-section" id="missions" aria-labelledby="m-title">
           <div className="wrap">
             <div className="t-head t-split">
-              <div className="t-stack"><span className="t-tag">Commercial services</span><h2 id="m-title">Six missions. Each one planned like it matters.</h2></div>
+              <div className="t-stack"><span className="t-tag">Commercial services</span><h2 id="m-title">{WORDS[liveCount] || liveCount} missions. Each one planned like it matters.</h2></div>
               <p className="t-lede">From a monthly record of a twelve-storey build to a measured roof inspection. Pick the closest match and the planner prices it in seconds.</p>
             </div>
             <div className="t-svc-grid">{missions.map((s) => <MissionCard key={s.id} s={s} />)}</div>
@@ -53,13 +55,14 @@ export default function Commercial() {
       <section className="t-section t-light" aria-labelledby="heavy-title">
         <div className="wrap t-stack-lg">
           <div className="t-head t-split" style={{ marginBottom: 0 }}>
-            <div className="t-stack"><span className="t-tag">For the extreme jobs</span><h2 id="heavy-title">Heavier aircraft when the job needs them.</h2></div>
-            <p className="t-lede">Wind on an exposed site, a map that needs measuring, a launch film that needs a cinema camera. That&apos;s what these three are for.</p>
+            <div className="t-stack"><span className="t-tag">Where we&apos;re heading</span><h2 id="heavy-title">Heavier aircraft are on the way.</h2></div>
+            <p className="t-lede">Wind on an exposed site, a map that needs measuring, a launch film that needs a cinema camera. These three are the next aircraft joining the fleet. They&apos;re not offered until they arrive.</p>
           </div>
           <div className="t-facts">
             {heavy.map((k) => (
               <div className="t-fact" key={k.id}>
                 <span className="heavy-icon" aria-hidden="true"><KitIcon id={k.id} /></span>
+                <span className="t-mono" style={{ color: "var(--orange-deep)" }}>{k.status === "soon" ? "COMING SOON" : "IN THE FLEET"}</span>
                 <b style={{ fontSize: "1.6rem" }}>{k.name}</b>
                 <span className="t-mono" style={{ color: "var(--orange-deep)" }}>{k.spec}</span>
                 <span>{k.text}</span>

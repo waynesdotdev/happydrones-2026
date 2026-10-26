@@ -120,7 +120,7 @@ const ARTS = {
       <path d="M0 200 L80 175 L150 195 L220 170 L320 190 V240 H0Z" fill="#0F477A"/>
       <g fill="#C9D8E8"><rect x="40" y="196" width="10" height="16"/><rect x="56" y="190" width="12" height="22"/><rect x="74" y="200" width="9" height="12"/></g>
       <rect x="20" y="20" width="280" height="200" fill="none" stroke="#C9D8E8" strokeWidth="2" strokeDasharray="2 10"/>
-      <text x="30" y="40" fill="#FF6B35" fontSize="13" fontFamily="sans-serif" fontWeight="700">6K · REC</text>
+      <text x="30" y="40" fill="#FF6B35" fontSize="13" fontFamily="sans-serif" fontWeight="700">4K · REC</text>
     </svg>
   ),
   mapping: (

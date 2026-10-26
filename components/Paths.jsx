@@ -34,7 +34,7 @@ export default function Paths() {
               <h3>Building, running or promoting a site</h3>
               <ul className="ticks">
                 <li>Construction progress from the same positions every visit</li>
-                <li>Mapping and 3D models on the Matrice 4E</li>
+                <li>Monthly visits on 30-day invoice terms</li>
                 <li>Aerial film, events and inspections</li>
               </ul>
               <div className="path-ctas">

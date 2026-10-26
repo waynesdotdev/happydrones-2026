@@ -7,7 +7,7 @@ import { KIT, SERVICE_PAGES, ROADMAP } from "@/lib/site";
 
 export const metadata = {
   title: "The fleet",
-  description: "DJI Mini 4 Pro, Neo 2, Avata 2, Osmo Pocket 3, Mavic 4 Pro, Mavic 3 and Matrice 4E: which aircraft flies which job, and what's coming next.",
+  description: "DJI Mini 4 Pro, Neo 2, Avata 2 and Osmo Pocket 3: which aircraft flies which job, and the Mavic 4 Pro, Mavic 3 Pro, Matrice 4E and mirrorless camera coming next.",
   alternates: { canonical: "/fleet/" },
 };
 
@@ -15,7 +15,7 @@ export default function Fleet() {
   const cols = KIT.filter((k) => k.status === "active");
   return (
     <div className="sub-page">
-      <PageHero crumbs={[{ label: "Fleet" }]} eyebrow="Six aircraft · one pilot" title="The fleet." lede="From a palm-sized drone that follows you down a hallway to an enterprise aircraft that maps a whole site. Here's what flies which job." />
+      <PageHero crumbs={[{ label: "Fleet" }]} eyebrow="Three aircraft · one pilot · growing" title="The fleet." lede="From a palm-sized drone that follows you down a hallway to an FPV drone that flies one take through the whole house. Here's what flies which job today, and what's joining next." />
       <Kit title="Pick the job. I'll pick the aircraft." showLink={false} />
 
       <section className="t-section t-light" aria-labelledby="matrix-title" style={{ paddingTop: "clamp(48px, 7vw, 90px)" }}>
@@ -31,7 +31,9 @@ export default function Fleet() {
                 {SERVICE_PAGES.map((s) => (
                   <tr key={s.id}>
                     <th scope="row"><Link href={`/services/${s.id}/`}>{s.title}</Link></th>
-                    {cols.map((k) => <td key={k.id}>{s.kit?.includes(k.id) ? <span className="dot" aria-label="Used">●</span> : <span className="nil" aria-label="Not used">·</span>}</td>)}
+                    {s.soon
+                      ? <td colSpan={cols.length} className="matrix-soon">Coming soon, with the Matrice 4E</td>
+                      : cols.map((k) => <td key={k.id}>{s.kit?.includes(k.id) ? <span className="dot" aria-label="Used">●</span> : <span className="nil" aria-label="Not used">·</span>}</td>)}
                   </tr>
                 ))}
               </tbody>
@@ -42,7 +44,7 @@ export default function Fleet() {
 
       <section className="t-section t-light" aria-labelledby="road-title" style={{ paddingTop: 0 }}>
         <div className="wrap">
-          <div className="t-head"><span className="t-tag">Roadmap</span><h2 id="road-title">What&apos;s coming next.</h2><p className="t-lede">Capabilities being added, in order. Nothing here is offered until it&apos;s ready.</p></div>
+          <div className="t-head"><span className="t-tag">Roadmap</span><h2 id="road-title">What&apos;s coming next.</h2><p className="t-lede">Where the business is heading, in order. Nothing here is offered until it&apos;s ready.</p></div>
           <ol className="t-roadmap">{ROADMAP.map((r) => <li key={r.title}><span className="t-mono">{r.when}</span><b>{r.title}</b><span>{r.text}</span></li>)}</ol>
         </div>
       </section>

@@ -15,7 +15,7 @@ export const metadata = {
 // Each service as structured data for Google
 const servicesSchema = {
   "@context": "https://schema.org",
-  "@graph": SERVICE_PAGES.map((s) => {
+  "@graph": SERVICE_PAGES.filter((s) => !s.soon).map((s) => {
     const p = PRICING.services.find((x) => x.id === s.quote);
     return {
       "@type": "Service",
@@ -61,12 +61,14 @@ export default function ServicesPage() {
                   <ServiceArt name={s.art} />
                   <span className="art-alt"><small>ALT</small> <b>{s.alt}</b> <small>m</small></span>
                 </div>
-                <h2>{s.title}</h2>
+                <h2>{s.title}{s.soon && <span className="soon-tag">Coming soon</span>}</h2>
                 <p className="lede">{s.lede}</p>
                 <h3>What you get</h3>
                 <ul className="ticks">{s.gets.map((g) => <li key={g}>{g}</li>)}</ul>
                 <dl className="facts">
-                  <div><dt>{s.fromLabel || "From"}</dt><dd><b>{priceFrom(s.quote)}</b></dd></div>
+                  {s.soon
+                    ? <div><dt>Status</dt><dd><b>Coming soon</b></dd></div>
+                    : <div><dt>{s.fromLabel || "From"}</dt><dd><b>{priceFrom(s.quote)}</b></dd></div>}
                   {s.facts.map(([k, v]) => <div key={k}><dt>{k}</dt><dd>{v}</dd></div>)}
                 </dl>
                 <p className="know">
@@ -74,7 +76,9 @@ export default function ServicesPage() {
                   {s.knowLink && <Link href={s.knowLink.href}>{s.knowLink.text}</Link>}
                 </p>
                 <div className="chapter-actions">
-                  <Link className="btn btn-orange" href={s.group === "commercial" ? `/plan/?mission=${s.id}` : `/?service=${s.quote}#quote`}>Price this</Link>
+                  {s.soon
+                    ? (SITE.whatsapp && <a className="btn btn-orange" href={whatsappLink(`Hi Happy Drones, please let me know when ${s.title.toLowerCase()} launches.`)} target="_blank" rel="noopener">Tell me when it launches</a>)
+                    : <Link className="btn btn-orange" href={s.group === "commercial" ? `/plan/?mission=${s.id}` : `/?service=${s.quote}#quote`}>Price this</Link>}
                   <Link className="btn btn-navy" href={`/services/${s.id}/`}>Full details</Link>
                   {s.cat && <Link className="text-link" href={`/journal/?cat=${encodeURIComponent(s.cat)}`}>See examples in the Viewing Room</Link>}
                 </div>

@@ -146,7 +146,7 @@ export default function CommercialHero() {
         <div className="t-hero-in">
           <span className="t-live">Happy Drones Commercial · North East</span>
           <h1 id="hero-title">See it before <span className="t-thin">it&apos;s</span> finished.</h1>
-          <p className="t-lede">Construction progress, mapping and 3D models, aerial film, inspections and events, flown on the Mavic 4 Pro, Mavic 3 and Matrice 4E. Planned properly, flown legally, delivered in days.</p>
+          <p className="t-lede">Construction progress, aerial film, inspections and events, flown on the Mini 4 Pro, Avata 2 and Neo 2, with mapping and 3D on the way. Planned properly, flown legally, delivered in days.</p>
           <div className="t-hero-ctas">
             <Link className="t-btn t-btn-primary" href="/plan/">Plan a mission <Arrow /></Link>
             <a className="t-btn t-btn-ghost" href="#missions">See commercial services</a>

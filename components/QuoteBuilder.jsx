@@ -23,7 +23,7 @@ export default function QuoteBuilder() {
   // A link like /?service=signature#quote picks that option
   useEffect(() => {
     const fromUrl = new URLSearchParams(window.location.search).get("service");
-    if (fromUrl && PRICING.services.some((s) => s.id === fromUrl)) setService(fromUrl);
+    if (fromUrl && PRICING.services.some((s) => s.id === fromUrl && !s.soon)) setService(fromUrl);
   }, [setService]);
 
   // New option: reset size and drop extras that don't apply
@@ -63,7 +63,7 @@ export default function QuoteBuilder() {
                 <div key={g.id} className="qgroup">
                   <p className="qgroup-title">{g.title}</p>
                   <div className="choices">
-                    {PRICING.services.filter((s) => s.group === g.id).map((s) => (
+                    {PRICING.services.filter((s) => s.group === g.id && !s.soon).map((s) => (
                       <div className="choice" key={s.id}>
                         <input type="radio" name="q-service" id={`qs-${s.id}`} value={s.id} checked={s.id === svc.id} onChange={() => setService(s.id)} />
                         <label htmlFor={`qs-${s.id}`}><b>{s.name}</b><small>{s.desc}. From {money(s.base)}</small></label>
