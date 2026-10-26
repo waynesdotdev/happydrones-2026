@@ -44,7 +44,7 @@ const JOB_ROWS = [
   ["Balance (standard terms only)", "£, due before full files are released"],
   ["Costs invoiced in advance (invoice terms only)", ""],
   ["Licence (section 9)", "Property marketing / Personal / Business"],
-  ["Branding, estate agents (9.6)", "Standard / Agency-branded (included) / White label (+£29 per listing)"],
+  ["Branding, estate agents (9.6)", "Standard / Agency-branded (included) / White label (£29, £15 on an agent account, or free on 10+)"],
   ["Permitted uses (business licence only)", ""],
   ["Extras agreed", ""],
   ["Special notes", "access, site rules, inductions, anything else"],
@@ -181,7 +181,7 @@ export default function TermsPage() {
           <ul>
             <li><b>Standard:</b> my credit may appear on the video end card, and 9.5 applies.</li>
             <li><b>Agency-branded (included):</b> your logo goes on the video intro and end cards, and my credit doesn&apos;t appear on any file. I only use the work under 9.5 after the property has sold or let.</li>
-            <li><b>White label (paid add-on):</b> everything is delivered in your branding with no mention of Happy Drones, and I may contact the vendor and attend as your photographer. I won&apos;t credit myself or show the work anywhere, and 9.5 doesn&apos;t apply. I still own the copyright, and your licence is the same as in 9.2.</li>
+            <li><b>White label:</b> everything is delivered in your branding with no mention of Happy Drones, and I may contact the vendor and attend as your photographer. I won&apos;t credit myself or show the work anywhere, and 9.5 doesn&apos;t apply. I still own the copyright, and your licence is the same as in 9.2. It costs £29 per listing, £15 per listing on an agent account of 4 or more listings a month, and nothing on a bundle of 10 listings paid up front and used within 3 months, or on 10 or more listings a month.</li>
           </ul>
 
           <h2>10. Liability and insurance</h2>

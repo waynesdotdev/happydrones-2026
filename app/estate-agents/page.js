@@ -80,7 +80,7 @@ export default function EstateAgentsPage() {
           </div>
           <div className="offer-card">
             <b>{AGENT_OFFER.discount} off</b>
-            <p>every listing when you book {AGENT_OFFER.minPerMonth}+ a month, with a regular weekly slot and one monthly invoice.</p>
+            <p>every listing when you book {AGENT_OFFER.minPerMonth}+ a month, with a regular weekly slot and one monthly invoice. Book {AGENT_OFFER.bundle.size} at once and white label is free too.</p>
             <Link className="btn btn-orange" href="/?role=agent#contact">Set up an agent account</Link>
           </div>
         </div>
@@ -98,6 +98,15 @@ export default function EstateAgentsPage() {
                 <ul>{b.points.map((p) => <li key={p}>{p}</li>)}</ul>
               </article>
             ))}
+          </div>
+          <div className="wl-tiers">
+            <h3>White label pricing</h3>
+            <table>
+              <tbody>
+                {AGENT_OFFER.whiteLabel.map((t) => <tr key={t.who}><th scope="row">{t.who}</th><td>{t.price}</td></tr>)}
+              </tbody>
+            </table>
+            <p>A bundle is {AGENT_OFFER.bundle.size} listings booked and paid for up front, used within {AGENT_OFFER.bundle.months} months, on properties inside my normal travel area.</p>
           </div>
           <p className="brand-note">You choose per listing, and it&apos;s written into the booking agreement. I keep the copyright either way; you get the licence to market the property. <Link href="/terms/">Read the agreement</Link></p>
         </div>
