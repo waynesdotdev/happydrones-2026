@@ -2112,3 +2112,30 @@ h2.t-sub { font-size: var(--t-s2); font-weight: 700; }
   .simple { padding: 0; }
   .tm-table th, .tm-table td { border-color: #999; }
 }
+
+/* =========================================================
+   CHANGELOG (/changelog, unlisted)
+   ========================================================= */
+.cl-stats { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; margin: 18px 0 8px; font-size: 0.92rem; color: var(--ink-soft); }
+.cl-stats a { color: var(--navy); font-weight: 700; }
+.cl-days, .cl-tree { list-style: none; margin: 0; padding: 0; }
+.cl .cl-date { margin: 36px 0 12px; font-size: 1.25rem; }
+.cl-tree { position: relative; padding-left: 26px; }
+.cl-tree::before { content: ""; position: absolute; left: 6px; top: 6px; bottom: 6px; width: 2px; background: #d5dde7; }
+.cl-item { position: relative; margin: 0 0 18px; padding: 12px 16px; border-radius: 14px; background: var(--white); box-shadow: 0 0 0 1px #e3e9f0; }
+.cl-item::before { content: ""; position: absolute; left: -26px; top: 18px; width: 14px; height: 14px; border-radius: 50%; background: var(--white); border: 3px solid var(--navy); box-sizing: border-box; }
+.cl-dot-new::before { border-color: var(--orange); }
+.cl-dot-fix::before { border-color: #2e8b57; }
+.cl-dot-content::before { border-color: #3d6fd8; }
+.cl-dot-setup::before { border-color: #8a8f98; }
+.cl-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; font-size: 0.82rem; color: var(--ink-soft); }
+.cl-type { display: inline-block; padding: 1px 9px; border-radius: 999px; font-size: 0.78rem; font-weight: 700; background: var(--mist); color: var(--navy); }
+.cl-new { background: #ffe7dd; color: #b8441a; }
+.cl-fix { background: #e1f3e8; color: #1f6b41; }
+.cl-content { background: #e3ebfb; color: #2a52a8; }
+.cl-setup { background: #eceef1; color: #50555d; }
+.cl-commit { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.8rem; color: var(--navy); background: var(--mist); padding: 1px 7px; border-radius: 6px; text-decoration: none; }
+.cl-commit:hover { text-decoration: underline; }
+.cl .cl-title { margin: 6px 0 0; font-weight: 700; color: var(--navy); max-width: none; }
+.cl .cl-notes { margin: 6px 0 0; padding-left: 1.1em; font-size: 0.93rem; }
+.cl .cl-notes li { margin: 2px 0; }
