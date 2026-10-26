@@ -7,6 +7,14 @@ Netlify's free plan gives 300 credits a month, and each live deploy costs 15. Wh
 - Group changes together, and test locally (`npm run dev` or `npx next build`) before publishing.
 - Builds are skipped when a commit only changes notes files (see `ignore` in `netlify.toml`).
 
+## Marketing campaigns (Wayne's standing rule)
+Every campaign or special offer must have a distance limit from Wayne's base:
+- free travel only in a core zone,
+- a travel fee per visit (free shoots included) in an extended zone,
+- the offer is not valid beyond a maximum distance; standard quote only.
+Check distances by postcode on the booking form, state them in the offer terms, and write them into the Job Details.
+Confirm the base, zone distances and fees with Wayne before building. He'd rather not drive hours for a cheap job.
+
 ## Log every change
 Every change to this site gets an entry at the top of `lib/changelog.js`.
 That includes code, content and settings done outside the code (Netlify, Google, Web3Forms).
