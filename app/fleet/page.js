@@ -7,7 +7,7 @@ import { KIT, SERVICE_PAGES, ROADMAP } from "@/lib/site";
 
 export const metadata = {
   title: "The fleet",
-  description: "DJI Mini 4 Pro, Neo 2, Avata 2 and Osmo Pocket 3: which aircraft flies which job, and the Mavic 4 Pro, Mavic 3 Pro, Matrice 4E and mirrorless camera coming next.",
+  description: "DJI Mini 4 Pro, Neo 2, Avata 2 and Osmo Pocket 3: which aircraft flies which job, and the Mavic 4 Pro, Mavic 3 Enterprise, Matrice 4E and mirrorless camera coming next.",
   alternates: { canonical: "/fleet/" },
 };
 
