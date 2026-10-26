@@ -2,7 +2,7 @@
 /* The 3-step quote builder and the "shoot plan" ticket.
    Prices and options come from PRICING in lib/site.js */
 import { useEffect, useMemo, useRef, useState } from "react";
-import { PRICING, SITE, money } from "@/lib/site";
+import { PRICING, PAYMENT, SITE, money, depositFor } from "@/lib/site";
 import { useQuote } from "./QuoteContext";
 
 const GROUPS = [
@@ -116,7 +116,12 @@ export default function QuoteBuilder() {
               <span>Estimated total</span>
               <b className={bump ? "bump" : undefined}>{money(total)}</b>
             </div>
-            <p className="ticket-note">Travel {SITE.areaShort} is included.{SITE.introPricing ? " Introductory pricing." : ""}</p>
+            <p className="ticket-note">
+              Travel {SITE.areaShort} is included.{SITE.introPricing ? " Introductory pricing." : ""}{" "}
+              {total >= PAYMENT.largeFrom
+                ? `Invoiced on ${PAYMENT.termsDays}-day terms.`
+                : `A ${PAYMENT.depositPct}% deposit (${money(depositFor(total))}) secures your date; the balance is due before full files are released.`}
+            </p>
             <a className="btn btn-orange btn-block" href="#contact" onClick={() => setPlan({ summary, total: money(total) })}>
               Send me this quote
             </a>

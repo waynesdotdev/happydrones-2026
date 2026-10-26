@@ -5,7 +5,7 @@
    form name "mission"). The hidden copy of this form lives in
    public/__forms.html: keep the field names the same. */
 import { useEffect, useMemo, useState } from "react";
-import { PLANNER, SITE, money, whatsappLink } from "@/lib/site";
+import { PLANNER, PAYMENT, SITE, money, depositFor, whatsappLink } from "@/lib/site";
 import { Arrow } from "./TIcons";
 import { sendEnquiry } from "@/lib/sendForm";
 
@@ -184,7 +184,7 @@ export default function MissionPlanner() {
             {q.disc > 0 && <div className="t-pc-line t-disc"><span>Multi-visit saving ({q.fr.disc * 100}%)</span><span>−{money(q.disc)}</span></div>}
             {q.travel > 0 && <div className="t-pc-line"><span>Travel ({money(q.travel)} per visit)</span><span>+{money(q.travel * q.fr.visits)}</span></div>}
             <div className="t-pc-total"><span className="t-mono">GUIDE TOTAL</span><b>{money(q.total)}</b></div>
-            <p className="t-pc-note">{q.fr.visits > 1 ? `${money(Math.round(q.total / q.fr.visits))} per visit on average. ` : ""}Guide price. A fixed quote and written flight plan follow within a day.</p>
+            <p className="t-pc-note">{q.fr.visits > 1 ? `${money(Math.round(q.total / q.fr.visits))} per visit on average. ` : ""}Guide price. A fixed quote and written flight plan follow within a day. {q.total >= PAYMENT.largeFrom || q.fr.visits > 1 ? `Invoiced${q.fr.visits > 1 ? " per visit" : ""} on ${PAYMENT.termsDays}-day terms.` : `A ${PAYMENT.depositPct}% deposit (${money(depositFor(q.total))}) secures the date.`}</p>
           </div>
         )}
       </aside>

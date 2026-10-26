@@ -1546,6 +1546,10 @@ body.menu-open { overflow: hidden; }
 .pk-kit span { display: grid; place-items: center; width: 44px; height: 34px; border-radius: 10px; background: var(--mist); color: var(--navy); }
 .pk.is-featured .pk-kit span { background: rgba(255, 255, 255, 0.1); color: var(--white); }
 .pk-kit svg { width: 32px; }
+.pk-pay { list-style: none; margin: 18px 0 0; padding: 14px 18px; display: flex; flex-wrap: wrap; gap: 8px 26px; border-radius: 16px; background: var(--white); font-size: 0.95rem; color: var(--navy); }
+.pk-pay li { position: relative; padding-left: 16px; }
+.pk-pay li::before { content: ""; position: absolute; left: 0; top: 0.55em; width: 8px; height: 8px; border-radius: 50%; background: var(--orange); }
+.pk-pay b { font-weight: 700; }
 .pk-singles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 18px; }
 .pk-single {
   display: block;

@@ -3,7 +3,7 @@
    "Choose" picks that package in the quote builder. */
 import Link from "next/link";
 import KitIcon from "./KitIcon";
-import { PACKAGES, SINGLES, SITE, priceFrom, kitById } from "@/lib/site";
+import { PACKAGES, SINGLES, SITE, PAYMENT, priceFrom, kitById } from "@/lib/site";
 import { useQuote } from "./QuoteContext";
 
 export default function Packages() {
@@ -49,6 +49,12 @@ export default function Packages() {
             <small>Side by side, with what&apos;s included and how each shoot runs.</small>
           </Link>
         </div>
+
+        <ul className="pk-pay" aria-label="How payment works">
+          <li><b>{PAYMENT.depositPct}% deposit</b> secures your date</li>
+          <li><b>Balance before full files</b> are released, after you&apos;ve seen the previews</li>
+          <li><b>Jobs of £{PAYMENT.largeFrom.toLocaleString("en-GB")}+</b> and repeat visits: invoiced on {PAYMENT.termsDays}-day terms</li>
+        </ul>
       </div>
     </section>
   );
