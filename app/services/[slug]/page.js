@@ -72,6 +72,7 @@ export default async function ServiceDetail({ params }) {
                   {SITE.whatsapp && <a className="t-btn t-btn-ghost t-btn-block" href={whatsappLink(`Hi Happy Drones, I'd like to ask about ${s.title.toLowerCase()}.`)} target="_blank" rel="noopener">Ask on WhatsApp</a>}
                 </>}
             {s.know && <p className="t-pc-note">{s.know}</p>}
+            {s.knowLink && <Link className="t-btn t-btn-ghost t-btn-block" href={s.knowLink.href}>{s.knowLink.text}</Link>}
           </aside>
         </div>
       </section>

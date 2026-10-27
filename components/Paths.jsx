@@ -33,7 +33,7 @@ export default function Paths() {
               <p className="path-tag">Commercial · from {from("construction")}</p>
               <h3>Building, running or promoting a site</h3>
               <ul className="ticks">
-                <li>Construction progress from the same positions every visit</li>
+                <li><Link href="/construction/">Construction progress</Link> from the same positions every visit</li>
                 <li>Monthly visits on 30-day invoice terms</li>
                 <li>Aerial film, events and inspections</li>
               </ul>

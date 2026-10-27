@@ -45,7 +45,7 @@ export default function Commercial() {
           <div className="wrap">
             <div className="t-head t-split">
               <div className="t-stack"><span className="t-tag">Commercial services</span><h2 id="m-title">{WORDS[liveCount] || liveCount} missions. Each one planned like it matters.</h2></div>
-              <p className="t-lede">From a monthly record of a twelve-storey build to a measured roof inspection. Pick the closest match and the planner prices it in seconds.</p>
+              <p className="t-lede">From a monthly record of a twelve-storey build to a close-up roof inspection. Pick the closest match and the planner prices it in seconds. Building something? <Link className="text-link" href="/construction/">Read the full construction guide</Link>.</p>
             </div>
             <div className="t-svc-grid">{missions.map((s) => <MissionCard key={s.id} s={s} />)}</div>
           </div>
