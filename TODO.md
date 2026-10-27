@@ -10,13 +10,16 @@
 
 ## Pages to build
 - [ ] **Confirm commercial property prices.** Frontage & Aerial £169, Full Marketing £329, Flagship £549, plus size bands, +£75 extra units and +£49 out of hours. These are Claude's guide prices, in lib/cproperty.js.
-- [ ] **In-depth service pages, one by one.** Aerial, FPV. Aerial film and events last (Wayne, 27 Oct 2026).
+- [ ] **In-depth service pages, one by one.** FPV. Aerial film and events last (Wayne, 27 Oct 2026).
 - [ ] **Check the roof inspection page.** /roof-inspections: confirm the medium and large roof prices (£145 and £210 from the planner; the quote form says £159 for two or three buildings), and that the deliverables (overview, every slope, chimney, gutters, flat roofs, numbered and marked) match what you'll actually send.
 
 - [ ] **Check the walkthrough page.** /walkthrough-video says the walkthrough is only sold inside Showcase or Signature, comes in landscape and vertical, with licensed music and room captions, and that you get a link to add as the portal video tour. Confirm, or say if you want walkthroughs sold on their own.
 
 - [ ] **Check the local business page.** /local-business says one visit gives about 20 pieces (15+ photos, 3–5 clips, a 60-second film), delivered in 5 working days, priced from the mission planner (£199 a visit, less on repeat visits). It also says you don't post for them. Confirm, or change any of it.
 - [ ] **Social exports.** When you want them: short MP4s, stills and carousels of the interactive pieces for Facebook, X and Instagram (see the chat on 27 Oct).
+
+- [ ] **Check the aerial page.** /aerial-photography says aerial-only takes about 30 minutes with no one home, includes a short clip, the plot outline is drawn by eye as a guide (not a legal boundary), and lists an eight-shot standard list. Confirm.
+- [ ] **Prices in one place.** A dozen prices are typed into sentences (travel £45, +£75 units, £49 intro, white label £29/£15, from £99 roofs, from £75 aerial in an agent FAQ, the commercial payment FAQ). Make them read from the settings, and optionally move prices to a JSON file Wayne can edit.
 
 ## Waiting on Wayne
 - [ ] **Finish the Cloudflare move.** Test the site and email, then remove the domain from Netlify and delete the Netlify project. After that, tidy up the Netlify leftovers (netlify.toml, public/__forms.html, the Netlify backup in lib/sendForm.js, the privacy page line).
@@ -57,3 +60,4 @@
 - [x] Property photography page at /property-photography (27 Oct 2026)
 - [x] Walkthrough video page at /walkthrough-video (27 Oct 2026)
 - [x] Local business content page at /local-business (27 Oct 2026)
+- [x] Aerial photography page at /aerial-photography (27 Oct 2026)

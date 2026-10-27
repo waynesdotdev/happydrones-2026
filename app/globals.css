@@ -3273,3 +3273,43 @@ g.rfa-hl > g > polygon:first-child { fill: #6D7C9C; }
 .lb-calc-out .hi small { color: #fff; }
 .lb-calc-out p { grid-column: 1 / -1; margin: 0; padding: 14px 20px; background: var(--t-ink-2); color: var(--t-fg-soft); font-size: 0.85rem; }
 @media (min-width: 900px) { .lb-kit { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 28px; } }
+
+/* =========================================================
+   AERIAL PHOTOGRAPHY PAGE (/aerial-photography) — classes start ae- (page wrapper: aep)
+   ========================================================= */
+.aep .ea-sec .section-title { color: var(--navy); }
+.aep canvas { display: block; width: 100%; }
+.ae-height { display: grid; gap: 20px; }
+.ae-height > * { min-width: 0; }
+@media (min-width: 980px) { .ae-height { grid-template-columns: 1.35fr 1fr; align-items: center; } }
+.ae-height-fig { position: relative; margin: 0; border-radius: 6px; overflow: hidden; border: 1px solid var(--t-line); background: var(--t-ink-2); }
+.ae-alt { position: absolute; right: 14px; top: 14px; padding: 8px 14px; border-radius: 6px; background: rgba(0, 26, 51, 0.88); border: 1px solid var(--t-line-strong); text-align: right; }
+.ae-alt b { display: block; font-family: var(--font-display); font-size: 2.2rem; line-height: 1; color: var(--t-accent-hi); font-variant-numeric: tabular-nums; }
+.ae-alt small { font-family: var(--font-display); font-size: 0.7rem; letter-spacing: 0.14em; color: var(--t-fg-soft); }
+.ae-height-ctrl { display: grid; gap: 24px; }
+.ae-gauge { position: relative; padding-bottom: 28px; }
+.ae-gauge input { width: 100%; accent-color: #FF6B35; height: 28px; }
+.ae-gauge-marks button { position: absolute; bottom: 0; transform: translateX(-50%); padding: 2px 4px; border: 0; background: none; color: var(--t-fg-soft); font-family: var(--font-display); font-size: 0.78rem; letter-spacing: 0.06em; cursor: pointer; white-space: nowrap; }
+.ae-gauge-marks button:first-child { transform: none; }
+.ae-gauge-marks button:last-child { transform: translateX(-100%); }
+.ae-height-read { display: grid; gap: 8px; min-height: 11em; animation: cx-in 0.4s ease both; }
+.ae-height-read .t-mono { margin: 0; color: var(--t-dawn); font-size: 0.78rem; letter-spacing: 0.12em; }
+.ae-height-read h3 { font-size: var(--t-s2); }
+.ae-height-read p { margin: 0; color: var(--t-fg-soft); }
+.ae-sva { aspect-ratio: 16 / 10 !important; }
+.ae-sva .rf-gv-far svg { display: block; width: 100%; height: 100%; }
+.ae-annot-fig { position: relative; border-radius: 24px; overflow: hidden; background: var(--navy-deep); margin: 0; }
+.ae-annot-fig figcaption { padding: 10px 16px; color: rgba(232, 236, 245, 0.75); font-size: 0.74rem; letter-spacing: 0.1em; }
+.ae-rail .ea-strip-rail li { padding-top: 14px; }
+.ae-thumb { border-radius: 12px; overflow: hidden; margin-bottom: 6px; background: var(--t-ink-2); }
+.ae-rail .ea-strip-n { top: 22px; right: 26px; z-index: 1; color: rgba(255, 255, 255, 0.85); text-shadow: 0 1px 6px rgba(0, 0, 0, 0.5); }
+.ae-clips { margin-top: 28px; padding: 20px; border: 1px dashed var(--t-line-strong); border-radius: 6px; }
+.ae-clips .t-mono { margin: 0 0 12px; font-size: 0.74rem; letter-spacing: 0.12em; color: var(--t-dawn); }
+.ae-clips ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+@media (min-width: 760px) { .ae-clips ul { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.ae-clips li { display: grid; gap: 2px; }
+.ae-clips b { font-family: var(--font-display); font-size: 1.1rem; }
+.ae-clips span { color: var(--t-fg-soft); font-size: 0.92rem; }
+.ae-prices { display: grid; gap: 14px; }
+@media (min-width: 900px) { .ae-prices { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.pp-pkg.on .wt-adds-list li { color: var(--t-fg); border-color: var(--t-line); }
