@@ -9,7 +9,7 @@ import TFaq from "@/components/TFaq";
 import KitIcon from "@/components/KitIcon";
 import JsonLd from "@/components/JsonLd";
 import { QuoteProvider } from "@/components/QuoteContext";
-import { SERVICE_PAGES, KIT, MISSION_STEPS, SITE, fromPrice } from "@/lib/site";
+import { SERVICE_PAGES, KIT, MISSION_STEPS, SITE, PAYMENT, money, fromPrice } from "@/lib/site";
 
 export const metadata = {
   title: "Commercial & construction drone services",
@@ -22,7 +22,7 @@ const COMMERCIAL_FAQ = [
   { q: "Can you work on live construction sites?", a: "Yes. I bring my own insurance and RAMS, complete your induction and follow your permit-to-work process." },
   { q: "Are your maps survey-grade?", a: "Without ground control, maps and models are for planning, marketing and progress. Ground control points can be added when you need higher accuracy." },
   { q: "Who owns the footage?", a: "You get a licence to use it for your business, anywhere, for good. I may show selected work in my portfolio unless you ask me not to." },
-  { q: "How does payment work?", a: "Jobs of £1,000 or more and repeat-visit contracts are invoiced on 30-day terms, per visit for ongoing programmes. Smaller one-off jobs take a 25% deposit to secure the date. Any large one-off costs, such as equipment hire or specialist permissions, are invoiced up front." },
+  { q: "How does payment work?", a: `Jobs of ${money(PAYMENT.largeFrom)} or more and repeat-visit contracts are invoiced on ${PAYMENT.termsDays}-day terms, per visit for ongoing programmes. Smaller one-off jobs take a ${PAYMENT.depositPct}% deposit to secure the date. Any large one-off costs, such as equipment hire or specialist permissions, are invoiced up front.` },
   { q: "Why are prices shown as guides?", a: "Every site is different. The planner gives a realistic figure straight away, then I confirm a fixed price in writing before anything is booked." },
 ];
 

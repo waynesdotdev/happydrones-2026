@@ -89,7 +89,7 @@ export default function PropertyPage() {
         <div className="wrap">
           <h2 id="compare-title" className="section-title">Compare packages</h2>
           <p className="section-sub">
-            Prices are for flats and 1–2 bed homes. 3–4 bed adds {money(30)}, 5+ bed or land adds {money(70)}.
+            Prices are for flats and 1–2 bed homes. 3–4 bed adds {money(PRICING.services[0].sizes[1].add)}, 5+ bed or land adds {money(PRICING.services[0].sizes[2].add)}.
             {SITE.introPricing && <span className="intro-tag">Introductory pricing</span>}
           </p>
           <div className="compare-wrap">

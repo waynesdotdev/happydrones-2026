@@ -12,7 +12,7 @@ import GroundVsDrone from "@/components/roofs/GroundVsDrone";
 import RoofAnatomy from "@/components/roofs/RoofAnatomy";
 import ScenarioRail from "@/components/roofs/ScenarioRail";
 import SamplePack from "@/components/roofs/SamplePack";
-import { SITE, PLANNER, PAYMENT, money, kitById, whatsappLink } from "@/lib/site";
+import { SITE, PLANNER, PAYMENT, money, priceFrom, kitById, whatsappLink } from "@/lib/site";
 import {
   roofPrices, RF_METHODS, RF_METHOD_NOTE, RF_DELIVERABLES, RF_FOLDER, RF_PROCESS,
   RF_LIMITS, RF_KIT_NOW, RF_KIT_NEXT, RF_FAQ,
@@ -20,7 +20,7 @@ import {
 
 export const metadata = {
   title: "Drone roof inspections",
-  description: "Close, numbered drone photos of your roof, chimney, gutters and flat roofs, without ladders or scaffolding. Across the North East, from £99, delivered in 48–72 hours.",
+  description: "Close, numbered drone photos of your roof, chimney, gutters and flat roofs, without ladders or scaffolding. Across the North East, from " + priceFrom("roof") + ", delivered in 48–72 hours.",
   alternates: { canonical: "/roof-inspections/" },
 };
 

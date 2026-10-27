@@ -5,20 +5,22 @@
    form name "mission"). The hidden copy of this form lives in
    public/__forms.html: keep the field names the same. */
 import { useEffect, useMemo, useState } from "react";
-import { PLANNER, PAYMENT, SITE, money, depositFor, whatsappLink, missionBase } from "@/lib/site";
+import { PLANNER, PAYMENT, SITE, TRAVEL, money, depositFor, whatsappLink, missionBase } from "@/lib/site";
 import { Arrow } from "./TIcons";
 import { sendEnquiry } from "@/lib/sendForm";
 
-const INCLUDED = ["NE", "SR", "DH", "TS", "DL"];
-const NEARBY = ["CA", "YO", "HG", "DG", "TD"];
+// Travel areas and the nearby fee are set in TRAVEL in lib/site.js
+const INCLUDED = TRAVEL.core;
+const NEARBY = TRAVEL.nearby;
+const listAreas = (a) => `${a.slice(0, -1).join(", ")} and ${a[a.length - 1]}`;
 
 function postcodeInfo(pc) {
   const clean = pc.toUpperCase().replace(/\s+/g, "");
-  if (!clean) return { ok: false, msg: "Travel is included across NE, SR, DH, TS and DL postcodes." };
+  if (!clean) return { ok: false, msg: `Travel is included across ${listAreas(INCLUDED)} postcodes.` };
   if (!/^[A-Z]{1,2}\d[A-Z\d]?(\d[A-Z]{2})?$/.test(clean)) return { ok: false, cls: "warn", msg: "That doesn't look like a UK postcode yet, for example NE1 4ST." };
   const area = clean.match(/^[A-Z]{1,2}/)[0];
   if (INCLUDED.includes(area)) return { ok: true, cls: "ok", msg: `${area}: inside the core area. Travel included.` };
-  if (NEARBY.includes(area)) return { ok: true, cls: "warn", travel: 45, msg: `${area}: covered, with a £45 travel fee.` };
+  if (NEARBY.includes(area)) return { ok: true, cls: "warn", travel: TRAVEL.nearbyFee, msg: `${area}: covered, with a ${money(TRAVEL.nearbyFee)} travel fee.` };
   return { ok: true, cls: "warn", travel: null, msg: `${area}: outside the usual area. Travel will be quoted with your plan.` };
 }
 

@@ -4,8 +4,8 @@
    no fonts, no images, no site header, so it loads on one bar of signal.
    Prices are pulled from lib/site.js and lib/cproperty.js at build time,
    so they always match the website. */
-import { PRICING, PLANNER, PAYMENT, AGENT_OFFER, SITE } from "@/lib/site";
-import { CP_PACKAGES, CP_SIZES } from "@/lib/cproperty";
+import { PRICING, PLANNER, PAYMENT, AGENT_OFFER, AGENT_DISCOUNT, WHITE_LABEL, TRAVEL, SITE } from "@/lib/site";
+import { CP_PACKAGES, CP_SIZES, CP_PRICES } from "@/lib/cproperty";
 
 export const dynamic = "force-static";
 
@@ -16,7 +16,7 @@ function data() {
   const jobs = [
     simple("essentials", "Property"), simple("showcase", "Property"), simple("signature", "Property"),
     simple("aerial", "Property"), simple("fpv", "Property"),
-    ...CP_PACKAGES.map((p) => ({ id: "cp-" + p.id, g: "Commercial property", n: p.name, base: p.price, sizesT: "Unit size", sizes: CP_SIZES.map((z) => ({ n: z.name, a: z.add })), ex: [{ n: "Out-of-hours shoot", p: 49 }, { n: "Next-day delivery", p: 39 }], units: 75, pkg: true })),
+    ...CP_PACKAGES.map((p) => ({ id: "cp-" + p.id, g: "Commercial property", n: p.name, base: p.price, sizesT: "Unit size", sizes: CP_SIZES.map((z) => ({ n: z.name, a: z.add })), ex: [{ n: "Out-of-hours shoot", p: CP_PRICES.outOfHours }, { n: "Next-day delivery", p: PRICING.extras.find((x) => x.id === "rush")?.price || 0 }], units: CP_PRICES.extraUnit, pkg: true })),
     { id: "construction", g: "Construction & commercial", n: "Construction progress", base: PLANNER.missions.find((m) => m.id === "construction")?.base || 179, plan: true,
       scales: PLANNER.scale.map((x) => ({ n: x.name, m: x.mult })), freqs: PLANNER.frequency.map((f) => ({ n: f.name, v: f.visits, d: f.disc })), ex: PLANNER.extras.map((x) => ({ n: x.name, p: x.price })) },
     simple("film", "Construction & commercial"), simple("roof", "Construction & commercial"),
@@ -24,10 +24,10 @@ function data() {
   ];
   return {
     jobs,
-    agentDisc: 0.1,
-    wl: { payg: 29, account: 15, bundle: 0 },
+    agentDisc: AGENT_DISCOUNT,
+    wl: { payg: WHITE_LABEL.oneOff, account: WHITE_LABEL.account, bundle: WHITE_LABEL.bundle },
     dep: PAYMENT.depositPct, large: PAYMENT.largeFrom, days: PAYMENT.termsDays,
-    travel: [{ n: "Core area (NE, SR, DH, TS, DL)", p: 0 }, { n: "Nearby (CA, YO, HG, DG, TD) +£45 per visit", p: 45 }, { n: "Further out (quote travel separately)", p: null }],
+    travel: [{ n: `Core area (${TRAVEL.core.join(", ")})`, p: 0 }, { n: `Nearby (${TRAVEL.nearby.join(", ")}) +£${TRAVEL.nearbyFee} per visit`, p: TRAVEL.nearbyFee }, { n: "Further out (quote travel separately)", p: null }],
     phone: SITE.phoneDisplay, email: SITE.email, bundle: AGENT_OFFER.bundle.size,
   };
 }

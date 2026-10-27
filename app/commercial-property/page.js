@@ -11,7 +11,7 @@ import TypeExplorer from "@/components/cproperty/TypeExplorer";
 import ContextMap from "@/components/cproperty/ContextMap";
 import CPPricing from "@/components/cproperty/CPPricing";
 import { SITE, PAYMENT, AGENT_OFFER, money, whatsappLink } from "@/lib/site";
-import { CP_PACKAGES, CP_EXTRAS, CP_PROCESS, CP_PRACTICAL, CP_FAQ } from "@/lib/cproperty";
+import { CP_PACKAGES, CP_PRICES, CP_EXTRAS, CP_PROCESS, CP_PRACTICAL, CP_FAQ } from "@/lib/cproperty";
 
 export const metadata = {
   title: "Commercial property drone photography",
@@ -65,7 +65,7 @@ export default function CommercialPropertyPage() {
         <div className="wrap">
           <dl className="cx-stats">
             <div><dt>Packages from</dt><dd>{money(from)}<small>per property</small></dd></div>
-            <div><dt>Extra units</dt><dd>+£75<small>same estate, same visit</small></dd></div>
+            <div><dt>Extra units</dt><dd>+{money(CP_PRICES.extraUnit)}<small>same estate, same visit</small></dd></div>
             <div><dt>Delivered in</dt><dd>48–72 h<small>named by unit</small></dd></div>
             <div><dt>Insured</dt><dd>{SITE.insurance.publicLiability}<small>public liability</small></dd></div>
           </dl>

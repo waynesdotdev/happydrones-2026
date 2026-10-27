@@ -1,7 +1,7 @@
 /* "Two ways I fly": the fork between homes and commercial work. */
 import Link from "next/link";
 import ServiceArt from "./ServiceArt";
-import { PRICING, money } from "@/lib/site";
+import { PRICING, PAYMENT, money } from "@/lib/site";
 
 const from = (id) => money(PRICING.services.find((s) => s.id === id)?.base || 0);
 
@@ -34,7 +34,7 @@ export default function Paths() {
               <h3>Building, running or promoting a site</h3>
               <ul className="ticks">
                 <li><Link href="/construction/">Construction progress</Link> from the same positions every visit</li>
-                <li>Monthly visits on 30-day invoice terms</li>
+                <li>Monthly visits on {PAYMENT.termsDays}-day invoice terms</li>
                 <li>Aerial film, events and inspections</li>
               </ul>
               <div className="path-ctas">

@@ -1,11 +1,6 @@
 # Happy Drones website: to do
 
 ## Next up
-- [ ] **Remove "precision" wording.** It's in two places:
-  - the /links page motto (`motto` in `lib/site.js`)
-  - the link-preview description (the `alt` text in `app/layout.js`)
-
-  Replace both with "Every angle. One visit."
 - [ ] **New link preview image.** Replace `public/og.png` with `og.png` from the social kit (09-Website-and-Email).
 
 ## Pages to build
@@ -19,7 +14,7 @@
 - [ ] **Social exports.** When you want them: short MP4s, stills and carousels of the interactive pieces for Facebook, X and Instagram (see the chat on 27 Oct).
 
 - [ ] **Check the aerial page.** /aerial-photography says aerial-only takes about 30 minutes with no one home, includes a short clip, the plot outline is drawn by eye as a guide (not a legal boundary), and lists an eight-shot standard list. Confirm.
-- [ ] **Prices in one place.** A dozen prices are typed into sentences (travel £45, +£75 units, £49 intro, white label £29/£15, from £99 roofs, from £75 aerial in an agent FAQ, the commercial payment FAQ). Make them read from the settings, and optionally move prices to a JSON file Wayne can edit.
+- [ ] **Optional: prices in a JSON file.** Every price now reads from lib/site.js and lib/cproperty.js. If Wayne wants, move them into one JSON file with nothing else in it.
 
 - [ ] **Check the FPV page.** /fpv-fly-through says the Avata 2 is about 21 cm across, sessions are about 90 minutes with a walk-round and slow rehearsal, several takes are flown and the best kept, and the finished video is 45–90 s plus a vertical cut in 3–5 days. Confirm.
 
@@ -40,6 +35,8 @@
 - [ ] **Optional hello@ alias.** Add hello@happydrones.co.uk as a free alias in Google Admin.
 
 ## Done
+- [x] "Precision" wording replaced with "Every angle. One visit." (27 Oct 2026)
+- [x] Every price reads from the settings, including prices written into sentences (27 Oct 2026)
 - [x] Spacing between the paths section and the property packages, now using the site's own spacing that adjusts on phones (25 Oct 2026)
 - [x] Favicon, app icon and Apple touch icon (25 Oct 2026)
 - [x] Social links: YouTube, TikTok, LinkedIn and X (25 Oct 2026)
