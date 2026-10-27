@@ -6,7 +6,7 @@ import { SITE } from "@/lib/site";
 export const dynamic = "force-static";
 
 export default function sitemap() {
-  const pages = ["", "/property/", "/estate-agents/", "/services/", "/journal/", "/links/", "/privacy/", "/terms/", "/cookies/", "/commercial/", "/construction/", "/commercial-property/", "/roof-inspections/", "/property-photography/", "/walkthrough-video/", "/plan/", "/fleet/", "/safety/"].map((p) => ({
+  const pages = ["", "/property/", "/estate-agents/", "/services/", "/journal/", "/links/", "/privacy/", "/terms/", "/cookies/", "/commercial/", "/construction/", "/commercial-property/", "/roof-inspections/", "/property-photography/", "/walkthrough-video/", "/local-business/", "/plan/", "/fleet/", "/safety/"].map((p) => ({
     url: `${SITE.url}${p || "/"}`,
     changeFrequency: "monthly",
     priority: p === "" ? 1 : 0.7,
