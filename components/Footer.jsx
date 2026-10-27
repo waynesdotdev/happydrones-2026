@@ -1,5 +1,6 @@
 /* Site footer: logo, insurance, page links, services and socials. */
 import Link from "next/link";
+import CookieSettingsLink from "./CookieSettingsLink";
 import Image from "next/image";
 import { SITE, SERVICE_PAGES, liveSocials } from "@/lib/site";
 
@@ -34,6 +35,8 @@ export default function Footer() {
             <li><Link href="/#quote">Get a quote</Link></li>
             <li><Link href="/terms/">Booking agreement</Link></li>
             <li><Link href="/privacy/">Privacy</Link></li>
+            <li><Link href="/cookies/">Cookie policy</Link></li>
+            <li><CookieSettingsLink /></li>
           </ul>
         </nav>
 

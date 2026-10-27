@@ -36,6 +36,7 @@ export default function PrivacyPage() {
             <li>Google Workspace hosts my business email.</li>
             <li>The fonts are stored on this website, so no font service is contacted.</li>
             <li>YouTube plays videos, only after you press play, in privacy-enhanced mode.</li>
+            <li>Cloudflare protects the site and may set a short-lived security cookie. See the <Link href="/cookies/">cookie policy</Link>.</li>
           </ul>
 
           <h2>Filming and people</h2>
