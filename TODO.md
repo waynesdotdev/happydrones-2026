@@ -10,7 +10,7 @@
 
 ## Pages to build
 - [ ] **Confirm commercial property prices.** Frontage & Aerial £169, Full Marketing £329, Flagship £549, plus size bands, +£75 extra units and +£49 out of hours. These are Claude's guide prices, in lib/cproperty.js.
-- [ ] **In-depth service pages, one by one.** Property photography, aerial film, events, local business content, aerial, walkthrough, FPV.
+- [ ] **In-depth service pages, one by one.** Walkthrough video, local business content, aerial, FPV. Aerial film and events last (Wayne, 27 Oct 2026).
 - [ ] **Check the roof inspection page.** /roof-inspections: confirm the medium and large roof prices (£145 and £210 from the planner; the quote form says £159 for two or three buildings), and that the deliverables (overview, every slope, chimney, gutters, flat roofs, numbered and marked) match what you'll actually send.
 
 ## Waiting on Wayne
@@ -18,7 +18,7 @@
 - [ ] **Business address.** Needed for the contract, /terms (SITE.address), the website and invoices. A virtual office is fine.
 - [ ] **Base town and free-travel area.** The site says the base is Newcastle and travel is free across NE/SR/DH/TS/DL. Wayne is on Teesside and doesn't want Newcastle free.
 - [ ] **Mavic 4 Pro.** Owned or not? It's currently marked coming soon.
-- [ ] **Interior photos.** Packages say mirrorless, which isn't owned yet. Decide what to say, and update the "How a Showcase shoot runs" post to match.
+- [ ] **Interior photos.** Packages say mirrorless, which isn't owned yet. Decide what to say, and update the "How a Showcase shoot runs" post to match. The new /property-photography page deliberately doesn't name the interior camera, and says each angle is shot as three exposures and blended: check that matches how you shoot.
 - [ ] **Sample blog posts.** Replace with real ones. The first three are #6 aerial vs ground, #7 roof check and #5 Rightmove shots.
 
 ## When ready
@@ -49,3 +49,4 @@
 - [x] Estate agents page rebuilt with tour finder, working models, package builder and listing timeline (27 Oct 2026)
 - [x] Commercial property page at /commercial-property (27 Oct 2026)
 - [x] Roof inspections page at /roof-inspections (27 Oct 2026)
+- [x] Property photography page at /property-photography (27 Oct 2026)

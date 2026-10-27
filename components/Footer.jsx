@@ -25,6 +25,7 @@ export default function Footer() {
           <ul>
             <li><Link href="/">Home</Link></li>
             <li><Link href="/property/">Property packages</Link></li>
+            <li><Link href="/property-photography/">Property photography</Link></li>
             <li><Link href="/estate-agents/">For estate agents</Link></li>
             <li><Link href="/commercial-property/">Commercial property</Link></li>
             <li><Link href="/commercial/">Commercial</Link></li>
