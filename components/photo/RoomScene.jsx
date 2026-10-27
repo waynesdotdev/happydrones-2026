@@ -218,7 +218,7 @@ const WINDOWS = {
   bath: { x: 470, y: 140, w: 70, h: 54, frosted: true },
 };
 
-export default function RoomScene({ room = "living", expo = "blend", lights = true, curtains = "open", mess = [], label }) {
+export default function RoomScene({ room = "living", expo = "blend", lights = true, curtains = "open", mess = [], label, cover }) {
   const gid = `rs${useId().replace(/[^a-zA-Z0-9]/g, "")}`;
   const w = WINDOWS[room];
   const Furn = { living: Living, kitchen: Kitchen, bedroom: Bedroom, bath: Bath }[room];
@@ -226,7 +226,7 @@ export default function RoomScene({ room = "living", expo = "blend", lights = tr
   const lightsOff = lights ? 0 : 0.26;
   const warm = room === "bath" ? "#E9EEF3" : "#EDE6DA";
   return (
-    <svg viewBox="0 0 800 520" role="img" aria-label={label || `Illustration of a ${room === "bath" ? "bathroom" : room === "living" ? "living room" : room}`}>
+    <svg viewBox="0 0 800 520" preserveAspectRatio={cover ? "xMidYMid slice" : undefined} role="img" aria-label={label || `Illustration of a ${room === "bath" ? "bathroom" : room === "living" ? "living room" : room}`}>
       <defs>
         <linearGradient id={`${gid}-sky`} x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#6FA6DC" /><stop offset="1" stopColor="#CFE4F5" /></linearGradient>
         <radialGradient id={`${gid}-glow`}><stop offset="0" stopColor="#FFD98A" stopOpacity="0.75" /><stop offset="1" stopColor="#FFD98A" stopOpacity="0" /></radialGradient>

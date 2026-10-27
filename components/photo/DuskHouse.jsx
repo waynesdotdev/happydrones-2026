@@ -9,7 +9,7 @@ const mixc = (a, b, k) => { const A = hex(a), B = hex(b); return `rgb(${A.map((v
 const tri = (t, day, sun, blue) => (t < 0.5 ? mixc(day, sun, t / 0.5) : mixc(sun, blue, (t - 0.5) / 0.5));
 const clamp = (v) => Math.max(0, Math.min(1, v));
 
-export default function DuskHouse({ t = 0, label }) {
+export default function DuskHouse({ t = 0, label, cover }) {
   const gid = `dh${useId().replace(/[^a-zA-Z0-9]/g, "")}`;
   const glow = clamp((t - 0.45) / 0.4);      // interior lights showing
   const dark = clamp((t - 0.3) / 0.7) * 0.55; // how much the outside falls into shadow
@@ -26,7 +26,7 @@ export default function DuskHouse({ t = 0, label }) {
     </g>
   );
   return (
-    <svg viewBox="0 0 800 520" role="img" aria-label={label || "Illustration of the front of a house"}>
+    <svg viewBox="0 0 800 520" preserveAspectRatio={cover ? "xMidYMid slice" : undefined} role="img" aria-label={label || "Illustration of the front of a house"}>
       <defs>
         <linearGradient id={`${gid}-sky`} x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor={skyTop} /><stop offset="1" stopColor={skyBot} /></linearGradient>
         <filter id={`${gid}-b`} x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="14" /></filter>

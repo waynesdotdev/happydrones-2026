@@ -10,8 +10,10 @@
 
 ## Pages to build
 - [ ] **Confirm commercial property prices.** Frontage & Aerial £169, Full Marketing £329, Flagship £549, plus size bands, +£75 extra units and +£49 out of hours. These are Claude's guide prices, in lib/cproperty.js.
-- [ ] **In-depth service pages, one by one.** Walkthrough video, local business content, aerial, FPV. Aerial film and events last (Wayne, 27 Oct 2026).
+- [ ] **In-depth service pages, one by one.** Local business content, aerial, FPV. Aerial film and events last (Wayne, 27 Oct 2026).
 - [ ] **Check the roof inspection page.** /roof-inspections: confirm the medium and large roof prices (£145 and £210 from the planner; the quote form says £159 for two or three buildings), and that the deliverables (overview, every slope, chimney, gutters, flat roofs, numbered and marked) match what you'll actually send.
+
+- [ ] **Check the walkthrough page.** /walkthrough-video says the walkthrough is only sold inside Showcase or Signature, comes in landscape and vertical, with licensed music and room captions, and that you get a link to add as the portal video tour. Confirm, or say if you want walkthroughs sold on their own.
 
 ## Waiting on Wayne
 - [ ] **Finish the Cloudflare move.** Test the site and email, then remove the domain from Netlify and delete the Netlify project. After that, tidy up the Netlify leftovers (netlify.toml, public/__forms.html, the Netlify backup in lib/sendForm.js, the privacy page line).
@@ -50,3 +52,4 @@
 - [x] Commercial property page at /commercial-property (27 Oct 2026)
 - [x] Roof inspections page at /roof-inspections (27 Oct 2026)
 - [x] Property photography page at /property-photography (27 Oct 2026)
+- [x] Walkthrough video page at /walkthrough-video (27 Oct 2026)
