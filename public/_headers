@@ -3,3 +3,7 @@
 
 /__forms.html
   X-Robots-Tag: noindex
+
+/custom-price*
+  X-Robots-Tag: noindex, nofollow, noarchive
+  Cache-Control: no-cache
