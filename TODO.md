@@ -8,6 +8,10 @@
   Replace both with "Every angle. One visit."
 - [ ] **New link preview image.** Replace `public/og.png` with `og.png` from the social kit (09-Website-and-Email).
 
+## Pages to build
+- [ ] **Commercial property agents page.** Shops, offices and new-build industrial units: frontages, access, parking, loading, signage and location. Kept separate from the residential estate agents page.
+- [ ] **In-depth service pages, one by one.** Property photography, roofs & inspections, aerial film, events, local business content, aerial, walkthrough, FPV.
+
 ## Waiting on Wayne
 - [ ] **Finish the Cloudflare move.** Test the site and email, then remove the domain from Netlify and delete the Netlify project. After that, tidy up the Netlify leftovers (netlify.toml, public/__forms.html, the Netlify backup in lib/sendForm.js, the privacy page line).
 - [ ] **Business address.** Needed for the contract, /terms (SITE.address), the website and invoices. A virtual office is fine.
@@ -40,3 +44,5 @@
 - [x] White label for estate agents, with tiered pricing and free on 10-listing bundles (26 Oct 2026)
 - [x] Hosting moved to Cloudflare Pages, and DNS moved to Cloudflare (26 Oct 2026)
 - [x] Cookie banner and cookie policy (27 Oct 2026)
+- [x] Construction progress sales page at /construction (27 Oct 2026)
+- [x] Estate agents page rebuilt with tour finder, working models, package builder and listing timeline (27 Oct 2026)
