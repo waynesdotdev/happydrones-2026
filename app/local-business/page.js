@@ -12,19 +12,18 @@ import { LB_PROCESS, LB_FAQ, businessPrices } from "@/lib/localBusiness";
 
 export const metadata = {
   title: "Content for local businesses",
-  description: "Drone, FPV and handheld video and photos of your premises, team and work, cut for Reels, TikTok, your website and your map listing. Across the North East, from one morning's shoot.",
+  description: "Drone and handheld video and photos of your premises, team and work, cut for Reels, TikTok, your website and your map listing. Across the North East, from one morning's shoot.",
   alternates: { canonical: "/local-business/" },
 };
 
 const WHY = [
-  { t: "Angles nobody else has", d: "Your street from the air, a flight through the door, the team on the move. The shots that stop people scrolling." },
+  { t: "Angles nobody else has", d: "Your street from the air, a glide through the door, the team on the move. The shots that stop people scrolling." },
   { t: "Every platform from one shoot", d: "Vertical for Reels and TikTok, square and portrait for the feed, landscape for your website. No reshoots." },
   { t: "Your map listing, sorted", d: "Fresh photos of the outside, the inside and the team, so people know what they're walking into." },
 ];
 
 const KIT = [
   { id: "mini4", role: "The street from above", d: "Aerial photos and reveal clips of the frontage and the area." },
-  { id: "avata2", role: "One-take flights inside", d: "Guarded propellers for flying through the door and round the room. Add-on." },
   { id: "neo2", role: "The team", d: "A palm-sized drone that follows people for walk-and-talk clips." },
   { id: "pocket3", role: "The work up close", d: "A gimbal camera for smooth close-ups of hands, products and details." },
 ];

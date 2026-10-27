@@ -15,7 +15,7 @@ import { CP_PACKAGES, CP_PRICES, CP_EXTRAS, CP_PROCESS, CP_PRACTICAL, CP_FAQ } f
 
 export const metadata = {
   title: "Commercial property drone photography",
-  description: "Aerial and ground photography, video and FPV tours for commercial agents across the North East: industrial units, offices, retail, trade parks, land and leisure.",
+  description: "Aerial and ground photography, video and walk-through tours for commercial agents across the North East: industrial units, offices, retail, trade parks, land and leisure.",
   alternates: { canonical: "/commercial-property/" },
 };
 
@@ -32,7 +32,7 @@ const GETS = [
   { t: "Exterior photos", d: "Frontage, signage, entrance, parking and yard, shot from the ground and low from the air." },
   { t: "Interior photos", d: "Warehouse floor, offices, reception, welfare and plant, with the lights on and the clutter out." },
   { t: "Marketing video", d: "60–90 seconds with aerials, interiors and captions. Landscape for portals, vertical for LinkedIn." },
-  { t: "FPV fly-through", d: "One take from the yard, through the loading door and up into the offices. In the Flagship package." },
+  { t: "One-take glide tour", d: "One take on the Pocket 3, from the yard, through the loading door and up into the offices. In the Flagship package." },
 ];
 
 export default function CommercialPropertyPage() {

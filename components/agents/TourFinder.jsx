@@ -69,7 +69,6 @@ export default function TourFinder() {
             {t.tour === "aerial" && <path d={t.route} className="ea-route" style={{ stroke: "#FF6B35", strokeDasharray: "8 7" }} />}
           </svg>
           <figcaption>
-            <span><i style={{ background: "#FF6B35" }} />Drone fly-through</span>
             <span><i style={{ background: "#FFC15E" }} />Pocket 3 glide</span>
             <span><i className="ea-key-out" />Aerial orbit</span>
           </figcaption>

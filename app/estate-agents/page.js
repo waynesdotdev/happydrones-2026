@@ -16,7 +16,7 @@ const ALL_FAQ = [...AGENT_OFFER.faq, ...MORE_AGENT_FAQ];
 
 export const metadata = {
   title: "For estate agents",
-  description: `Photos, aerial, walkthrough video and FPV tours for estate agents across the North East. One visit per property, files in 48–72 hours, ${AGENT_OFFER.discount} off for ${AGENT_OFFER.minPerMonth}+ listings a month.`,
+  description: `Photos, aerial, walkthrough video and glide tours for estate agents across the North East. One visit per property, files in 48–72 hours, ${AGENT_OFFER.discount} off for ${AGENT_OFFER.minPerMonth}+ listings a month.`,
   alternates: { canonical: "/estate-agents/" },
 };
 
@@ -38,7 +38,7 @@ export default function EstateAgentsPage() {
         </div>
         <div className="wrap">
           <h1 id="agent-title">Win the<br />instruction.</h1>
-          <p>Vendors pick the agent whose marketing looks best. I give every one of your listings photos, aerial, walkthrough video and an FPV tour from a single visit, so yours is the agency they remember.</p>
+          <p>Vendors pick the agent whose marketing looks best. I give every one of your listings photos, aerial and walkthrough video from a single visit, so yours is the agency they remember.</p>
           <div className="hero-ctas">
             <Link className="btn btn-orange" href="/?role=agent#contact">Set up an agent account</Link>
             {wa && <a className="btn btn-ghost" href={wa} target="_blank" rel="noopener">WhatsApp {SITE.phoneDisplay}</a>}
@@ -46,7 +46,7 @@ export default function EstateAgentsPage() {
           <dl className="agent-stats">
             <div><dt className="visually-hidden">Visits</dt><dd style={{ margin: 0 }}><b>1</b><span>visit per property</span></dd></div>
             <div><dt className="visually-hidden">Delivery</dt><dd style={{ margin: 0 }}><b>48–72h</b><span>to portal-ready files</span></dd></div>
-            <div><dt className="visually-hidden">Formats</dt><dd style={{ margin: 0 }}><b>4</b><span>formats: photo, aerial, video, FPV</span></dd></div>
+            <div><dt className="visually-hidden">Formats</dt><dd style={{ margin: 0 }}><b>3</b><span>formats: photo, aerial, video</span></dd></div>
             <div><dt className="visually-hidden">Discount</dt><dd style={{ margin: 0 }}><b>{AGENT_OFFER.discount}</b><span>off at {AGENT_OFFER.minPerMonth}+ listings a month</span></dd></div>
           </dl>
         </div>
@@ -65,19 +65,19 @@ export default function EstateAgentsPage() {
         <div className="wrap">
           <p className="ea-eyebrow">Every property, the right tour</p>
           <h2 id="ea-tours-title" className="section-title">From one-bed flats to country houses.</h2>
-          <p className="section-sub">Slide through the property types to see how each one is shot: the aerials outside, the tour inside, and the package it usually needs. Small homes get a smooth handheld glide; bigger homes get a full drone fly-through.</p>
+          <p className="section-sub">Slide through the property types to see how each one is shot: the aerials outside, the tour inside, and the package it usually needs. Every home gets a smooth one-take glide on the Pocket 3, and Signature homes get the longest tour.</p>
           <TourFinder />
         </div>
       </section>
 
+      {/* "Which tour?" decision diagram hidden while Avata 2 drone tours are paused.
       <section className="ea-sec ea-sec-alt" aria-labelledby="ea-flow-title-h">
         <div className="wrap">
           <p className="ea-eyebrow">How I choose</p>
           <h2 id="ea-flow-title-h" className="section-title">Which tour? It depends on the space.</h2>
-          <p className="section-sub">Flying a drone indoors needs room. Where halls are narrow or ceilings are low, the Osmo Pocket 3 in its FPV mode gives the same flowing, front-door-to-garden feel at walking height, with no risk to the home.</p>
           <TourFlow />
         </div>
-      </section>
+      </section> */}
 
       <section className="ea-sec ea-dark" aria-labelledby="ea-strip-title">
         <div className="wrap">
@@ -88,9 +88,8 @@ export default function EstateAgentsPage() {
         </div>
       </section>
 
-      <QuoteProvider>
-        <FpvRoute quoteHref="/?service=signature#quote" />
-      </QuoteProvider>
+      {/* FPV drone route hidden while drone fly-throughs are paused:
+      <QuoteProvider><FpvRoute quoteHref="/?service=signature#quote" /></QuoteProvider> */}
 
       <section className="ea-sec" id="working" aria-labelledby="ea-models-title">
         <div className="wrap">

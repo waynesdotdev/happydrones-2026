@@ -8,7 +8,7 @@ import { SERVICE_PAGES, SITE, priceFrom, whatsappLink, PRICING } from "@/lib/sit
 
 export const metadata = {
   title: "Services",
-  description: "Property photography, aerial, walkthrough video, FPV, construction progress, mapping, aerial film, inspections, events and business content across the North East.",
+  description: "Property photography, aerial, walkthrough video, construction progress, mapping, aerial film, inspections, events and business content across the North East.",
   alternates: { canonical: "/services/" },
 };
 

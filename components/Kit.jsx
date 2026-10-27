@@ -33,7 +33,7 @@ export default function Kit({ title, showLink = true, showFuture = true }) {
       <div className="wrap">
         <div className="kit-head">
           <h2 id="kit-title" className="section-title">{heading}</h2>
-          <p className="section-sub">{flyingWord} aircraft and a handheld gimbal, from a palm-sized Neo 2 for social clips to an Avata 2 that flies one-take tours through the house. You get the right tool for the job, not whatever happens to be in the van.</p>
+          <p className="section-sub">{flyingWord} aircraft and a handheld gimbal, from a palm-sized Neo 2 for social clips to a Pocket 3 that glides through the house in one take. You get the right tool for the job, not whatever happens to be in the van.</p>
         </div>
         <div className="kit-grid">{items.map(card)}</div>
         {showFuture && future.length > 0 && (

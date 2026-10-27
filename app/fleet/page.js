@@ -15,7 +15,7 @@ export default function Fleet() {
   const cols = KIT.filter((k) => k.status === "active");
   return (
     <div className="sub-page">
-      <PageHero crumbs={[{ label: "Fleet" }]} eyebrow="Three aircraft · one pilot · growing" title="The fleet." lede="From a palm-sized drone that follows you down a hallway to an FPV drone that flies one take through the whole house. Here's what flies which job today, and what's joining next." />
+      <PageHero crumbs={[{ label: "Fleet" }]} eyebrow="Three aircraft · one pilot · growing" title="The fleet." lede="From a palm-sized drone that follows you down a hallway to a gimbal camera that glides through the whole house in one take. Here's what flies which job today, and what's joining next." />
       <Kit title="Pick the job. I'll pick the aircraft." showLink={false} />
 
       <section className="t-section t-light" aria-labelledby="matrix-title" style={{ paddingTop: "clamp(48px, 7vw, 90px)" }}>

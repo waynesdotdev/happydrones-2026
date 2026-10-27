@@ -14,6 +14,8 @@ export const metadata = {
   title: "FPV fly-through videos",
   description: "One unbroken drone flight in the front door, through every room and out over the garden. For homes, showhomes and venues across the North East, from " + priceFrom("fpv") + ".",
   alternates: { canonical: "/fpv-fly-through/" },
+  // Unlisted while FPV drone fly-throughs are paused: kept out of Google and the sitemap.
+  robots: { index: false, follow: false },
 };
 
 const WHY = [

@@ -9,11 +9,11 @@ import { PACKAGES, PACKAGE_ROWS, SINGLES, PRICING, SITE, priceFrom, money, kitBy
 
 export const metadata = {
   title: "Property packages",
-  description: "Property photography, aerial, walkthrough video and FPV packages for estate agents and homeowners across the North East. Fixed prices from " + priceFrom("essentials") + ".",
+  description: "Property photography, aerial, walkthrough video packages for estate agents and homeowners across the North East. Fixed prices from " + priceFrom("essentials") + ".",
   alternates: { canonical: "/property/" },
 };
 
-const PROPERTY_IDS = ["essentials", "showcase", "signature", "aerial", "fpv"];
+const PROPERTY_IDS = ["essentials", "showcase", "signature", "aerial"];
 const addons = PRICING.extras.filter((x) => x.for.some((id) => PROPERTY_IDS.includes(id)));
 
 const schema = {
@@ -40,7 +40,7 @@ export default function PropertyPage() {
         </div>
         <div className="wrap">
           <h1 id="prop-title">Every angle.<br />One visit.</h1>
-          <p>Three property packages, from clean listing photos to the full treatment with a one-take FPV tour. Scroll through each one to see exactly what&apos;s included.</p>
+          <p>Three property packages, from clean listing photos to the full treatment with a one-take glide tour. Scroll through each one to see exactly what&apos;s included.</p>
         </div>
       </section>
 

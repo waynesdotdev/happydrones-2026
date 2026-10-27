@@ -119,7 +119,7 @@ export default function WalkthroughPage() {
       {/* WALKTHROUGH VS FPV */}
       <section className="t-section t-light" aria-labelledby="wt-vs-title">
         <div className="wrap">
-          <div className="t-head"><span className="t-tag">Walkthrough or fly-through?</span><h2 id="wt-vs-title">Two ways to tour a home.</h2></div>
+          <div className="t-head"><span className="t-tag">Walkthrough or glide tour?</span><h2 id="wt-vs-title">Two ways to tour a home.</h2></div>
           <div className="wt-vs">
             <div>
               <p className="t-mono">WALKTHROUGH · POCKET 3</p>
@@ -128,10 +128,10 @@ export default function WalkthroughPage() {
               <p className="wt-vs-in">In Showcase and Signature</p>
             </div>
             <div>
-              <p className="t-mono">FPV FLY-THROUGH · AVATA 2</p>
-              <h3>One unbroken flight</h3>
-              <p>A small drone flies in the front door, through the rooms and out over the garden in one take. It stops people scrolling. Best for bigger homes and social media.</p>
-              <p className="wt-vs-in">In Signature, or {fpv ? `+${money(fpv.price)}` : "an add-on"} on Showcase · <Link href="/services/fpv/">More about FPV</Link></p>
+              <p className="t-mono">ONE-TAKE GLIDE · POCKET 3</p>
+              <h3>One unbroken take</h3>
+              <p>The Pocket 3 in its FPV mode glides in the front door, through the rooms and out to the garden in one take. It stops people scrolling. Best for bigger homes and social media.</p>
+              <p className="wt-vs-in">In Signature</p>
             </div>
           </div>
         </div>

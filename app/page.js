@@ -7,7 +7,8 @@ import Link from "next/link";
 import Hero from "@/components/Hero";
 import Promises from "@/components/Promises";
 import Packages from "@/components/Packages";
-import ThreeWays, { AlsoAvailable } from "@/components/ThreeWays";
+import ThreeWays from "@/components/ThreeWays";
+import TodayTomorrow from "@/components/TodayTomorrow";
 import AgentBand from "@/components/AgentBand";
 import QuoteBuilder from "@/components/QuoteBuilder";
 import ContactSection from "@/components/ContactSection";
@@ -33,6 +34,7 @@ export default function HomePage() {
       <ThreeWays />
       <Packages />
       <AgentBand />
+      <TodayTomorrow />
       <QuoteBuilder />
       <HowItWorks />
       <Showreel />
@@ -50,7 +52,6 @@ export default function HomePage() {
         </section>
       )}
 
-      <AlsoAvailable />
       <Follow />
       <Faq />
       <ContactSection />
