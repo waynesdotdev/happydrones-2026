@@ -159,9 +159,9 @@ export default function EstateAgentsPage() {
           <div>
             <p className="ea-eyebrow">Commercial agents</p>
             <h2 id="ea-com-title">Shops, offices and new-build units?</h2>
-            <p>Commercial property needs different shots: frontages, access, parking, loading, signage and the location around it. A dedicated commercial property page is on the way. Message me now and I&apos;ll quote.</p>
+            <p>Commercial property needs different shots: frontages, access, parking, loading, signage and the location around it. Everything for commercial agents is on its own page, with packages priced by unit size.</p>
           </div>
-          {wa && <a className="btn btn-orange" href={wa} target="_blank" rel="noopener">Ask about commercial</a>}
+          <Link className="btn btn-orange" href="/commercial-property/">Commercial property</Link>
         </div>
       </section>
 

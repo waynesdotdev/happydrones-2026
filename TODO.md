@@ -9,7 +9,7 @@
 - [ ] **New link preview image.** Replace `public/og.png` with `og.png` from the social kit (09-Website-and-Email).
 
 ## Pages to build
-- [ ] **Commercial property agents page.** Shops, offices and new-build industrial units: frontages, access, parking, loading, signage and location. Kept separate from the residential estate agents page.
+- [ ] **Confirm commercial property prices.** Frontage & Aerial £169, Full Marketing £329, Flagship £549, plus size bands, +£75 extra units and +£49 out of hours. These are Claude's guide prices, in lib/cproperty.js.
 - [ ] **In-depth service pages, one by one.** Property photography, roofs & inspections, aerial film, events, local business content, aerial, walkthrough, FPV.
 
 ## Waiting on Wayne
@@ -46,3 +46,4 @@
 - [x] Cookie banner and cookie policy (27 Oct 2026)
 - [x] Construction progress sales page at /construction (27 Oct 2026)
 - [x] Estate agents page rebuilt with tour finder, working models, package builder and listing timeline (27 Oct 2026)
+- [x] Commercial property page at /commercial-property (27 Oct 2026)
