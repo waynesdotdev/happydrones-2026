@@ -5,7 +5,7 @@
    form name "mission"). The hidden copy of this form lives in
    public/__forms.html: keep the field names the same. */
 import { useEffect, useMemo, useState } from "react";
-import { PLANNER, PAYMENT, SITE, money, depositFor, whatsappLink } from "@/lib/site";
+import { PLANNER, PAYMENT, SITE, money, depositFor, whatsappLink, missionBase } from "@/lib/site";
 import { Arrow } from "./TIcons";
 import { sendEnquiry } from "@/lib/sendForm";
 
@@ -27,7 +27,7 @@ export function priceMission(st) {
   const sc = PLANNER.scale.find((x) => x.id === st.scale);
   const fr = PLANNER.frequency.find((x) => x.id === st.freq);
   if (!m || !sc || !fr) return null;
-  const base = Math.round((m.base * sc.mult) / 5) * 5;
+  const base = missionBase(m.base, sc.mult);
   const extras = PLANNER.extras.filter((x) => st.extras.includes(x.id));
   const perVisit = base + extras.reduce((a, x) => a + x.price, 0);
   const gross = perVisit * fr.visits;

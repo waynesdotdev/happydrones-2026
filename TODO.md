@@ -10,7 +10,8 @@
 
 ## Pages to build
 - [ ] **Confirm commercial property prices.** Frontage & Aerial £169, Full Marketing £329, Flagship £549, plus size bands, +£75 extra units and +£49 out of hours. These are Claude's guide prices, in lib/cproperty.js.
-- [ ] **In-depth service pages, one by one.** Property photography, roofs & inspections, aerial film, events, local business content, aerial, walkthrough, FPV.
+- [ ] **In-depth service pages, one by one.** Property photography, aerial film, events, local business content, aerial, walkthrough, FPV.
+- [ ] **Check the roof inspection page.** /roof-inspections: confirm the medium and large roof prices (£145 and £210 from the planner; the quote form says £159 for two or three buildings), and that the deliverables (overview, every slope, chimney, gutters, flat roofs, numbered and marked) match what you'll actually send.
 
 ## Waiting on Wayne
 - [ ] **Finish the Cloudflare move.** Test the site and email, then remove the domain from Netlify and delete the Netlify project. After that, tidy up the Netlify leftovers (netlify.toml, public/__forms.html, the Netlify backup in lib/sendForm.js, the privacy page line).
@@ -47,3 +48,4 @@
 - [x] Construction progress sales page at /construction (27 Oct 2026)
 - [x] Estate agents page rebuilt with tour finder, working models, package builder and listing timeline (27 Oct 2026)
 - [x] Commercial property page at /commercial-property (27 Oct 2026)
+- [x] Roof inspections page at /roof-inspections (27 Oct 2026)

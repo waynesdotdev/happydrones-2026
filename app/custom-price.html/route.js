@@ -104,7 +104,7 @@ function calc(){
   var agent=who!=="home";$("wlW").hidden=!(agent&&j.pkg);
   if(j.plan){
     var sc=j.scales[+$("scale").value],fr=j.freqs[+$("freq").value];visits=fr.v;
-    per=Math.round(j.base*sc.m/5)*5;lines.push([j.n+" · "+sc.n+" site",f(per)+" /visit"]);
+    per=sc.m===1?j.base:Math.round(j.base*sc.m/5)*5;lines.push([j.n+" · "+sc.n+" site",f(per)+" /visit"]);
   }else{
     var z=j.sizes[+$("size").value]||{a:0};per=j.base+z.a;lines.push([j.n+" · "+(z.n||""),f(per)]);
     if(agent&&j.pkg&&who!=="payg"){var d=Math.round(per*D.agentDisc);per-=d;lines.push(["Agent discount","−"+f(d)])}
