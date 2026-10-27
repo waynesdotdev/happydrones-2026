@@ -8,10 +8,9 @@ import { useEffect, useState } from "react";
 // Add, remove or rename menu links here
 const NAV = [
   { name: "Property", href: "/property/", match: "/property" },
+  { name: "Roofs", href: "/roof-inspections/", match: "/roof-inspections" },
+  { name: "Local business", href: "/local-business/", match: "/local-business" },
   { name: "Estate agents", href: "/estate-agents/", match: "/estate-agents" },
-  { name: "Commercial", href: "/commercial/", match: "/commercial" },
-  { name: "Services", href: "/services/", match: "/services" },
-  { name: "Fleet", href: "/fleet/", match: "/fleet" },
   { name: "Viewing Room", href: "/journal/", match: "/journal" },
   { name: "Contact", href: "/#contact" },
 ];

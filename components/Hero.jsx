@@ -50,11 +50,12 @@ export default function Hero() {
       <div className="hero-copy">
         <h1>Every angle.<br />One visit.</h1>
         <p className="hero-sub">
-          Listing photos, aerials, walkthrough video and one-take FPV for homes. Construction progress, aerial film and inspections for commercial sites. One pilot, a growing fleet, {SITE.areaShort}.
+          Homes for sale or to let, roof inspections without ladders, and content for local businesses. One pilot, {SITE.areaShort}.
         </p>
         <div className="hero-ctas">
           <Link className="btn btn-orange" href="/#packages">See property packages</Link>
-          <Link className="btn btn-ghost" href="/commercial/">Commercial &amp; construction</Link>
+          <Link className="btn btn-ghost" href="/roof-inspections/">Roof inspections</Link>
+          <Link className="btn btn-ghost" href="/local-business/">Local business</Link>
         </div>
         {/*<p className="hero-note">Prices in under a minute. No sign-up.</p>*/}
       </div>

@@ -7,11 +7,7 @@ import Link from "next/link";
 import Hero from "@/components/Hero";
 import Promises from "@/components/Promises";
 import Packages from "@/components/Packages";
-import AudienceTabs from "@/components/AudienceTabs";
-import Kit from "@/components/Kit";
-import Paths from "@/components/Paths";
-import TodayTomorrow from "@/components/TodayTomorrow";
-import FpvRoute from "@/components/FpvRoute";
+import ThreeWays, { AlsoAvailable } from "@/components/ThreeWays";
 import AgentBand from "@/components/AgentBand";
 import QuoteBuilder from "@/components/QuoteBuilder";
 import ContactSection from "@/components/ContactSection";
@@ -34,16 +30,12 @@ export default function HomePage() {
       <JsonLd data={faqSchema()} />
       <Hero />
       <Promises />
-      <Paths />
+      <ThreeWays />
       <Packages />
-      <Kit />
-      <AudienceTabs />
-      <FpvRoute />
       <AgentBand />
       <QuoteBuilder />
-      <TodayTomorrow />
-      <Showreel />
       <HowItWorks />
+      <Showreel />
       <Reviews />
 
       {latest.length > 0 && (
@@ -58,6 +50,7 @@ export default function HomePage() {
         </section>
       )}
 
+      <AlsoAvailable />
       <Follow />
       <Faq />
       <ContactSection />
