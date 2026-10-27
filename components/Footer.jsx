@@ -28,6 +28,7 @@ export default function Footer() {
             <li><Link href="/property-photography/">Property photography</Link></li>
             <li><Link href="/aerial-photography/">Aerial photography</Link></li>
             <li><Link href="/walkthrough-video/">Walkthrough video</Link></li>
+            <li><Link href="/fpv-fly-through/">FPV fly-throughs</Link></li>
             <li><Link href="/estate-agents/">For estate agents</Link></li>
             <li><Link href="/commercial-property/">Commercial property</Link></li>
             <li><Link href="/commercial/">Commercial</Link></li>

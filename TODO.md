@@ -10,7 +10,7 @@
 
 ## Pages to build
 - [ ] **Confirm commercial property prices.** Frontage & Aerial £169, Full Marketing £329, Flagship £549, plus size bands, +£75 extra units and +£49 out of hours. These are Claude's guide prices, in lib/cproperty.js.
-- [ ] **In-depth service pages, one by one.** FPV. Aerial film and events last (Wayne, 27 Oct 2026).
+- [ ] **In-depth service pages, one by one.** Aerial film and events (moved to last by Wayne, 27 Oct 2026).
 - [ ] **Check the roof inspection page.** /roof-inspections: confirm the medium and large roof prices (£145 and £210 from the planner; the quote form says £159 for two or three buildings), and that the deliverables (overview, every slope, chimney, gutters, flat roofs, numbered and marked) match what you'll actually send.
 
 - [ ] **Check the walkthrough page.** /walkthrough-video says the walkthrough is only sold inside Showcase or Signature, comes in landscape and vertical, with licensed music and room captions, and that you get a link to add as the portal video tour. Confirm, or say if you want walkthroughs sold on their own.
@@ -20,6 +20,8 @@
 
 - [ ] **Check the aerial page.** /aerial-photography says aerial-only takes about 30 minutes with no one home, includes a short clip, the plot outline is drawn by eye as a guide (not a legal boundary), and lists an eight-shot standard list. Confirm.
 - [ ] **Prices in one place.** A dozen prices are typed into sentences (travel £45, +£75 units, £49 intro, white label £29/£15, from £99 roofs, from £75 aerial in an agent FAQ, the commercial payment FAQ). Make them read from the settings, and optionally move prices to a JSON file Wayne can edit.
+
+- [ ] **Check the FPV page.** /fpv-fly-through says the Avata 2 is about 21 cm across, sessions are about 90 minutes with a walk-round and slow rehearsal, several takes are flown and the best kept, and the finished video is 45–90 s plus a vertical cut in 3–5 days. Confirm.
 
 ## Waiting on Wayne
 - [ ] **Finish the Cloudflare move.** Test the site and email, then remove the domain from Netlify and delete the Netlify project. After that, tidy up the Netlify leftovers (netlify.toml, public/__forms.html, the Netlify backup in lib/sendForm.js, the privacy page line).
@@ -61,3 +63,4 @@
 - [x] Walkthrough video page at /walkthrough-video (27 Oct 2026)
 - [x] Local business content page at /local-business (27 Oct 2026)
 - [x] Aerial photography page at /aerial-photography (27 Oct 2026)
+- [x] FPV fly-through page at /fpv-fly-through (27 Oct 2026)

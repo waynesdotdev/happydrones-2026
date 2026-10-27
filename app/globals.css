@@ -3313,3 +3313,99 @@ g.rfa-hl > g > polygon:first-child { fill: #6D7C9C; }
 .ae-prices { display: grid; gap: 14px; }
 @media (min-width: 900px) { .ae-prices { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 .pp-pkg.on .wt-adds-list li { color: var(--t-fg); border-color: var(--t-line); }
+
+/* =========================================================
+   FPV FLY-THROUGH PAGE (/fpv-fly-through) — classes start fpv- (page wrapper: fpvp)
+   ========================================================= */
+.fpvp .ea-sec .section-title { color: var(--navy); }
+/* first-person view + HUD */
+.fpv-hero, .fpv-view { position: relative; aspect-ratio: 16 / 9; overflow: hidden; background: #0A1220; }
+.fpv-view { margin: 0; border-radius: 6px; border: 1px solid var(--t-line); }
+.fpv-dive, .fpv-view-in { position: absolute; inset: 0; }
+.fpv-dive svg, .fpv-dive canvas, .fpv-view-in svg, .fpv-view-in canvas { display: block; width: 100%; height: 100%; }
+.fpv-dive { animation: fpv-dive 2.8s cubic-bezier(.55, 0, .9, .6) both; }
+.fpv-dive.rise { animation-name: fpv-rise; animation-timing-function: cubic-bezier(.2, .6, .3, 1); }
+.fpv-dive.still { animation: none; }
+@keyframes fpv-dive { 0% { transform: scale(1); opacity: 0.2; filter: blur(4px); } 12% { opacity: 1; filter: none; } 85% { opacity: 1; filter: none; } 100% { transform: scale(3); opacity: 0.6; filter: blur(3px); } }
+@keyframes fpv-rise { 0% { transform: scale(2.4); opacity: 0.3; filter: blur(4px); } 15% { opacity: 1; filter: none; } 100% { transform: scale(1); } }
+.fpv-view-in { transition: transform 0.12s linear; animation: pp-fade 0.4s ease both; }
+.fpv-hud { position: absolute; inset: 0; pointer-events: none; font-family: var(--font-display); letter-spacing: 0.1em; font-size: 0.72rem; }
+.fpv-hud::before { content: ""; position: absolute; inset: 10px; border: 1px solid rgba(255, 255, 255, 0.35); border-radius: 8px; }
+.fpv-rec { position: absolute; left: 18px; top: 16px; padding: 4px 8px; border-radius: 3px; background: rgba(0, 26, 51, 0.8); color: #FF6B6B; }
+.fpv-tag { position: absolute; right: 18px; top: 16px; padding: 4px 8px; border-radius: 3px; background: rgba(0, 26, 51, 0.8); color: #F2F6FB; }
+.fpv-nocut { position: absolute; right: 18px; bottom: 16px; padding: 4px 8px; border-radius: 3px; background: #FF6B35; color: #fff; }
+.fpv-cross { position: absolute; left: 50%; top: 50%; width: 40px; height: 40px; margin: -20px 0 0 -20px; border: 2px solid rgba(255, 255, 255, 0.7); border-radius: 50%; }
+.fpv-cross::before, .fpv-cross::after { content: ""; position: absolute; background: rgba(255, 255, 255, 0.7); }
+.fpv-cross::before { left: 50%; top: -10px; bottom: -10px; width: 2px; margin-left: -1px; }
+.fpv-cross::after { top: 50%; left: -10px; right: -10px; height: 2px; margin-top: -1px; }
+@media (prefers-reduced-motion: reduce) { .fpv-dive { animation: none; } }
+
+/* route scroll */
+.fpv-scroll-in { display: grid; gap: clamp(16px, 3vw, 40px); align-items: center; }
+@media (min-width: 980px) { .fpv-scroll-in { grid-template-columns: 0.9fr 1.1fr; } }
+.fpv-plan-col, .fpv-view-col { display: grid; gap: 12px; min-width: 0; }
+.fpv-plan-col h2 { font-size: var(--t-s3); }
+.fpv-plan { margin: 0; border-radius: 6px; overflow: hidden; border: 1px solid var(--t-line); background: var(--t-ink-2); }
+.fpv-plan svg, .fpv-haz-fig svg { display: block; width: 100%; height: auto; }
+.fpv-bg { fill: #0A2240; }
+.fpv-garden { fill: #1E4A38; }
+.fpv-drive { fill: #3B4352; }
+.fpv-room { fill: rgba(255, 255, 255, 0.05); stroke: rgba(207, 220, 234, 0.6); stroke-width: 3; }
+.fpv-name { fill: rgba(232, 236, 245, 0.85); font-family: var(--font-display); font-size: 15px; }
+.fpv-lbl { fill: rgba(232, 236, 245, 0.6); font-family: var(--font-display); font-size: 12px; letter-spacing: 0.14em; }
+.fpv-gap { fill: #0A2240; }
+.fpv-route-ghost { fill: none; stroke: rgba(255, 193, 94, 0.35); stroke-width: 3; stroke-dasharray: 8 8; }
+.fpv-route { fill: none; stroke: #FF6B35; stroke-width: 6; stroke-linecap: round; stroke-linejoin: round; }
+.fpv-drone rect { fill: #E8ECF5; }
+.fpv-drone circle { fill: rgba(232, 236, 245, 0.35); stroke: #E8ECF5; stroke-width: 2; }
+.fpv-fov { fill: rgba(255, 193, 94, 0.35); }
+.fpv-stage { min-height: 8em; }
+@media (max-width: 979px) {
+  .fpv-scroll .cx-sticky { padding-top: 76px; }
+  .fpv-plan-col .t-tag, .fpv-plan-col h2 { display: none; }
+  .fpv-plan-col { order: 2; } .fpv-view-col { order: 1; }
+  .fpv-plan { max-width: 260px; justify-self: center; width: 100%; }
+  .fpv-stage { min-height: 0; } .fpv-stage p:last-child { font-size: 0.9rem; }
+}
+
+/* hazard spotter */
+.fpv-haz { margin-top: 36px; display: grid; gap: 20px; }
+.fpv-haz > * { min-width: 0; }
+@media (min-width: 980px) { .fpv-haz { grid-template-columns: 1.3fr 1fr; align-items: start; } }
+.fpv-haz-fig { margin: 0; border-radius: 24px; overflow: hidden; background: var(--navy-deep); }
+.fpv-route-ghost.on { stroke: rgba(255, 107, 53, 0.55); }
+.fpv-hz { cursor: pointer; }
+.fpv-hz .ring { fill: rgba(255, 193, 94, 0.15); stroke: rgba(255, 193, 94, 0.6); stroke-width: 2; animation: fpv-pulse 1.8s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+.fpv-hz .dot { fill: #FFC15E; }
+.fpv-hz text { fill: #001A33; font-family: var(--font-display); font-weight: 800; font-size: 16px; pointer-events: none; }
+.fpv-hz.got .ring { animation: none; fill: rgba(74, 222, 128, 0.15); stroke: rgba(74, 222, 128, 0.7); }
+.fpv-hz.got .dot { fill: #4ADE80; }
+.fpv-hz.open .ring { stroke: #fff; stroke-width: 3; }
+.fpv-hz:focus-visible { outline: none; } .fpv-hz:focus-visible .ring { stroke: #fff; stroke-width: 4; }
+@keyframes fpv-pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.25); } }
+@media (prefers-reduced-motion: reduce) { .fpv-hz .ring { animation: none; } }
+.fpv-haz-side { display: grid; gap: 14px; align-content: start; }
+.fpv-haz-count { margin: 0; font-family: var(--font-display); color: var(--navy); font-size: 1.1rem; }
+.fpv-haz-count b { font-size: 2.4rem; color: var(--orange); }
+.fpv-haz-card { padding: 22px; border-radius: 20px; background: var(--mist); animation: ea-pop 0.35s ease both; }
+.fpv-haz-card h3 { font-size: 1.5rem; color: var(--navy); }
+.fpv-haz-card p { margin: 6px 0 0; color: var(--ink-soft); }
+.fpv-haz-list { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.fpv-haz-list button { padding: 6px 12px; min-width: 40px; border-radius: 999px; border: 1px solid var(--line); background: var(--white); color: var(--ink-soft); font: inherit; font-weight: 700; cursor: pointer; }
+.fpv-haz-list li.got button { background: var(--navy); border-color: var(--navy); color: var(--white); }
+.fpv-haz-done { margin: 0; font-weight: 700; color: #1F7A4A; }
+.fpvp .ea-sec .t-btn-ghost { color: var(--navy); box-shadow: inset 0 0 0 1px var(--line); justify-self: start; }
+
+/* which tour, where, prices */
+.fpv-which { display: grid; gap: 12px; }
+@media (min-width: 900px) { .fpv-which { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.fpv-which .t-mono { margin: 0; font-size: 0.74rem; letter-spacing: 0.12em; color: var(--t-accent); }
+.fpv-which .rf-method > p:not(.t-mono) { margin: 0; color: var(--t-paper-soft); }
+.fpv-which .rf-method.best > p:not(.t-mono) { color: var(--t-fg-soft); }
+.fpv-which .text-link { color: var(--t-paper-ink); font-weight: 700; }
+.fpv-where { background: var(--t-line); border-color: var(--t-line); }
+.fpv-where div { background: var(--t-ink); }
+.fpv-where h3 { color: var(--t-fg); }
+.fpv-where p { color: var(--t-fg-soft); }
+.fpv-note { margin: 0; color: var(--t-paper-soft); }
+.fpv-kit { margin-top: 28px; max-width: 640px; }
