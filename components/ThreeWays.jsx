@@ -4,7 +4,7 @@
    Prices come from PRICING and the agent settings in lib/site.js. */
 import Link from "next/link";
 import ServiceArt from "./ServiceArt";
-import { priceFrom, AGENT_OFFER, PAYMENT } from "@/lib/site";
+import { priceFrom, AGENT_OFFER } from "@/lib/site";
 
 const MAIN = [
   {
@@ -43,9 +43,10 @@ const MAIN = [
     ticks: [
       "The same positions every visit, so progress lines up",
       "Dated photos and film for developers, contractors and funders",
-      `Regular visits on ${PAYMENT.termsDays}-day invoice terms`,
+      "Empty buildings checked monthly too, before work starts",
     ],
     main: { label: "Construction progress", href: "/construction/", cls: "btn-navy" },
+    more: { label: "Vacant buildings", href: "/vacant-property-monitoring/" },
   },
 ];
 

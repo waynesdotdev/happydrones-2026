@@ -121,6 +121,10 @@ export default function ConstructionPage() {
         <div className="wrap">
           <div className="t-head"><span className="t-tag">Who it&apos;s for</span><h2 id="cx-uses-title">One record. Used by everyone on the project.</h2></div>
           <div className="cx-uses">{USES.map((u) => <div key={u.who}><h3>{u.who}</h3><p>{u.what}</p></div>)}</div>
+          <div className="vp-xlink">
+            <div><p className="t-mono">BEFORE THE BUILD STARTS</p><h3>Site sitting empty while you wait on planning?</h3><p>The same fixed positions can check an empty building every month for lead theft, roof damage, fly-tipping and break-ins, then carry straight on as your progress record when work begins.</p></div>
+            <Link className="t-btn t-btn-primary" href="/vacant-property-monitoring/">Vacant property monitoring <Arrow /></Link>
+          </div>
         </div>
       </section>
 
