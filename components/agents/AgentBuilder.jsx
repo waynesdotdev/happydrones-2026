@@ -8,7 +8,7 @@ import { PRICING, PAYMENT, AGENT_OFFER, money } from "@/lib/site";
 import { MODELS } from "@/lib/agents";
 
 const PKGS = ["aerial", "essentials", "showcase", "signature"];
-const AGENT_EXTRAS = ["floorplan", "dusk", "extra10", "intro", "reel", "fpvadd", "rush"];
+const AGENT_EXTRAS = ["floorplan", "dusk", "extra10", "intro", "reel", "rush"];
 
 export default function AgentBuilder() {
   const [pkg, setPkg] = useState("showcase");

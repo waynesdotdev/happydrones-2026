@@ -7,7 +7,7 @@ import { KIT, SERVICE_PAGES, ROADMAP } from "@/lib/site";
 
 export const metadata = {
   title: "The fleet",
-  description: "DJI Mini 4 Pro, Neo 2, Avata 2 and Osmo Pocket 3: which aircraft flies which job, and the Mavic 4 Pro, Mavic 3 Enterprise, Matrice 4E and mirrorless camera coming next.",
+  description: "DJI Mini 4 Pro, Neo 2 and Osmo Pocket 3: which aircraft flies which job, and the Mavic 4 Pro, Mavic 3 Enterprise, Matrice 4E and mirrorless camera coming next.",
   alternates: { canonical: "/fleet/" },
 };
 
@@ -15,7 +15,7 @@ export default function Fleet() {
   const cols = KIT.filter((k) => k.status === "active");
   return (
     <div className="sub-page">
-      <PageHero crumbs={[{ label: "Fleet" }]} eyebrow="Three aircraft · one pilot · growing" title="The fleet." lede="From a palm-sized drone that follows you down a hallway to a gimbal camera that glides through the whole house in one take. Here's what flies which job today, and what's joining next." />
+      <PageHero crumbs={[{ label: "Fleet" }]} eyebrow="Two aircraft · a gimbal camera · one pilot" title="The fleet." lede="From a palm-sized drone that follows you down a hallway to a gimbal camera that glides through the whole house in one take. Here's what flies which job today, and what's joining next." />
       <Kit title="Pick the job. I'll pick the aircraft." showLink={false} />
 
       <section className="t-section t-light" aria-labelledby="matrix-title" style={{ paddingTop: "clamp(48px, 7vw, 90px)" }}>

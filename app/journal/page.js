@@ -10,7 +10,7 @@ import { liveSocials } from "@/lib/site";
 
 export const metadata = {
   title: "Viewing Room",
-  description: "Property walkthroughs, FPV fly-throughs, aerial showreels and practical guides for sellers, landlords and estate agents.",
+  description: "Property walkthroughs, aerial photos, roof checks and practical guides for sellers, landlords and estate agents.",
   alternates: { canonical: "/journal/" },
 };
 
@@ -25,7 +25,7 @@ export default function JournalPage() {
         <div className="wrap log-hero-inner">
           <div>
             <h1 id="log-title">Viewing Room</h1>
-            <p>Walkthroughs, fly-throughs and practical guides for sellers, landlords and estate agents.</p>
+            <p>Walkthroughs, aerials and practical guides for sellers, landlords and estate agents.</p>
           </div>
           <div className="log-hero-actions">
             {followButtons.map((s, i) => (

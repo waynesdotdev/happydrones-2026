@@ -53,7 +53,7 @@ export function HeroFeed() {
 const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 // spread the posts across the month: week by week, then day by day
 const ORDER = Array.from({ length: 24 }, (_, i) => (i % 4) * 6 + [0, 2, 4, 1, 3, 5][Math.floor(i / 4)]);
-const TILE = { p: "Photo", c: "Clip", f: "Film", x: "FPV" };
+const TILE = { p: "Photo", c: "Clip", f: "Film", x: "Add-on" };
 export function MorningScroll() {
   const wrapRef = useRef(null);
   const [p, setP] = useState(0);

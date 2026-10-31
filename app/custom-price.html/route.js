@@ -15,7 +15,7 @@ function data() {
   const simple = (id, group) => { const s = svc(id); return { id, g: group, n: s.name, base: s.base, sizesT: s.sizeTitle, sizes: s.sizes.map((z) => ({ n: z.name, a: z.add })), ex: extrasFor(id), pkg: group === "Property" }; };
   const jobs = [
     simple("essentials", "Property"), simple("showcase", "Property"), simple("signature", "Property"),
-    simple("aerial", "Property"), simple("fpv", "Property"),
+    simple("aerial", "Property"),
     ...CP_PACKAGES.map((p) => ({ id: "cp-" + p.id, g: "Commercial property", n: p.name, base: p.price, sizesT: "Unit size", sizes: CP_SIZES.map((z) => ({ n: z.name, a: z.add })), ex: [{ n: "Out-of-hours shoot", p: CP_PRICES.outOfHours }, { n: "Next-day delivery", p: PRICING.extras.find((x) => x.id === "rush")?.price || 0 }], units: CP_PRICES.extraUnit, pkg: true })),
     { id: "construction", g: "Construction & commercial", n: "Construction progress", base: PLANNER.missions.find((m) => m.id === "construction")?.base || 179, plan: true,
       scales: PLANNER.scale.map((x) => ({ n: x.name, m: x.mult })), freqs: PLANNER.frequency.map((f) => ({ n: f.name, v: f.visits, d: f.disc })), ex: PLANNER.extras.map((x) => ({ n: x.name, p: x.price })) },

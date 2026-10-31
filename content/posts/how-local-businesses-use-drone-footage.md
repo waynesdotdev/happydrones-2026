@@ -22,7 +22,7 @@ Ten to fifteen seconds of something people haven't seen before is exactly what T
 
 ## 3. An indoor tour before people visit
 
-An FPV fly-through of a gym, shop, café or venue lets customers look round from their sofa.
+A one-take glide through a gym, shop, café or venue lets customers look round from their sofa.
 
 ## 4. Photos for your Google Business profile
 

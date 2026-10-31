@@ -30,7 +30,6 @@ const KIT = [
 
 export default function LocalBusinessPage() {
   const bp = businessPrices();
-  const fpv = PRICING.extras.find((x) => x.id === "fpvadd");
   const golden = PRICING.extras.find((x) => x.id === "golden");
   const wa = whatsappLink("Hi Happy Drones, I'd like content for my business. It's: ");
   const schema = [
@@ -122,7 +121,6 @@ export default function LocalBusinessPage() {
             <div>
               <h3>Add to any shoot</h3>
               <ul>
-                {fpv && <li><span>One-take FPV flight inside (Avata 2)</span><b>+{money(fpv.price)}</b></li>}
                 {golden && <li><span>{golden.name}</span><b>+{money(golden.price)}</b></li>}
               </ul>
             </div>

@@ -1,13 +1,10 @@
 /* ESTATE AGENTS PAGE — the pitch for agencies.
    Words: AGENT_OFFER in lib/site.js. Packages and prices: PACKAGES and PRICING. */
 import Link from "next/link";
-import FpvRoute from "@/components/FpvRoute";
 import JsonLd from "@/components/JsonLd";
-import { QuoteProvider } from "@/components/QuoteContext";
 import { AGENT_OFFER, PACKAGES, SITE, priceFrom, whatsappLink } from "@/lib/site";
 import { MORE_AGENT_FAQ } from "@/lib/agents";
 import TourFinder from "@/components/agents/TourFinder";
-import TourFlow from "@/components/agents/TourFlow";
 import WorkingModels from "@/components/agents/WorkingModels";
 import AgentBuilder from "@/components/agents/AgentBuilder";
 import ListingStrip from "@/components/agents/ListingStrip";
@@ -70,15 +67,6 @@ export default function EstateAgentsPage() {
         </div>
       </section>
 
-      {/* "Which tour?" decision diagram hidden while Avata 2 drone tours are paused.
-      <section className="ea-sec ea-sec-alt" aria-labelledby="ea-flow-title-h">
-        <div className="wrap">
-          <p className="ea-eyebrow">How I choose</p>
-          <h2 id="ea-flow-title-h" className="section-title">Which tour? It depends on the space.</h2>
-          <TourFlow />
-        </div>
-      </section> */}
-
       <section className="ea-sec ea-dark" aria-labelledby="ea-strip-title">
         <div className="wrap">
           <p className="ea-eyebrow">A listing, start to finish</p>
@@ -87,9 +75,6 @@ export default function EstateAgentsPage() {
           <ListingStrip />
         </div>
       </section>
-
-      {/* FPV drone route hidden while drone fly-throughs are paused:
-      <QuoteProvider><FpvRoute quoteHref="/?service=signature#quote" /></QuoteProvider> */}
 
       <section className="ea-sec" id="working" aria-labelledby="ea-models-title">
         <div className="wrap">

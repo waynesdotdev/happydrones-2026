@@ -31,6 +31,6 @@ Buyers make up their minds in the first few photos. A little preparation before 
 
 ## On the day
 
-Plan for 1–2 hours depending on the package. I'll start outside while you finish the last bits indoors, then work room by room. If we're filming a walkthrough or an FPV fly-through, I'll walk the route with you first and agree which doors should be open.
+Plan for 1–2 hours depending on the package. I'll start outside while you finish the last bits indoors, then work room by room. If we're filming a walkthrough or a glide tour, I'll walk the route with you first and agree which doors should be open.
 
 Ready to book? The quote builder gives you a price in under a minute.

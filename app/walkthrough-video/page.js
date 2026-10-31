@@ -35,7 +35,6 @@ const KIT = [
 export default function WalkthroughPage() {
   const pkgs = PACKAGES.filter((p) => p.id === "showcase" || p.id === "signature");
   const intro = PRICING.extras.find((x) => x.id === "intro");
-  const fpv = PRICING.extras.find((x) => x.id === "fpvadd");
   const wl = PRICING.extras.find((x) => x.id === "whitelabel");
   const wa = whatsappLink("Hi Happy Drones, I'd like a walkthrough video. The address is: ");
   const schema = [
@@ -116,7 +115,7 @@ export default function WalkthroughPage() {
         </div>
       </section>
 
-      {/* WALKTHROUGH VS FPV */}
+      {/* WALKTHROUGH VS GLIDE TOUR */}
       <section className="t-section t-light" aria-labelledby="wt-vs-title">
         <div className="wrap">
           <div className="t-head"><span className="t-tag">Walkthrough or glide tour?</span><h2 id="wt-vs-title">Two ways to tour a home.</h2></div>
@@ -159,7 +158,6 @@ export default function WalkthroughPage() {
               <h3>Extras</h3>
               <ul className="wt-adds-list">
                 {intro && <li><span>{intro.name}<small>{intro.desc}</small></span><b>+{money(intro.price)}</b></li>}
-                {fpv && <li><span>{fpv.name}<small>On Showcase. Included in Signature.</small></span><b>+{money(fpv.price)}</b></li>}
                 {wl && <li><span>White label<small>Less on agent accounts, free on 10-listing bundles</small></span><b>{money(wl.price)}</b></li>}
               </ul>
             </div>

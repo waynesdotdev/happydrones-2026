@@ -23,7 +23,6 @@ HOMEPAGE
   KitIcon.jsx        the small drawings of each camera and drone
   AudienceTabs.jsx   "Who it's for"  -> AUDIENCES in lib/site.js
   AgentBand.jsx      navy "estate agents" strip -> AGENT_OFFER
-  FpvRoute.jsx       scroll-driven floor plan. Step wording: STEPS at the top.
                      Also used on /estate-agents/.
   QuoteBuilder.jsx   quote builder + ticket   -> PRICING in lib/site.js
   ContactSection.jsx enquiry form with "I am a..." buttons (ROLES at the
@@ -39,7 +38,7 @@ SERVICES AND PROPERTY PAGES
   ServicesCam.jsx    sticky camera view with the altitude readout.
                      Give it a list:  <ServicesCam items={...} />
   ServiceArt.jsx     the nine illustrations (home, camera, walkthrough,
-                     fpv, business, event, roof, construction, agent)
+                     glide, business, event, roof, construction, agent)
 
 VIEWING ROOM (blog)
   JournalBrowser.jsx filter buttons + search
@@ -48,7 +47,7 @@ VIEWING ROOM (blog)
   VideoEmbed.jsx     YouTube player that loads only when tapped
   ShareButtons.jsx   WhatsApp / Facebook / X / copy link
 
-SAFE: changing words in Kit.jsx, FpvRoute.jsx STEPS, Header.jsx NAV.
+SAFE: changing words in Kit.jsx, Header.jsx NAV.
 CAREFUL: class names (className="...") are tied to app/globals.css.
 
 MERGED FROM TOMORROW UAV (commercial "ops" look, classes start with t-)
@@ -60,5 +59,4 @@ MERGED FROM TOMORROW UAV (commercial "ops" look, classes start with t-)
   TFaq.jsx            FAQ list for ops-style pages
   TIcons.jsx          small line icons
   PageHero.jsx        navy page header with breadcrumb (inner pages)
-  Paths.jsx           homepage "Two ways I fly" (homes / commercial)
   Kit.jsx             the fleet grid with tier badges

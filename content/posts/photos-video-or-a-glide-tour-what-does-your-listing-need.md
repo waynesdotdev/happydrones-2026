@@ -1,5 +1,5 @@
 ---
-title: "Photos, video or FPV: what does your listing need?"
+title: "Photos, video or a glide tour: what does your listing need?"
 date: "2026-10-17"
 type: "article"
 category: "Guides"
@@ -10,7 +10,7 @@ service: "showcase"
 featured: true
 ---
 
-Every listing needs great photos. Whether it also needs aerial shots, a walkthrough video or an FPV fly-through depends on the property and who's likely to buy it.
+Every listing needs great photos. Whether it also needs aerial shots, a walkthrough video or a one-take glide tour depends on the property and who's likely to buy it.
 
 ## Photos and aerial: every listing
 
@@ -20,9 +20,9 @@ Bright, straight interior photos are what buyers look at first. Aerial shots add
 
 If the home has a layout that's hard to picture from photos alone, such as an extension, an open-plan kitchen or a garden that runs a long way back, a walkthrough video helps buyers understand how the rooms connect. It's also the format that gets shared most on social media. That's **Showcase**.
 
-## Add FPV when you want people talking
+## Add a glide tour when you want people talking
 
-A one-take FPV fly-through is the most memorable format there is. It suits larger family homes, new builds, homes with a standout garden or view, and agents who want their listings to stand out. That's **Signature**.
+A one-take glide tour, filmed on the Pocket 3 from the front door to the back garden with no cuts, is the format people remember. It suits larger family homes, new builds, homes with a standout garden or view, and agents who want their listings to stand out. That's **Signature**.
 
 ## A simple rule of thumb
 

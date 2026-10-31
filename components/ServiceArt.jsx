@@ -2,7 +2,7 @@
  Illustrations used on the homepage tabs and the services page.
  Each one is a simple drawing in brand colours (320 x 240).
  Use: <ServiceArt name="home" />
- Names: camera, walkthrough, agent, home, business, event, roof, fpv, construction
+ Names: camera, walkthrough, agent, home, business, event, roof, glide, construction
  ========================================================= */
 
 const ARTS = {
@@ -101,7 +101,7 @@ const ARTS = {
                     <path d="M126 86l12 12M138 86l-12 12" stroke="#FF6B35" strokeWidth="3"/>
                   </svg>
   ),
-  fpv: (
+  glide: (
     <svg viewBox="0 0 320 240" aria-hidden="true" focusable="false">
       <rect width="320" height="240" fill="#0B3E6B"/>
       <rect x="40" y="40" width="240" height="160" fill="#002A54" stroke="#5A8CBD" strokeWidth="5"/>

@@ -3,19 +3,19 @@ title: "Showreel: the best flights so far"
 date: "2026-09-28"
 type: "video"
 category: "Showreels"
-excerpt: "Two minutes of the shots I'm proudest of, from calm sunrise climbs to fast FPV runs through tight gaps."
+excerpt: "Two minutes of the shots I'm proudest of, from calm sunrise climbs to close-up roof detail."
 youtube: ""
 cover: ""
 service: "business"
 featured: false
 ---
 
-A showreel is the quickest way to see what both drones can do. This one mixes slow, steady aerial shots from the Mini 4 Pro with fast first-person runs on the Avata 2.
+A showreel is the quickest way to see what both drones can do. This one mixes slow, steady aerial shots from the Mini 4 Pro with follow-me clips from the Neo 2.
 
 ## What's in it
 
 - Sunrise climbs over houses and open land
-- An FPV run from a front door to the back garden in one take
+- A one-take glide from a front door to the back garden
 - Event crowds and venues from above
 - Close-up roof and building detail
 

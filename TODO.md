@@ -19,9 +19,9 @@
 - [ ] **Check the aerial page.** /aerial-photography says aerial-only takes about 30 minutes with no one home, includes a short clip, the plot outline is drawn by eye as a guide (not a legal boundary), and lists an eight-shot standard list. Confirm.
 - [ ] **Optional: prices in a JSON file.** Every price now reads from lib/site.js and lib/cproperty.js. If Wayne wants, move them into one JSON file with nothing else in it.
 
-- [ ] **Check the FPV page.** /fpv-fly-through says the Avata 2 is about 21 cm across, sessions are about 90 minutes with a walk-round and slow rehearsal, several takes are flown and the best kept, and the finished video is 45–90 s plus a vertical cut in 3–5 days. Confirm.
 
 ## Waiting on Wayne
+- [ ] **Booking agreement mentions FPV.** /terms clause 8.1 gives delivery times for FPV. It has to match the signed contract, so it's unchanged. Remove FPV next time the contract is updated, then update /terms to match.
 - [ ] **Finish the Cloudflare move.** Test the site and email, then remove the domain from Netlify and delete the Netlify project. After that, tidy up the Netlify leftovers (netlify.toml, public/__forms.html, the Netlify backup in lib/sendForm.js, the privacy page line).
 - [ ] **Business address.** Needed for the contract, /terms (SITE.address), the website and invoices. A virtual office is fine.
 - [ ] **Base town and free-travel area.** The site says the base is Newcastle and travel is free across NE/SR/DH/TS/DL. Wayne is on Teesside and doesn't want Newcastle free.
@@ -38,6 +38,7 @@
 - [ ] **Optional hello@ alias.** Add hello@happydrones.co.uk as a free alias in Google Admin.
 
 ## Done
+- [x] FPV drone flying taken off the site completely: the FPV page, the FPV service page, stand-alone FPV and the FPV add-ons, the Avata 2 in the fleet, and two FPV blog posts. Signature keeps a one-take Pocket 3 glide tour at the same price. Old links redirect to /walkthrough-video. (31 Oct 2026)
 - [x] "Precision" wording replaced with "Every angle. One visit." (27 Oct 2026)
 - [x] Every price reads from the settings, including prices written into sentences (27 Oct 2026)
 - [x] Spacing between the paths section and the property packages, now using the site's own spacing that adjusts on phones (25 Oct 2026)
