@@ -39,6 +39,7 @@ export default function Footer() {
             <li><Link href="/services/">Services</Link></li>
             <li><Link href="/fleet/">The fleet</Link></li>
             <li><Link href="/safety/">Safety</Link></li>
+            <li><Link href="/media/">Media and brand kit</Link></li>
             <li><Link href="/journal/">Viewing Room</Link></li>
             <li><Link href="/#quote">Get a quote</Link></li>
             <li><Link href="/terms/">Booking agreement</Link></li>
