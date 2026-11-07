@@ -1,0 +1,12 @@
+{
+  "name": "Happy Drones weather check",
+  "short_name": "Weather check",
+  "start_url": "/weather-check/",
+  "scope": "/weather-check/",
+  "display": "standalone",
+  "background_color": "#F4F7FB",
+  "theme_color": "#003366",
+  "icons": [
+    { "src": "/media/happy-drones-avatar.png", "sizes": "1080x1080", "type": "image/png", "purpose": "any" }
+  ]
+}
