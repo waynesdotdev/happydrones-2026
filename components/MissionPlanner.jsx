@@ -8,6 +8,7 @@ import { useEffect, useMemo, useState } from "react";
 import { PLANNER, PAYMENT, SITE, TRAVEL, travelFor, money, depositFor, whatsappLink, missionBase } from "@/lib/site";
 import { Arrow } from "./TIcons";
 import { sendEnquiry } from "@/lib/sendForm";
+import { lookupPostcode, areaLine, mapPageUrl } from "@/lib/siteMap";
 
 // Travel areas and fees are set in TRAVEL in lib/site.js
 const INCLUDED = TRAVEL.core;
@@ -71,7 +72,11 @@ export default function MissionPlanner() {
     if (!st.name.trim() || (!st.email.trim() && st.phone.replace(/\D/g, "").length < 10)) { setMsg("Add your name and an email or phone number so I can send the plan."); return; }
     if (!pc.ok) { setMsg("Add the site postcode so I can check the airspace."); return; }
     setStatus("sending"); setMsg("");
-    const fields = { "form-name": "mission", subject: `Mission ${fullCode} · ${q.m.name} · ${money(q.total)}`, code: fullCode, plan: summary, total: money(q.total), ...Object.fromEntries(Object.entries(st).map(([k, v]) => [k, Array.isArray(v) ? v.join(", ") : v])), "bot-field": "" };
+    // Where the site is: an "Area" line and a link to the map page (/map).
+    // If the lookup fails the plan still sends, just without these two lines.
+    const [site, base] = await Promise.all([lookupPostcode(st.postcode), lookupPostcode(SITE.basePostcode)]);
+    const where = site ? { area: areaLine(site, base), map: mapPageUrl(site, fullCode) } : {};
+    const fields = { "form-name": "mission", subject: `Mission ${fullCode} · ${q.m.name} · ${money(q.total)}`, code: fullCode, plan: summary, total: money(q.total), ...Object.fromEntries(Object.entries(st).map(([k, v]) => [k, Array.isArray(v) ? v.join(", ") : v])), ...where, "bot-field": "" };
     try {
       await sendEnquiry(fields);
       setStatus("sent");
@@ -149,7 +154,7 @@ export default function MissionPlanner() {
             <header><span className="t-mono">05</span><h2>Where and when</h2></header>
             <div className="t-fields t-c2">
               <div className="t-field"><label htmlFor="pl-postcode">Site postcode</label><input id="pl-postcode" name="postcode" autoComplete="postal-code" placeholder="TS1 2AB" value={st.postcode} onChange={(e) => set("postcode", e.target.value)} aria-describedby="pl-pc-hint" /><span id="pl-pc-hint" className={`t-hint ${pc.cls ? "t-" + pc.cls : ""}`}>{pc.msg}</span></div>
-              <div className="t-field"><label htmlFor="pl-date">First flight (preferred)</label><input id="pl-date" name="date" type="date" min={minDate} value={st.date} onChange={(e) => set("date", e.target.value)} /><span className="t-hint">A backup weather date is set when you book.</span></div>
+              <div className="t-field"><label htmlFor="pl-date">First flight (preferred)</label><input id="pl-date" name="date" type="date" className={st.date ? undefined : "is-empty"} min={minDate} value={st.date} onChange={(e) => set("date", e.target.value)} /><span className="t-hint">A backup weather date is set when you book.</span></div>
             </div>
           </fieldset>
 

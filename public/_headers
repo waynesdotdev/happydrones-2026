@@ -14,3 +14,6 @@
 
 /api/*
   X-Robots-Tag: noindex, nofollow
+
+/map*
+  X-Robots-Tag: noindex, nofollow, noarchive
