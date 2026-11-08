@@ -6,7 +6,7 @@
 
 ## Pages to build
 - [ ] **Vacant property monitoring (new idea, 28 Oct 2026).** Monthly drone checks of empty buildings waiting for redevelopment: roof, lead, gutters, windows, fences, fly-tipping and signs of entry, with a dated report each visit. Sold as the outside-and-roof record alongside the owner's weekly walk-round, not as a replacement for the insurer's inside checks. Page is live at /vacant-property-monitoring.
-  - [ ] **Set the monthly price.** The page says "price on request" until you choose one (VACANT in lib/site.js).
+  - [x] **Monthly price set** (8 Nov): £95 a regular visit, £135 for a one-off or after-storm visit (VACANT in lib/site.js).
   - [ ] **Check the page's promises.** Report within 48–72 hours of each visit; a message on the day if something looks urgent (open roof, signs of entry); extra visits after storms between the monthly ones; monthly or quarterly visits invoiced on 30-day terms; a fixed price and first visit date within a day of asking.
 - [ ] **In-depth service pages, one by one.** Aerial film and events (moved to last by Wayne, 27 Oct 2026).
 - [ ] **Check the roof inspection page.** /roof-inspections: confirm the deliverables (overview, every slope, chimney, gutters, flat roofs, numbered and marked) match what you'll actually send. Prices set 8 Nov: £135 one roof, £195 medium or two to three buildings, £285 large.
@@ -25,11 +25,16 @@
 - [ ] **Booking agreement mentions FPV.** /terms clause 8.1 gives delivery times for FPV. It has to match the signed contract, so it's unchanged. Remove FPV next time the contract is updated, then update /terms to match.
 - [ ] **Finish the Cloudflare move.** Test the site and email, then remove the domain from Netlify and delete the Netlify project. After that, tidy up the Netlify leftovers (netlify.toml, public/__forms.html, the Netlify backup in lib/sendForm.js, the privacy page line).
 - [ ] **Mavic 4 Pro.** Owned or not? It's currently marked coming soon.
-- [ ] **Interior photos.** Interiors are now shot on the Osmo Pocket 3 with a wide-angle lens (8 Nov). Check the property photography page's claim that each angle is shot as three exposures and blended matches how you shoot.
+- [ ] **Interior photos.** The site says interiors are shot on the "Osmo Pocket 3 or mirrorless" with a wide-angle lens (8 Nov). A mirrorless camera is coming soon (looking at the Sony A7 II or Canon M50). When it's bought, mark it as owned in the fleet (the "camera" kit in lib/site.js). Check the property photography page's claim that each angle is shot as three exposures and blended matches how you shoot.
 - [ ] **Sample blog posts.** Replace with real ones. The first three are #6 aerial vs ground, #7 roof check and #5 Rightmove shots.
 
 ## When ready
-- [ ] **Weather check: new features.** It works (tested live, 8 Nov). List new features to add here as they come up. Done: the passcode no longer prompts the phone or PC to save a password.
+- [ ] **Weather check: new features.** It works (tested live, 8 Nov). Done: the passcode no longer prompts the phone or PC to save a password. Ideas for later:
+  - [ ] **Tap-a-map.** An interactive map: tap anywhere to see the forecast and go/no-go for that exact spot, with saved sites shown as pins. Useful for quotes before there's a postcode.
+  - [ ] **Airspace on the map.** Show airport flight restriction zones and other restricted areas around a site, so a job that needs permission stands out early.
+  - [ ] **Morning-of-job alert.** An email or phone notification at 7am on a job day with the verdict and best window, so you know before you set off.
+  - [ ] **Take-off wind planner.** Wind direction drawn on the site map, so you can pick a take-off spot sheltered from the wind and land into it.
+  - [ ] **Flight log.** Keep each saved weather record against the job, building a dated history for insurance and for the CAA if ever asked.
 - [ ] **Showreel.** Add a YouTube link to `showreel` in `lib/site.js` to switch on the homepage video section.
 - [ ] **Reviews.** Add real reviews to `reviews` in `lib/site.js` and the section appears by itself.
 - [ ] **Real photos.** Add photos of real shoots (property, aerial, construction) to replace the illustrations.

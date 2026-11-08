@@ -141,7 +141,7 @@ export default function VacantPage() {
         <div className="wrap">
           <div className="t-head t-split">
             <div className="t-stack"><span className="t-tag">Price</span><h2 id="vp-price-title">{price ? `${money(price)} a visit.` : "A fixed price per visit."}</h2></div>
-            <p className="t-lede">{price ? "For a typical empty building and its yard. Larger sites are quoted by size." : "Every building is different, so send me the address and I'll come back with a fixed price per visit, in writing, before anything is booked."}</p>
+            <p className="t-lede">{price ? `For a typical empty building and its yard, on regular monthly or quarterly visits. A one-off check, or an extra visit after a storm, is ${money(VACANT.extraVisit)}. Larger sites are quoted by size.` : "Every building is different, so send me the address and I'll come back with a fixed price per visit, in writing, before anything is booked."}</p>
           </div>
           <div className="cx-price-notes">
             <div>
@@ -150,7 +150,7 @@ export default function VacantPage() {
                 <li>The same fixed positions and heights every visit</li>
                 <li>All eight checks, with close-ups of anything new</li>
                 <li>A dated report within 48–72 hours</li>
-                <li>Extra visits after storms, booked between the monthly ones</li>
+                <li>Extra visits after storms when you need them, at {money(VACANT.extraVisit)} each</li>
               </ul>
             </div>
             <div>
