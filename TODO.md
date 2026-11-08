@@ -4,7 +4,7 @@
 - [ ] **New link preview image.** Replace `public/og.png` with `og.png` from the social kit (09-Website-and-Email).
 
 ## Pages to build
-- [ ] **Vacant property monitoring (new idea, 28 Oct 2026).** Monthly drone checks of empty buildings waiting for redevelopment: roof, lead, gutters, windows, fences, fly-tipping and signs of entry, with a dated report each visit. Sold as the outside-and-roof record alongside the owner's weekly walk-round, not as a replacement for the insurer's inside checks. Page built at /vacant-property-monitoring (on the 'smaller' branch).
+- [ ] **Vacant property monitoring (new idea, 28 Oct 2026).** Monthly drone checks of empty buildings waiting for redevelopment: roof, lead, gutters, windows, fences, fly-tipping and signs of entry, with a dated report each visit. Sold as the outside-and-roof record alongside the owner's weekly walk-round, not as a replacement for the insurer's inside checks. Page is live at /vacant-property-monitoring.
   - [ ] **Set the monthly price.** The page says "price on request" until you choose one (VACANT in lib/site.js).
   - [ ] **Check the page's promises.** Report within 48–72 hours of each visit; a message on the day if something looks urgent (open roof, signs of entry); extra visits after storms between the monthly ones; monthly or quarterly visits invoiced on 30-day terms; a fixed price and first visit date within a day of asking.
 - [ ] **Confirm commercial property prices.** Frontage & Aerial £169, Full Marketing £329, Flagship £549, plus size bands, +£75 extra units and +£49 out of hours. These are Claude's guide prices, in lib/cproperty.js.
@@ -35,7 +35,7 @@
 - [ ] **Showreel.** Add a YouTube link to `showreel` in `lib/site.js` to switch on the homepage video section.
 - [ ] **Reviews.** Add real reviews to `reviews` in `lib/site.js` and the section appears by itself.
 - [ ] **Real photos.** Add photos of real shoots (property, aerial, construction) to replace the illustrations.
-- [ ] **Credentials.** Add A2 CofC or GVC to `credentials` in `lib/site.js` once you have it.
+- [ ] **Credentials.** Add GVC to `credentials` in `lib/site.js` if you get it (A2 CofC is already listed).
 - [ ] **Web3Forms to business inbox.** Point Web3Forms at wayne@happydrones.co.uk. If that gives a new key, update `formKey` in `lib/site.js`.
 - [ ] **Optional hello@ alias.** Add hello@happydrones.co.uk as a free alias in Google Admin.
 
@@ -68,4 +68,4 @@
 - [x] Walkthrough video page at /walkthrough-video (27 Oct 2026)
 - [x] Local business content page at /local-business (27 Oct 2026)
 - [x] Aerial photography page at /aerial-photography (27 Oct 2026)
-- [x] FPV fly-through page at /fpv-fly-through (27 Oct 2026)
+- [x] FPV fly-through page at /fpv-fly-through (27 Oct 2026; removed 31 Oct when FPV was paused)
