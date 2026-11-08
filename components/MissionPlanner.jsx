@@ -4,7 +4,7 @@
    Sent by lib/sendForm.js (email via Web3Forms, backup in Netlify Forms,
    form name "mission"). The hidden copy of this form lives in
    public/__forms.html: keep the field names the same. */
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { PLANNER, PAYMENT, SITE, TRAVEL, travelFor, money, depositFor, whatsappLink, missionBase } from "@/lib/site";
 import { Arrow } from "./TIcons";
 import { sendEnquiry } from "@/lib/sendForm";
@@ -45,6 +45,17 @@ export default function MissionPlanner() {
   const [code, setCode] = useState("HD-····");
   const [status, setStatus] = useState("idle"); // idle | sending | sent | error
   const [msg, setMsg] = useState("");
+  const topRef = useRef(null);
+
+  // Once the plan is sent the form is swapped for a short "Plan received"
+  // message, so scroll up to it instead of leaving the visitor at the bottom.
+  useEffect(() => {
+    if (status !== "sent" || !topRef.current) return;
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const y = topRef.current.getBoundingClientRect().top + scrollY - 100; // room for the sticky header
+    scrollTo({ top: Math.max(0, y), behavior: reduce ? "auto" : "smooth" });
+    topRef.current.querySelector("h2")?.focus({ preventScroll: true });
+  }, [status]);
 
   useEffect(() => {
     const q = new URLSearchParams(location.search).get("mission");
@@ -89,11 +100,11 @@ export default function MissionPlanner() {
   const minDate = today.toISOString().slice(0, 10);
 
   return (
-    <div className="t-planner">
+    <div className="t-planner" ref={topRef}>
       {status === "sent" ? (
         <div className="t-sent">
           <span className="t-tag">Plan received</span>
-          <h2 style={{ fontSize: "var(--t-s3)" }}>Mission {fullCode} is logged.</h2>
+          <h2 tabIndex={-1} style={{ fontSize: "var(--t-s3)", outline: "none" }}>Mission {fullCode} is logged.</h2>
           <p className="t-lede">I&apos;ll check the airspace for {st.postcode.toUpperCase()} and reply within a day with a fixed price and a written flight plan.</p>
           <a className="t-btn t-btn-ghost" href={whatsappLink(`Mission ${fullCode}\n${summary}`)} target="_blank" rel="noopener">Follow up on WhatsApp <Arrow /></a>
         </div>
