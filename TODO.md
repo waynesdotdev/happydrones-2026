@@ -29,7 +29,7 @@
 - [ ] **Sample blog posts.** Replace with real ones. The first three are #6 aerial vs ground, #7 roof check and #5 Rightmove shots.
 
 ## When ready
-- [ ] **First agent account: set it up in QuickBooks.** Add the agency as a customer with 30-day terms, log each shoot as it happens, and send one invoice at month end with each address as a line, 10% off. Keep what they owe under the £1,000 limit (clause 3.9).
+- [ ] **First agent account: set it up in QuickBooks.** Add the agency as a customer with 30-day terms, log each shoot as it happens, and send one invoice at month end with each address as a line, 10% off. Keep what they owe under the £1,000 limit (clause 3.9). Anyone who signed the booking agreement before 8 Nov needs to sign the new version (with 3.9) before their account starts.
 - [ ] **Weather check: new features.** It works (tested live, 8 Nov). Done: the passcode no longer prompts the phone or PC to save a password. Ideas for later:
   - [ ] **Tap-a-map.** An interactive map: tap anywhere to see the forecast and go/no-go for that exact spot, with saved sites shown as pins. Useful for quotes before there's a postcode.
   - [ ] **Airspace on the map.** Show airport flight restriction zones and other restricted areas around a site, so a job that needs permission stands out early.
@@ -44,6 +44,11 @@
 - [ ] **Optional hello@ alias.** Add hello@happydrones.co.uk as a free alias in Google Admin.
 
 ## Done
+- [x] Agent accounts on /estate-agents: how they work, a sign-up form (with purchase order numbers) and a £1,000 credit limit; new clause 3.9 in the booking agreement, on /terms and in the signed doc. (8 Nov 2026)
+- [x] Enquiry form reminds customers about the 25% deposit, and roughly how much it is, when a quote is attached. (8 Nov 2026)
+- [x] Plan emails link to a private job page (/map): the job details, a map of the site that opens in Google or the phone's maps app, and the weather and rough best time for the job day. (8 Nov 2026)
+- [x] Last traces of FPV drone flying removed (fleet wording, local business FAQ, unused Avata 2 icon). Only the Pocket 3's FPV mode for the indoor glide is mentioned. (8 Nov 2026)
+- [x] Fixes: form boxes all use the site font (placeholders, autofill and the date picker); the property page menu highlight; /plan scrolls up to "Plan received" after sending. (8 Nov 2026)
 - [x] Base town Stockton-on-Tees and business address added; travel zones set (free TS and DL, £25 DH, £45 SR and NE); roof prices £135/£195/£285; commercial property £195/£395/£650; interiors on the Osmo Pocket 3. (8 Nov 2026)
 - [x] Private weather check at /weather-check, with passcode, Met Office forecast, drone limits, 3-day planner and weather records. (7 Nov 2026)
 - [x] Media and brand kit page at /media with logo downloads, colours, fonts, about text, a brand guide PDF and a ZIP of everything. (7 Nov 2026)
