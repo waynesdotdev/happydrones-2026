@@ -27,7 +27,7 @@ THE SETTINGS
   cover:     photo for the card and sharing, e.g. "/posts/roof.jpg"
              (put the photo in public/posts/). "" = automatic map cover
   service:   which quote to offer at the end: essentials, showcase,
-             signature, aerial, fpv, business, event, roof or construction
+             signature, aerial, business, event, roof or construction
   featured:  true pins it to the top of the Viewing Room
   draft:     true hides it everywhere until you're ready
 

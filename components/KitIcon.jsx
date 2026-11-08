@@ -29,16 +29,6 @@ export default function KitIcon({ id }) {
           <rect x="28" y="22" width="8" height="5" rx="1.5" fill="#FF6B35" />
         </svg>
       );
-    case "avata2":
-      return (
-        <svg {...c}>
-          <g fill="none" stroke="currentColor" strokeWidth="3">
-            <ellipse cx="14" cy="12" rx="10" ry="5" /><ellipse cx="50" cy="12" rx="10" ry="5" />
-            <ellipse cx="14" cy="30" rx="10" ry="5" /><ellipse cx="50" cy="30" rx="10" ry="5" />
-          </g>
-          <rect x="24" y="11" width="16" height="20" rx="6" fill="currentColor" /><circle cx="32" cy="27" r="3" fill="#FF6B35" />
-        </svg>
-      );
     case "neo2":
       return (
         <svg {...c}>

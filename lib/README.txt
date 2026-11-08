@@ -19,7 +19,7 @@ site.js   <- EDIT THIS ONE. Everything about the business:
                  (homepage cards and the /property/ page). Prices still
                  come from PRICING.
   PACKAGE_ROWS   rows of the compare table on /property/
-  SINGLES        "Aerial only" and "FPV only" cards
+  SINGLES        the "Aerial only" card
   AGENT_OFFER    the estate agent discount, perks, steps and FAQ
                  (/estate-agents/ page and the homepage agent band)
   AUDIENCES      homepage "Who it's for" tabs
