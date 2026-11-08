@@ -1949,6 +1949,12 @@ h2.t-sub { font-size: var(--t-s2); font-weight: 700; }
 .t-field label { font-family: var(--font-display); font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--t-fg-soft); }
 .t-field input, .t-field select, .t-field textarea { min-height: 50px; padding: 12px 14px; border-radius: 4px; border: 1px solid var(--t-line-strong); background: var(--t-ink-2); width: 100%; }
 .t-field textarea { min-height: 120px; resize: vertical; }
+/* Date pickers: site font inside, and a white calendar icon on dark backgrounds */
+.t-field input, .t-field select, .t-field textarea { font-family: var(--font-body); font-size: 1rem; color: inherit; }
+.t-field input[type="date"] { color-scheme: dark; cursor: pointer; }
+.t-field input[type="date"]::-webkit-datetime-edit { font-family: var(--font-body); color: inherit; }
+.t-field input[type="date"]::-webkit-calendar-picker-indicator { cursor: pointer; opacity: 0.9; }
+.t-light .t-field input[type="date"] { color-scheme: light; }
 .t-field input:focus, .t-field select:focus, .t-field textarea:focus { outline: none; border-color: var(--t-accent); box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.25); }
 .t-field .t-hint { font-size: 0.86rem; color: var(--t-fg-soft); }
 .t-field .t-hint.t-ok { color: #7FE0A6; }

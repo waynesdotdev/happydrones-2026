@@ -16,7 +16,7 @@ const listAreas = (a) => (a.length === 1 ? a[0] : `${a.slice(0, -1).join(", ")} 
 function postcodeInfo(pc) {
   const clean = pc.toUpperCase().replace(/\s+/g, "");
   if (!clean) return { ok: false, msg: `Travel is included across ${listAreas(INCLUDED)} postcodes.` };
-  if (!/^[A-Z]{1,2}\d[A-Z\d]?(\d[A-Z]{2})?$/.test(clean)) return { ok: false, cls: "warn", msg: "That doesn't look like a UK postcode yet, for example NE1 4ST." };
+  if (!/^[A-Z]{1,2}\d[A-Z\d]?(\d[A-Z]{2})?$/.test(clean)) return { ok: false, cls: "warn", msg: "That doesn't look like a UK postcode yet, for example TS1 2AB." };
   const area = clean.match(/^[A-Z]{1,2}/)[0];
   const t = travelFor(area);
   if (t && t.fee === 0) return { ok: true, cls: "ok", msg: `${area}: inside the core area. Travel included.` };
@@ -148,7 +148,7 @@ export default function MissionPlanner() {
           <fieldset className="t-pl-step" style={{ border: 0, padding: 0, margin: 0, minWidth: 0 }}>
             <header><span className="t-mono">05</span><h2>Where and when</h2></header>
             <div className="t-fields t-c2">
-              <div className="t-field"><label htmlFor="pl-postcode">Site postcode</label><input id="pl-postcode" name="postcode" autoComplete="postal-code" placeholder="NE1 4ST" value={st.postcode} onChange={(e) => set("postcode", e.target.value)} aria-describedby="pl-pc-hint" /><span id="pl-pc-hint" className={`t-hint ${pc.cls ? "t-" + pc.cls : ""}`}>{pc.msg}</span></div>
+              <div className="t-field"><label htmlFor="pl-postcode">Site postcode</label><input id="pl-postcode" name="postcode" autoComplete="postal-code" placeholder="TS1 2AB" value={st.postcode} onChange={(e) => set("postcode", e.target.value)} aria-describedby="pl-pc-hint" /><span id="pl-pc-hint" className={`t-hint ${pc.cls ? "t-" + pc.cls : ""}`}>{pc.msg}</span></div>
               <div className="t-field"><label htmlFor="pl-date">First flight (preferred)</label><input id="pl-date" name="date" type="date" min={minDate} value={st.date} onChange={(e) => set("date", e.target.value)} /><span className="t-hint">A backup weather date is set when you book.</span></div>
             </div>
           </fieldset>
