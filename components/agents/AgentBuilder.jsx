@@ -122,7 +122,7 @@ export default function AgentBuilder() {
           {segs.map((s, n) => <li key={s.k}><i style={{ background: n ? "#8DB4DE" : "var(--orange)" }} /><span>{s.k}</span><b>{money(s.v)}</b></li>)}
         </ul>
         <p className="ea-fine">Guide prices. Travel included in the core area. You get a fixed price in writing before anything is booked.</p>
-        <a className="btn btn-orange btn-block" href="/?role=agent#contact">Set up an agent account</a>
+        <a className="btn btn-orange btn-block" href="#account">Set up an agent account</a>
       </aside>
     </div>
   );

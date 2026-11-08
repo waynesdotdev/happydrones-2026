@@ -8,6 +8,7 @@ import TourFinder from "@/components/agents/TourFinder";
 import WorkingModels from "@/components/agents/WorkingModels";
 import AgentBuilder from "@/components/agents/AgentBuilder";
 import ListingStrip from "@/components/agents/ListingStrip";
+import AccountSignup from "@/components/agents/AccountSignup";
 
 const ALL_FAQ = [...AGENT_OFFER.faq, ...MORE_AGENT_FAQ];
 
@@ -37,7 +38,7 @@ export default function EstateAgentsPage() {
           <h1 id="agent-title">Win the<br />instruction.</h1>
           <p>Vendors pick the agent whose marketing looks best. I give every one of your listings photos, aerial and walkthrough video from a single visit, so yours is the agency they remember.</p>
           <div className="hero-ctas">
-            <Link className="btn btn-orange" href="/?role=agent#contact">Set up an agent account</Link>
+            <a className="btn btn-orange" href="#account">Set up an agent account</a>
             {wa && <a className="btn btn-ghost" href={wa} target="_blank" rel="noopener">WhatsApp {SITE.phoneDisplay}</a>}
           </div>
           <dl className="agent-stats">
@@ -107,8 +108,17 @@ export default function EstateAgentsPage() {
           <div className="offer-card">
             <b>{AGENT_OFFER.discount} off</b>
             <p>every listing when you book {AGENT_OFFER.minPerMonth}+ a month, with a regular weekly slot and one monthly invoice. Book {AGENT_OFFER.bundle.size} at once and white label is free too.</p>
-            <Link className="btn btn-orange" href="/?role=agent#contact">Set up an agent account</Link>
+            <a className="btn btn-orange" href="#account">Set up an agent account</a>
           </div>
+        </div>
+      </section>
+
+      <section className="ea-sec ea-sec-alt" id="account" aria-labelledby="ea-account-title">
+        <div className="wrap">
+          <p className="ea-eyebrow">Agent account</p>
+          <h2 id="ea-account-title" className="section-title">How the account works.</h2>
+          <p className="section-sub">It&apos;s a trade account, not a login: one agreement, no deposits, files as soon as they&apos;re ready and one invoice at the end of the month.</p>
+          <AccountSignup />
         </div>
       </section>
 

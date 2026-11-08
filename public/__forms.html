@@ -2,9 +2,9 @@
 <!--
   DON'T DELETE THIS FILE.
   Netlify reads this hidden copy of the contact form when the site is
-  deployed, so it knows to collect "quote" and "mission" form submissions.
-  The real forms are in components/ContactSection.jsx (quote)
-  and components/MissionPlanner.jsx (mission).
+  deployed, so it knows to collect "quote", "mission" and "agent-account" form submissions.
+  The real forms are in components/ContactSection.jsx (quote),
+  components/MissionPlanner.jsx (mission) and components/agents/AccountSignup.jsx (agent-account).
   If you add, remove or rename a field there, do the same here.
 -->
 <html lang="en">
@@ -45,6 +45,23 @@
     <input type="email" name="email" />
     <input type="tel" name="phone" />
     <textarea name="notes"></textarea>
+  </form>
+  <form name="agent-account" data-netlify="true" netlify-honeypot="bot-field" hidden>
+    <input type="hidden" name="form-name" value="agent-account" />
+    <input name="bot-field" />
+    <input name="subject" />
+    <input name="agency" />
+    <input name="branches" />
+    <input name="name" />
+    <input name="email" />
+    <input name="phone" />
+    <input name="invoice-email" />
+    <input name="purchase-orders" />
+    <input name="volume" />
+    <input name="shoot-day" />
+    <input name="branding" />
+    <textarea name="message"></textarea>
+    <input name="agreed" />
   </form>
 </body>
 </html>

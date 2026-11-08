@@ -3956,3 +3956,26 @@ body:has(.sm-app) { background: #001A33; }
 .sm-pin-msg { color: #FFC15E; margin: 8px 0 0; }
 .sm-note { margin-top: 20px; font-size: .85rem; color: #A8BCD2; }
 .sm-note a { color: #FF915F; }
+
+/* ---- Agent account: how it works + sign-up (components/agents/AccountSignup.jsx) ---- */
+.acc { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); gap: clamp(20px, 4vw, 48px); align-items: start; margin-top: 32px; }
+@media (max-width: 900px) { .acc { grid-template-columns: minmax(0, 1fr); } }
+.acc-steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 18px; }
+.acc-steps li { display: grid; grid-template-columns: 40px 1fr; gap: 14px; align-items: start; }
+.acc-n { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; background: var(--navy); color: #fff; font-family: var(--font-display); font-weight: 800; }
+.acc-steps b { display: block; font-family: var(--font-display); font-size: 1.1rem; color: var(--navy); }
+.acc-steps p { margin: 4px 0 0; color: var(--ink-soft); }
+.acc-limit { display: grid; grid-template-columns: auto 1fr; gap: 16px; align-items: center; margin-top: 26px; padding: 18px 20px; border-radius: 18px; background: var(--navy); color: #fff; }
+.acc-limit > b { font-family: var(--font-display); font-size: clamp(1.8rem, 4vw, 2.4rem); color: var(--orange); }
+.acc-limit p { margin: 0; font-size: 0.95rem; color: rgba(255,255,255,0.85); }
+.acc-limit strong { color: #fff; }
+@media (max-width: 480px) { .acc-limit { grid-template-columns: 1fr; } }
+.acc-terms { margin: 16px 0 0; font-size: 0.92rem; color: var(--ink-soft); }
+.acc-terms a { color: var(--navy); font-weight: 700; }
+.acc-form h3, .acc-sent h3 { margin: 0; font-family: var(--font-display); font-size: 1.4rem; color: var(--navy); }
+.acc-form { box-shadow: 0 20px 50px -30px rgba(0, 51, 102, 0.45); }
+.acc-agree { display: grid; grid-template-columns: 22px 1fr; gap: 10px; align-items: start; font-size: 0.93rem; cursor: pointer; }
+.acc-agree input { width: 20px; height: 20px; margin: 2px 0 0; accent-color: var(--orange); }
+.acc-agree a, .acc-form .form-note a, .acc-sent a { color: var(--navy); font-weight: 700; }
+.acc-sent p { margin: 0; }
+@media (max-width: 560px) { .acc-form .field-pair { grid-template-columns: 1fr; } }

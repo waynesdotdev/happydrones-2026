@@ -12,7 +12,7 @@ export const metadata = {
   alternates: { canonical: "/terms/" },
 };
 
-const UPDATED = "26 October 2026";
+const UPDATED = "8 November 2026";
 
 // Numbered clause: <C n="3.2" t="Deposit:">text</C>
 function C({ n, t, children }) {
@@ -39,7 +39,7 @@ const JOB_ROWS = [
   ["Shoot date and time (or visit schedule)", ""],
   ["Delivery time", "e.g. within 72 hours of the shoot"],
   ["Price", "£"],
-  ["Payment terms", "Standard: 25% deposit, balance before full files (3.2–3.5) / Invoice terms: 30 days per invoice (3.8)"],
+  ["Payment terms", "Standard: 25% deposit, balance before full files (3.2–3.5) / Invoice terms: 30 days per invoice (3.8) / Agent account: monthly invoice, 30 days, £1,000 credit limit (3.9)"],
   ["Deposit (standard terms only)", "£, due on signing"],
   ["Balance (standard terms only)", "£, due before full files are released"],
   ["Costs invoiced in advance (invoice terms only)", ""],
@@ -76,7 +76,7 @@ export default function TermsPage() {
           <h2>At a glance</h2>
           <ul>
             <li><b>Your booking is secured</b> when you sign and pay a 25% deposit. Bigger jobs on invoice terms just need your signature.</li>
-            <li><b>The balance is paid before you get the full files.</b> You&apos;ll see previews first; full-resolution files are released as soon as payment clears. Jobs of £1,000 or more, and contracts with repeat visits, are invoiced on 30-day terms instead (see 3.8).</li>
+            <li><b>The balance is paid before you get the full files.</b> You&apos;ll see previews first; full-resolution files are released as soon as payment clears. Jobs of £1,000 or more, and contracts with repeat visits, are invoiced on 30-day terms instead (see 3.8). Estate agent accounts get one monthly invoice instead, with a £1,000 credit limit (see 3.9).</li>
             <li><b>The deposit is non-refundable if you cancel.</b> Homeowners keep their legal 14-day right to cancel (see section 7).</li>
             <li><b>If the weather or safety rules stop the flight, we reschedule at no cost.</b> I make the call on whether it&apos;s safe and legal to fly.</li>
             <li><b>You need to give access and get any permissions</b> the property or site needs.</li>
@@ -117,6 +117,15 @@ export default function TermsPage() {
             <li>You pay each invoice within 30 days of its date.</li>
             <li>Costs over £100 that I pay out specifically for your job, such as equipment hire, specialist permissions or accommodation, are invoiced in advance. They must be paid before the job.</li>
             <li>If an invoice is overdue, I can pause further visits and hold back any files not yet delivered until it&apos;s paid. Sections 3.6 and 3.7 still apply.</li>
+          </ul>
+          <C n="3.9" t="Agent accounts (estate agents):">for estate agents booking 4 or more listings a month, the Job Details can say &quot;Agent account&quot;. For listings on an agent account, the following replaces 3.2 to 3.5:</C>
+          <ul>
+            <li>No deposit is needed to book a listing.</li>
+            <li>I send the files as soon as they&apos;re ready, without waiting for payment.</li>
+            <li>At the end of each month I send one invoice listing every job that month by address. You pay it within 30 days of its date.</li>
+            <li>The account has a credit limit of £1,000. That&apos;s the most that can be owed at any time, counting work done but not yet paid for. Once it&apos;s reached, new shoots wait until a payment brings the total back under £1,000.</li>
+            <li>If an invoice is overdue, I can pause bookings and hold back files not yet delivered until it&apos;s paid. I can also close the account and go back to standard terms for future bookings. Sections 3.6 and 3.7 still apply.</li>
+            <li>This agreement covers every listing on the account. Each listing&apos;s address, package and shoot date are confirmed in writing when it&apos;s booked; an email or message is fine.</li>
           </ul>
 
           <h2>4. Weather, safety and the law</h2>
