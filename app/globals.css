@@ -1955,6 +1955,15 @@ h2.t-sub { font-size: var(--t-s2); font-weight: 700; }
 .t-field input[type="date"]::-webkit-datetime-edit { font-family: var(--font-body); color: inherit; }
 .t-field input[type="date"]::-webkit-calendar-picker-indicator { cursor: pointer; opacity: 0.9; }
 .t-light .t-field input[type="date"] { color-scheme: light; }
+/* Every text box on the site uses the body font, and the browser's autofill
+   (saved postcodes, names, emails) can't swap in its own font and colours. */
+input, select, textarea { font-family: var(--font-body); }
+input:-webkit-autofill, input:-webkit-autofill:hover, input:-webkit-autofill:focus, textarea:-webkit-autofill, select:-webkit-autofill {
+  -webkit-text-fill-color: currentColor; caret-color: currentColor; transition: background-color 600000s 0s, color 600000s 0s; font-family: var(--font-body);
+}
+input:-webkit-autofill::first-line { font-family: var(--font-body); font-size: 1rem; }
+.t-field input:-webkit-autofill { -webkit-text-fill-color: var(--t-fg); box-shadow: 0 0 0 1000px var(--t-ink-2) inset; }
+.t-light .t-field input:-webkit-autofill { -webkit-text-fill-color: var(--t-paper-ink); box-shadow: 0 0 0 1000px var(--t-paper-2) inset; }
 .t-field input:focus, .t-field select:focus, .t-field textarea:focus { outline: none; border-color: var(--t-accent); box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.25); }
 .t-field .t-hint { font-size: 0.86rem; color: var(--t-fg-soft); }
 .t-field .t-hint.t-ok { color: #7FE0A6; }
