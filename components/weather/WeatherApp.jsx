@@ -70,10 +70,11 @@ function PinScreen({ onDone }) {
     <div className="wx-pin">
       <Mark size={72} />
       <div className="wx-pin-head"><h1>Weather check</h1><p>Happy Drones · for Wayne only</p></div>
-      <form className="wx-pin-form" onSubmit={(e) => { e.preventDefault(); if (pin) submit(pin); }}>
-        <label htmlFor="wx-pin-in">ENTER YOUR PASSCODE</label>
+      {/* Not a <form> and no password field, so phones and browsers don't offer to save the passcode. */}
+      <div className="wx-pin-form" role="group" aria-labelledby="wx-pin-label">
+        <label id="wx-pin-label" htmlFor="wx-pin-in">ENTER YOUR PASSCODE</label>
         <div className="wx-dots" aria-hidden="true">{[0, 1, 2, 3].map((i) => <span key={i} className={i < pin.length ? "on" : undefined} />)}</div>
-        <input id="wx-pin-in" className="wx-pin-input" type="password" inputMode="numeric" autoComplete="current-password" value={pin} onChange={(e) => { const v = e.target.value.replace(/\D/g, "").slice(0, 8); setPin(v); if (v.length === 4) submit(v); }} />
+        <input id="wx-pin-in" name="hd-wx-code" className="wx-pin-input" type="text" inputMode="numeric" autoComplete="off" autoCorrect="off" spellCheck="false" data-lpignore="true" data-1p-ignore="true" data-bwignore="true" data-form-type="other" onKeyDown={(e) => { if (e.key === "Enter" && pin) submit(pin); }} value={pin} onChange={(e) => { const v = e.target.value.replace(/\D/g, "").slice(0, 8); setPin(v); if (v.length === 4) submit(v); }} />
         <div className="wx-keys">
           {["1", "2", "3", "4", "5", "6", "7", "8", "9"].map((d) => <button key={d} type="button" onClick={() => press(d)}>{d}</button>)}
           <span />
@@ -81,7 +82,7 @@ function PinScreen({ onDone }) {
           <button type="button" className="wx-del" aria-label="Delete last digit" onClick={() => setPin(pin.slice(0, -1))}>⌫</button>
         </div>
         <p className="wx-pin-msg" aria-live="polite">{busy ? "Checking…" : msg}</p>
-      </form>
+      </div>
       <p className="wx-pin-foot">Remembered on this phone after the first time.</p>
     </div>
   );

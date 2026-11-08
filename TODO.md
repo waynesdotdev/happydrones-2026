@@ -1,16 +1,15 @@
 # Happy Drones website: to do
 
 ## Next up
-- [ ] **Business cards: redesign and reprint.** The first 100 from Printful came back with a white strip down one side and poor print quality. Redesign, then reprint with a UK printer that publishes an exact template (85 × 55 mm with 3 mm bleed), and check a digital proof before paying.
+- [ ] **Business cards: fresh design and reprint (not urgent).** The first 100 from Printful came back with a white strip down one side and poor print quality. Wayne wants a fresh design, printed with a better printer such as Vistaprint, using its exact template and checking the proof before paying.
 - [ ] **New link preview image.** Replace `public/og.png` with `og.png` from the social kit (09-Website-and-Email).
 
 ## Pages to build
 - [ ] **Vacant property monitoring (new idea, 28 Oct 2026).** Monthly drone checks of empty buildings waiting for redevelopment: roof, lead, gutters, windows, fences, fly-tipping and signs of entry, with a dated report each visit. Sold as the outside-and-roof record alongside the owner's weekly walk-round, not as a replacement for the insurer's inside checks. Page is live at /vacant-property-monitoring.
   - [ ] **Set the monthly price.** The page says "price on request" until you choose one (VACANT in lib/site.js).
   - [ ] **Check the page's promises.** Report within 48–72 hours of each visit; a message on the day if something looks urgent (open roof, signs of entry); extra visits after storms between the monthly ones; monthly or quarterly visits invoiced on 30-day terms; a fixed price and first visit date within a day of asking.
-- [ ] **Confirm commercial property prices.** Frontage & Aerial £169, Full Marketing £329, Flagship £549, plus size bands, +£75 extra units and +£49 out of hours. These are Claude's guide prices, in lib/cproperty.js.
 - [ ] **In-depth service pages, one by one.** Aerial film and events (moved to last by Wayne, 27 Oct 2026).
-- [ ] **Check the roof inspection page.** /roof-inspections: confirm the medium and large roof prices (£145 and £210 from the planner; the quote form says £159 for two or three buildings), and that the deliverables (overview, every slope, chimney, gutters, flat roofs, numbered and marked) match what you'll actually send.
+- [ ] **Check the roof inspection page.** /roof-inspections: confirm the deliverables (overview, every slope, chimney, gutters, flat roofs, numbered and marked) match what you'll actually send. Prices set 8 Nov: £135 one roof, £195 medium or two to three buildings, £285 large.
 
 - [ ] **Check the walkthrough page.** /walkthrough-video says the walkthrough is only sold inside Showcase or Signature, comes in landscape and vertical, with licensed music and room captions, and that you get a link to add as the portal video tour. Confirm, or say if you want walkthroughs sold on their own.
 
@@ -22,17 +21,15 @@
 
 
 ## Waiting on Wayne
-- [ ] **Weather check: first live test.** After publishing, open happydrones.co.uk/weather-check, sign in, add a site and check the forecast loads. Then set your own drone limits (the starting ones are guesses).
 - [ ] **Original logo file.** The logos on /media were traced from the PNG. If whoever designed the logo has the original vector file (.ai, .eps, .svg or .pdf), send it and Claude will swap it in.
 - [ ] **Booking agreement mentions FPV.** /terms clause 8.1 gives delivery times for FPV. It has to match the signed contract, so it's unchanged. Remove FPV next time the contract is updated, then update /terms to match.
 - [ ] **Finish the Cloudflare move.** Test the site and email, then remove the domain from Netlify and delete the Netlify project. After that, tidy up the Netlify leftovers (netlify.toml, public/__forms.html, the Netlify backup in lib/sendForm.js, the privacy page line).
-- [ ] **Business address.** Needed for the contract, /terms (SITE.address), the website and invoices. A virtual office is fine.
-- [ ] **Base town.** The privacy page still says Newcastle upon Tyne (SITE.base). Travel zones are done: free on TS and DL, £25 for DH, £45 for SR and NE, everywhere else quoted (8 Nov 2026).
 - [ ] **Mavic 4 Pro.** Owned or not? It's currently marked coming soon.
-- [ ] **Interior photos.** Packages say mirrorless, which isn't owned yet. Decide what to say, and update the "How a Showcase shoot runs" post to match. The new /property-photography page deliberately doesn't name the interior camera, and says each angle is shot as three exposures and blended: check that matches how you shoot.
+- [ ] **Interior photos.** Interiors are now shot on the Osmo Pocket 3 with a wide-angle lens (8 Nov). Check the property photography page's claim that each angle is shot as three exposures and blended matches how you shoot.
 - [ ] **Sample blog posts.** Replace with real ones. The first three are #6 aerial vs ground, #7 roof check and #5 Rightmove shots.
 
 ## When ready
+- [ ] **Weather check: new features.** It works (tested live, 8 Nov). List new features to add here as they come up. Done: the passcode no longer prompts the phone or PC to save a password.
 - [ ] **Showreel.** Add a YouTube link to `showreel` in `lib/site.js` to switch on the homepage video section.
 - [ ] **Reviews.** Add real reviews to `reviews` in `lib/site.js` and the section appears by itself.
 - [ ] **Real photos.** Add photos of real shoots (property, aerial, construction) to replace the illustrations.
@@ -41,6 +38,7 @@
 - [ ] **Optional hello@ alias.** Add hello@happydrones.co.uk as a free alias in Google Admin.
 
 ## Done
+- [x] Base town Stockton-on-Tees and business address added; travel zones set (free TS and DL, £25 DH, £45 SR and NE); roof prices £135/£195/£285; commercial property £195/£395/£650; interiors on the Osmo Pocket 3. (8 Nov 2026)
 - [x] Private weather check at /weather-check, with passcode, Met Office forecast, drone limits, 3-day planner and weather records. (7 Nov 2026)
 - [x] Media and brand kit page at /media with logo downloads, colours, fonts, about text, a brand guide PDF and a ZIP of everything. (7 Nov 2026)
 - [x] FPV drone flying taken off the site completely: the FPV page, the FPV service page, stand-alone FPV and the FPV add-ons, the Avata 2 in the fleet, and two FPV blog posts. Signature keeps a one-take Pocket 3 glide tour at the same price. Old links redirect to /walkthrough-video. (31 Oct 2026)

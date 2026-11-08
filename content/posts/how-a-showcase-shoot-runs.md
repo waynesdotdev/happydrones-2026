@@ -22,7 +22,7 @@ While the light is right outside, I shoot the front and rear exteriors, then fly
 
 ## 3. Interior photos
 
-Room by room with the mirrorless camera on a tripod, taking several exposures of each view so both the room and the view out of the window look right.
+Room by room with the Osmo Pocket 3 and its wide-angle lens on a small tripod, taking several exposures of each view so both the room and the view out of the window look right.
 
 ## 4. The walkthrough
 

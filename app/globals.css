@@ -3821,7 +3821,7 @@ body:has(.wx-dark) { background: #001A33; }
 .wx-dots { display: flex; justify-content: center; gap: 14px; }
 .wx-dots span { width: 18px; height: 18px; border-radius: 50%; border: 2px solid #5C7894; box-sizing: border-box; }
 .wx-dots span.on { background: #FF6B35; border-color: #FF6B35; }
-.wx-pin-input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.wx-pin-input { position: absolute; opacity: 0; width: 1px; height: 1px; -webkit-text-security: disc; }
 .wx-keys { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 6px; }
 .wx-keys button { height: 64px; border-radius: 16px; border: 0; background: rgba(255,255,255,.08); color: #fff; font-weight: 700; font-size: 26px; cursor: pointer; }
 .wx-keys button:active { background: rgba(255,107,53,.4); }
