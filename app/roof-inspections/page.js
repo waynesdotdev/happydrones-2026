@@ -12,7 +12,7 @@ import GroundVsDrone from "@/components/roofs/GroundVsDrone";
 import RoofAnatomy from "@/components/roofs/RoofAnatomy";
 import ScenarioRail from "@/components/roofs/ScenarioRail";
 import SamplePack from "@/components/roofs/SamplePack";
-import { SITE, PLANNER, PAYMENT, money, priceFrom, kitById, whatsappLink } from "@/lib/site";
+import { SITE, PLANNER, PAYMENT, money, priceFrom, kitById, whatsappLink, TRAVEL_TEXT } from "@/lib/site";
 import {
   roofPrices, RF_METHODS, RF_METHOD_NOTE, RF_DELIVERABLES, RF_FOLDER, RF_PROCESS,
   RF_LIMITS, RF_KIT_NOW, RF_KIT_NEXT, RF_FAQ,
@@ -199,7 +199,7 @@ export default function RoofInspectionsPage() {
               <div>
                 <h3>How you pay</h3>
                 <p>One-off checks take a {PAYMENT.depositPct}% deposit to book the date. Repeat visits, and jobs of {money(PAYMENT.largeFrom)} or more, are invoiced on {PAYMENT.termsDays}-day terms.</p>
-                <p>Travel is included across the core area. Roofs further out are quoted with travel. Everything is set out in the <Link href="/terms/">booking agreement</Link>.</p>
+                <p>{TRAVEL_TEXT} Everything is set out in the <Link href="/terms/">booking agreement</Link>.</p>
               </div>
             </div>
             <div className="t-hero-ctas" style={{ marginTop: 28 }}>

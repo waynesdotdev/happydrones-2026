@@ -10,7 +10,7 @@ import FlyoverReveal from "@/components/cproperty/FlyoverReveal";
 import TypeExplorer from "@/components/cproperty/TypeExplorer";
 import ContextMap from "@/components/cproperty/ContextMap";
 import CPPricing from "@/components/cproperty/CPPricing";
-import { SITE, PAYMENT, AGENT_OFFER, money, whatsappLink } from "@/lib/site";
+import { SITE, PAYMENT, AGENT_OFFER, money, whatsappLink, TRAVEL_TEXT } from "@/lib/site";
 import { CP_PACKAGES, CP_PRICES, CP_EXTRAS, CP_PROCESS, CP_PRACTICAL, CP_FAQ } from "@/lib/cproperty";
 
 export const metadata = {
@@ -119,7 +119,7 @@ export default function CommercialPropertyPage() {
         <div className="wrap">
           <p className="ea-eyebrow">Packages</p>
           <h2 id="cp-price-title" className="section-title">Three packages, priced by unit size.</h2>
-          <p className="section-sub">Pick the size of the unit and the prices update. Travel is included in the core area; sites further out are quoted with travel.</p>
+          <p className="section-sub">Pick the size of the unit and the prices update. {TRAVEL_TEXT}</p>
           <CPPricing />
           <div className="cp-extras">
             {CP_EXTRAS.map((x) => <div key={x.t}><b>{x.t}</b><em>{x.p}</em><span>{x.d}</span></div>)}

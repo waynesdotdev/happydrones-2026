@@ -11,7 +11,7 @@ import HeroBuild from "@/components/construction/HeroBuild";
 import BuildScroll from "@/components/construction/BuildScroll";
 import Filmstrip from "@/components/construction/Filmstrip";
 import CapturePlan from "@/components/construction/CapturePlan";
-import { SITE, PLANNER, PAYMENT, money, kitById, whatsappLink } from "@/lib/site";
+import { SITE, PLANNER, PAYMENT, money, kitById, whatsappLink, TRAVEL_TEXT } from "@/lib/site";
 import {
   constructionPrices, DELIVERABLES, FOLDER, USES, PROCESS, COMPLIANCE,
   TODAY_KIT, LIMITS, MEASURED, CONSTRUCTION_FAQ,
@@ -171,7 +171,7 @@ export default function ConstructionPage() {
               <div>
                 <h3>How it&apos;s invoiced</h3>
                 <p>Repeat-visit contracts and jobs of {money(PAYMENT.largeFrom)} or more are invoiced per visit on {PAYMENT.termsDays}-day terms. One-off visits take a {PAYMENT.depositPct}% deposit to secure the date.</p>
-                <p>Travel is included across the core area. Sites further out are quoted with travel. Everything is set out in the <Link href="/terms/">booking agreement</Link>.</p>
+                <p>{TRAVEL_TEXT} Everything is set out in the <Link href="/terms/">booking agreement</Link>.</p>
               </div>
             </div>
             <div className="t-hero-ctas" style={{ marginTop: 28 }}>

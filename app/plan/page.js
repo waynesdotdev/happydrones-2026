@@ -3,6 +3,7 @@ import Link from "next/link";
 import PageHero from "@/components/PageHero";
 import MissionPlanner from "@/components/MissionPlanner";
 import TFaq from "@/components/TFaq";
+import { TRAVEL_TEXT } from "@/lib/site";
 
 export const metadata = {
   title: "Plan a commercial mission",
@@ -13,7 +14,7 @@ export const metadata = {
 const FAQ = [
   { q: "Selling or letting a home?", a: "Use the property quote builder on the homepage instead. It's set up for listings and gives a fixed price straight away." },
   { q: "Why is it a guide price?", a: "Every site is different. I check the airspace and access, then confirm a fixed price and a written flight plan within a day." },
-  { q: "How far do you travel?", a: "Travel is included across NE, SR, DH, TS and DL postcodes. Nearby areas have a small travel fee; anywhere else is quoted." },
+  { q: "How far do you travel?", a: TRAVEL_TEXT },
   { q: "What about bad weather?", a: "Every booking has a backup date. If the forecast fails the minimums, your mission moves for free." },
 ];
 

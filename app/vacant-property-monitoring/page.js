@@ -8,7 +8,7 @@ import JsonLd from "@/components/JsonLd";
 import KitIcon from "@/components/KitIcon";
 import { Arrow } from "@/components/TIcons";
 import { HeroVacant, MonthSlider, CheckExplorer, SampleReport } from "@/components/vacant/VacantBits";
-import { SITE, PAYMENT, VACANT, money, kitById, whatsappLink } from "@/lib/site";
+import { SITE, PAYMENT, VACANT, money, kitById, whatsappLink, TRAVEL_TEXT } from "@/lib/site";
 import { VP_SPLIT, VP_WHO, VP_PROCESS, VP_LIMITS, VP_FAQ } from "@/lib/vacant";
 
 export const metadata = {
@@ -156,7 +156,7 @@ export default function VacantPage() {
             <div>
               <h3>How you pay</h3>
               <p>Regular visits are invoiced on {PAYMENT.termsDays}-day terms. You can change the schedule, monthly or quarterly, as the building&apos;s plans change.</p>
-              <p>Travel is included across the core area. Buildings further out are quoted with travel. Everything is set out in the <Link href="/terms/">booking agreement</Link>.</p>
+              <p>{TRAVEL_TEXT} Everything is set out in the <Link href="/terms/">booking agreement</Link>.</p>
             </div>
           </div>
           <div className="t-hero-ctas" style={{ marginTop: 28 }}>

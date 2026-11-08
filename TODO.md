@@ -1,6 +1,7 @@
 # Happy Drones website: to do
 
 ## Next up
+- [ ] **Business cards: redesign and reprint.** The first 100 from Printful came back with a white strip down one side and poor print quality. Redesign, then reprint with a UK printer that publishes an exact template (85 × 55 mm with 3 mm bleed), and check a digital proof before paying.
 - [ ] **New link preview image.** Replace `public/og.png` with `og.png` from the social kit (09-Website-and-Email).
 
 ## Pages to build
@@ -26,7 +27,7 @@
 - [ ] **Booking agreement mentions FPV.** /terms clause 8.1 gives delivery times for FPV. It has to match the signed contract, so it's unchanged. Remove FPV next time the contract is updated, then update /terms to match.
 - [ ] **Finish the Cloudflare move.** Test the site and email, then remove the domain from Netlify and delete the Netlify project. After that, tidy up the Netlify leftovers (netlify.toml, public/__forms.html, the Netlify backup in lib/sendForm.js, the privacy page line).
 - [ ] **Business address.** Needed for the contract, /terms (SITE.address), the website and invoices. A virtual office is fine.
-- [ ] **Base town and free-travel area.** The site says the base is Newcastle and travel is free across NE/SR/DH/TS/DL. Wayne is on Teesside and doesn't want Newcastle free.
+- [ ] **Base town.** The privacy page still says Newcastle upon Tyne (SITE.base). Travel zones are done: free on TS and DL, £25 for DH, £45 for SR and NE, everywhere else quoted (8 Nov 2026).
 - [ ] **Mavic 4 Pro.** Owned or not? It's currently marked coming soon.
 - [ ] **Interior photos.** Packages say mirrorless, which isn't owned yet. Decide what to say, and update the "How a Showcase shoot runs" post to match. The new /property-photography page deliberately doesn't name the interior camera, and says each angle is shot as three exposures and blended: check that matches how you shoot.
 - [ ] **Sample blog posts.** Replace with real ones. The first three are #6 aerial vs ground, #7 roof check and #5 Rightmove shots.

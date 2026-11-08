@@ -27,7 +27,7 @@ function data() {
     agentDisc: AGENT_DISCOUNT,
     wl: { payg: WHITE_LABEL.oneOff, account: WHITE_LABEL.account, bundle: WHITE_LABEL.bundle },
     dep: PAYMENT.depositPct, large: PAYMENT.largeFrom, days: PAYMENT.termsDays,
-    travel: [{ n: `Core area (${TRAVEL.core.join(", ")})`, p: 0 }, { n: `Nearby (${TRAVEL.nearby.join(", ")}) +£${TRAVEL.nearbyFee} per visit`, p: TRAVEL.nearbyFee }, { n: "Further out (quote travel separately)", p: null }],
+    travel: [{ n: `Core area (${TRAVEL.core.join(", ")})`, p: 0 }, ...TRAVEL.zones.map((z) => ({ n: `${z.name} (${z.areas.join(", ")}) +£${z.fee} per visit`, p: z.fee })), { n: "Further out (quote travel separately)", p: null }],
     phone: SITE.phoneDisplay, email: SITE.email, bundle: AGENT_OFFER.bundle.size,
   };
 }
