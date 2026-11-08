@@ -6,7 +6,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { SITE, whatsappLink } from "@/lib/site";
+import { SITE, PAYMENT, AGENT_OFFER, whatsappLink, money, depositFor } from "@/lib/site";
 import { useQuote } from "./QuoteContext";
 import { sendEnquiry } from "@/lib/sendForm";
 
@@ -87,6 +87,17 @@ export default function ContactSection() {
               <span>Your quote is attached: <b>{plan.summary} ({plan.total})</b></span>
               <button type="button" onClick={() => setPlan(null)}>Remove</button>
             </div>
+          )}
+          {plan && plan.amount > 0 && (
+            <p className="attached-pay">
+              {plan.amount >= PAYMENT.largeFrom ? (
+                <><b>No deposit needed.</b> Jobs of {money(PAYMENT.largeFrom)} or more are invoiced after the shoot, payable within {PAYMENT.termsDays} days.</>
+              ) : (
+                <><b>Deposit: {PAYMENT.depositPct}%, about {money(depositFor(plan.amount))}.</b> It secures your date once you&apos;ve signed the booking agreement. The rest is paid after the shoot, before the full files are sent.</>
+              )}
+              {role === "Estate agent" && plan.amount < PAYMENT.largeFrom ? <> On an agent account ({AGENT_OFFER.minPerMonth}+ listings a month) there&apos;s no deposit, just one monthly invoice.</> : null}
+              {" "}Your fixed price is confirmed when I reply.
+            </p>
           )}
 
           <div className="field">

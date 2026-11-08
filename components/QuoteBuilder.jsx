@@ -122,7 +122,7 @@ export default function QuoteBuilder() {
                 ? `Invoiced on ${PAYMENT.termsDays}-day terms.`
                 : `A ${PAYMENT.depositPct}% deposit (${money(depositFor(total))}) secures your date; the balance is due before full files are released.`}
             </p>
-            <a className="btn btn-orange btn-block" href="#contact" onClick={() => setPlan({ summary, total: money(total) })}>
+            <a className="btn btn-orange btn-block" href="#contact" onClick={() => setPlan({ summary, total: money(total), amount: total })}>
               Send me this quote
             </a>
           </aside>
