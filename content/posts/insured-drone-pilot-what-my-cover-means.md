@@ -3,7 +3,7 @@ title: "Fully insured: what my drone insurance covers, and what it means for you
 date: "2026-11-14"
 type: "article"
 category: "Behind the shot"
-excerpt: "Every flight I do is covered by £10 million public liability and £50,000 professional indemnity insurance through Coverdrone. Here's what that covers, in plain English."
+excerpt: "Every flight I do is covered by at least £10 million public liability and £50,000 professional indemnity insurance through Coverdrone, raised when a job needs more. Here's what that covers, in plain English."
 youtube: ""
 cover: ""
 service: "showcase"
@@ -19,7 +19,16 @@ The Civil Aviation Authority (CAA) says anyone flying a drone for a commercial r
 
 So if a drone pilot can't show you a certificate, they shouldn't be flying for you. Mine is with Coverdrone, a specialist drone insurer, on a commercial policy.
 
-## Public liability: £10 million
+## My cover at a glance
+
+| Cover | Minimum on every job | Adjustable? |
+| --- | --- | --- |
+| Public liability | £10 million | Yes, raised when a job needs more |
+| Professional indemnity | £50,000 | Yes, raised when a job needs more |
+
+These are the minimums, not the ceiling. If your site, your client or your contract asks for higher limits, tell me when you book and I'll raise the cover for that job. The level agreed goes in writing in your Job Details.
+
+## Public liability: £10 million minimum
 
 This is the big one. Public liability covers claims from other people if a flight causes injury or damage to them or their property. For example:
 
@@ -27,21 +36,21 @@ This is the big one. Public liability covers claims from other people if a fligh
 - someone is hurt during a flight
 - a neighbour's property is damaged
 
-If that happens, the insurance deals with the claim, not you. £10 million is a high level of cover for this kind of work, and it can be raised for a job that needs more, such as a large construction site with its own rules.
+If that happens, the insurance deals with the claim, not you. £10 million is a high starting point for this kind of work, and it can go higher for a job that needs it, such as a large construction site with its own rules.
 
 My policy's liability section also covers privacy and data claims, which matters when you're filming in residential streets. I still plan every flight to avoid filming people who aren't part of the job.
 
-## Professional indemnity: £50,000
+## Professional indemnity: £50,000 minimum
 
 Public liability covers accidents. Professional indemnity covers mistakes in the work itself: the policy describes it as "any negligent act, error, or omission" in running the business.
 
-In practice, it's there if a client says something I did, or didn't do, cost them money. A commercial client relying on a progress record, or a roofer quoting from my photos, has that extra protection behind the work.
+In practice, it's there if a client says something I did, or didn't do, cost them money. A commercial client relying on a progress record, or a roofer quoting from my photos, has that extra protection behind the work. If a contract asks for more than £50,000, it can be raised for that job.
 
 ## My kit is covered too
 
 My drones and camera kit have equipment cover for accidental damage, theft, loss and fly-aways. That means a damaged drone gets replaced quickly, so a breakdown doesn't leave your shoot waiting.
 
-## What insurance doesn't change
+## Insurance is a safety net, not a shortcut
 
 Insurance is a safety net, not a licence to take risks. Cover depends on flying within the rules, which is how I fly anyway:
 
@@ -55,4 +64,4 @@ It's also not a guarantee about your property. If I photograph a slipped tile on
 
 Just ask. I'm happy to send my insurance certificate before any booking, and contractors and site managers often need it for their paperwork. You can also read how insurance fits into a booking in my [booking agreement](/terms/).
 
-Fully insured, CAA registered and A2 CofC qualified: so you can focus on the result, not the risk.
+Insured from £10 million, CAA registered and A2 CofC qualified: so you can focus on the result, not the risk.

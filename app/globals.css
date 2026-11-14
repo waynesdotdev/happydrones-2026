@@ -3980,3 +3980,10 @@ body:has(.sm-app) { background: #001A33; }
 .acc-sent p { margin: 0; }
 @media (max-width: 560px) { .acc-form .field-pair { grid-template-columns: 1fr; } }
 .attached-pay { margin: -4px 0 0; padding: 10px 14px; border-radius: 12px; background: #F2F6FB; font-size: 0.92rem; line-height: 1.5; color: var(--navy); }
+
+/* ---- Tables in blog posts (Markdown | tables) ---- */
+.prose table { width: 100%; margin: 1.4em 0; border-collapse: separate; border-spacing: 0; border: 1px solid var(--line); border-radius: 14px; overflow: hidden; font-size: 0.95rem; line-height: 1.45; }
+.prose th, .prose td { padding: 12px 14px; text-align: left; vertical-align: top; border-top: 1px solid var(--line); }
+.prose thead th { border-top: 0; background: var(--navy); color: #fff; font-family: var(--font-display); font-weight: 700; font-size: 0.85rem; letter-spacing: 0.02em; }
+.prose tbody tr:nth-child(even) td { background: #F4F7FB; }
+.prose td:first-child { font-weight: 700; color: var(--navy); }
