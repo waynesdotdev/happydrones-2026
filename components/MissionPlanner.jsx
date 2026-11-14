@@ -5,6 +5,7 @@
    form name "mission"). The hidden copy of this form lives in
    public/__forms.html: keep the field names the same. */
 import { useEffect, useMemo, useRef, useState } from "react";
+import PlanWeather from "./PlanWeather";
 import { PLANNER, PAYMENT, SITE, TRAVEL, travelFor, money, depositFor, whatsappLink, missionBase } from "@/lib/site";
 import { Arrow } from "./TIcons";
 import { sendEnquiry } from "@/lib/sendForm";
@@ -12,6 +13,8 @@ import { lookupPostcode, areaLine, mapPageUrl } from "@/lib/siteMap";
 
 // Travel areas and fees are set in TRAVEL in lib/site.js
 const INCLUDED = TRAVEL.core;
+// Preferred time choices (whole hours, UK time)
+const TIMES = Array.from({ length: 13 }, (_, i) => `${String(i + 7).padStart(2, "0")}:00`);
 const listAreas = (a) => (a.length === 1 ? a[0] : `${a.slice(0, -1).join(", ")} and ${a[a.length - 1]}`);
 
 function postcodeInfo(pc) {
@@ -41,10 +44,11 @@ export function priceMission(st) {
 }
 
 export default function MissionPlanner() {
-  const [st, setSt] = useState({ mission: "construction", scale: "medium", freq: "monthly", extras: [], postcode: "", date: "", name: "", company: "", email: "", phone: "", notes: "" });
+  const [st, setSt] = useState({ mission: "construction", scale: "medium", freq: "monthly", extras: [], postcode: "", date: "", time: "", name: "", company: "", email: "", phone: "", notes: "" });
   const [code, setCode] = useState("HD-····");
   const [status, setStatus] = useState("idle"); // idle | sending | sent | error
   const [msg, setMsg] = useState("");
+  const [wx, setWx] = useState(""); // what the weather check showed them, for the email
   const topRef = useRef(null);
 
   // Once the plan is sent the form is swapped for a short "Plan received"
@@ -75,7 +79,7 @@ export default function MissionPlanner() {
     q.disc ? `Multi-visit saving -${money(q.disc)}` : "",
     q.travel ? `Travel ${money(q.travel)} per visit` : "",
     `Guide total ${money(q.total)}`,
-    `Location ${st.postcode.toUpperCase() || "not given"}${st.date ? ` · first date ${st.date}` : ""}`,
+    `Location ${st.postcode.toUpperCase() || "not given"}${st.date ? ` · first date ${st.date}` : ""}${st.time ? ` · preferred time ${st.time}` : ""}`,
   ].filter(Boolean).join("\n") : "";
 
   async function submit(e) {
@@ -87,7 +91,7 @@ export default function MissionPlanner() {
     // If the lookup fails the plan still sends, just without these two lines.
     const [site, base] = await Promise.all([lookupPostcode(st.postcode), lookupPostcode(SITE.basePostcode)]);
     const where = site ? { area: areaLine(site, base), map: mapPageUrl(site, fullCode, { kind: st.mission, mission: q.m.name, scale: q.sc.name, freq: q.fr.name, extras: q.extras.map((x) => x.name).join(", "), date: st.date, total: money(q.total), notes: st.notes }) } : {};
-    const fields = { "form-name": "mission", subject: `Mission ${fullCode} · ${q.m.name} · ${money(q.total)}`, code: fullCode, plan: summary, total: money(q.total), ...Object.fromEntries(Object.entries(st).map(([k, v]) => [k, Array.isArray(v) ? v.join(", ") : v])), ...where, "bot-field": "" };
+    const fields = { "form-name": "mission", subject: `Mission ${fullCode} · ${q.m.name} · ${money(q.total)}`, code: fullCode, plan: summary, total: money(q.total), ...Object.fromEntries(Object.entries(st).map(([k, v]) => [k, Array.isArray(v) ? v.join(", ") : v])), ...where, ...(wx ? { weather: wx } : {}), "bot-field": "" };
     try {
       await sendEnquiry(fields);
       setStatus("sent");
@@ -166,6 +170,7 @@ export default function MissionPlanner() {
             <div className="t-fields t-c2">
               <div className="t-field"><label htmlFor="pl-postcode">Site postcode</label><input id="pl-postcode" name="postcode" autoComplete="postal-code" placeholder="TS1 2AB" value={st.postcode} onChange={(e) => set("postcode", e.target.value)} aria-describedby="pl-pc-hint" /><span id="pl-pc-hint" className={`t-hint ${pc.cls ? "t-" + pc.cls : ""}`}>{pc.msg}</span></div>
               <div className="t-field"><label htmlFor="pl-date">First flight (preferred)</label><input id="pl-date" name="date" type="date" className={st.date ? undefined : "is-empty"} min={minDate} value={st.date} onChange={(e) => set("date", e.target.value)} /><span className="t-hint">A backup weather date is set when you book.</span></div>
+              <div className="t-field"><label htmlFor="pl-time">Preferred time</label><select id="pl-time" name="time" value={st.time} onChange={(e) => set("time", e.target.value)}><option value="">Any time</option>{TIMES.map((t) => <option key={t} value={t}>{t}</option>)}</select><span className="t-hint">Optional. The weather check in step 07 shows how each hour looks.</span></div>
             </div>
           </fieldset>
 
@@ -178,6 +183,11 @@ export default function MissionPlanner() {
               <div className="t-field"><label htmlFor="pl-phone">Phone</label><input id="pl-phone" name="phone" type="tel" autoComplete="tel" value={st.phone} onChange={(e) => set("phone", e.target.value)} /></div>
               <div className="t-field" style={{ gridColumn: "1 / -1" }}><label htmlFor="pl-notes">Anything I should know?</label><textarea id="pl-notes" name="notes" placeholder="Site access, deadlines, what the footage is for…" value={st.notes} onChange={(e) => set("notes", e.target.value)} /></div>
             </div>
+          </fieldset>
+
+          <fieldset className="t-pl-step" style={{ border: 0, padding: 0, margin: 0, minWidth: 0 }}>
+            <header><span className="t-mono">07</span><h2>Weather for your date <span className="t-mono" style={{ color: "var(--fg-soft)" }}>optional</span></h2></header>
+            <PlanWeather st={st} minDate={minDate} onDate={(d) => set("date", d)} onTime={(t) => set("time", t)} onSummary={setWx} />
           </fieldset>
 
           <div style={{ display: "grid", gap: 12 }}>
