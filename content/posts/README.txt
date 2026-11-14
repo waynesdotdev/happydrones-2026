@@ -3,7 +3,7 @@ content/posts/  -  VIEWING ROOM POSTS
 
 Each .md file here becomes its own page at /journal/<file-name>/
 with its own Google title, description and share image.
-The posts here are SAMPLES. Edit or delete them.
+The old sample posts were moved to the archive folder on 14 Nov 2026 (see archive/README.txt).
 
 ADD A POST
 1. Copy _TEMPLATE.md and rename the copy, e.g.

@@ -158,7 +158,6 @@ export default function PropertyPhotographyPage() {
             <p className="t-lede">One person from start to finish: I book it, shoot it, edit it and send it.</p>
           </div>
           <ol className="cx-process">{PP_PROCESS.map((s) => <li key={s.t}><span className="t-mono">{s.tag}</span><h3>{s.t}</h3><p>{s.d}</p></li>)}</ol>
-          <p style={{ marginTop: 24 }}><Link className="text-link" href="/journal/get-your-home-ready-for-drone-photos/">Read the full prep guide</Link></p>
         </div>
       </section>
 

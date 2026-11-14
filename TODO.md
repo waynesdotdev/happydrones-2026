@@ -26,7 +26,6 @@
 - [ ] **Finish the Cloudflare move.** Test the site and email, then remove the domain from Netlify and delete the Netlify project. After that, tidy up the Netlify leftovers (netlify.toml, public/__forms.html, the Netlify backup in lib/sendForm.js, the privacy page line).
 - [ ] **Mavic 4 Pro.** Owned or not? It's currently marked coming soon.
 - [ ] **Interior photos.** The site says interiors are shot on the "Osmo Pocket 3 or mirrorless" with a wide-angle lens (8 Nov). A mirrorless camera is coming soon (looking at the Sony A7 II or Canon M50). When it's bought, mark it as owned in the fleet (the "camera" kit in lib/site.js). Check the property photography page's claim that each angle is shot as three exposures and blended matches how you shoot.
-- [ ] **Sample blog posts.** First three real posts written (14 Nov): insurance, roof check, 5 listing shots. The older sample posts are still up; replace or delete them as real ones come in. Add real photos as covers when you have them.
 
 ## When ready
 - [ ] **First agent account: set it up in QuickBooks.** Add the agency as a customer with 30-day terms, log each shoot as it happens, and send one invoice at month end with each address as a line, 10% off. Keep what they owe under the £1,000 limit (clause 3.9). Anyone who signed the booking agreement before 8 Nov needs to sign the new version (with 3.9) before their account starts.
@@ -44,6 +43,7 @@
 - [ ] **Optional hello@ alias.** Add hello@happydrones.co.uk as a free alias in Google Admin.
 
 ## Done
+- [x] First three real blog posts (insurance, roof check, 5 listing shots); the old sample posts archived in content/posts/archive, with their addresses redirected to the Viewing Room. (14 Nov 2026)
 - [x] Agent accounts on /estate-agents: how they work, a sign-up form (with purchase order numbers) and a £1,000 credit limit; new clause 3.9 in the booking agreement, on /terms and in the signed doc. (8 Nov 2026)
 - [x] Enquiry form reminds customers about the 25% deposit, and roughly how much it is, when a quote is attached. (8 Nov 2026)
 - [x] Plan emails link to a private job page (/map): the job details, a map of the site that opens in Google or the phone's maps app, and the weather and rough best time for the job day. (8 Nov 2026)
