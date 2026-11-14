@@ -17,3 +17,12 @@
 
 /map*
   X-Robots-Tag: noindex, nofollow, noarchive
+
+/report/*
+  X-Robots-Tag: noindex, nofollow, noarchive
+
+/review*
+  X-Robots-Tag: noindex, nofollow
+
+/drafts*
+  X-Robots-Tag: noindex, nofollow, noarchive

@@ -9,14 +9,16 @@ import JsonLd from "@/components/JsonLd";
 import KitIcon from "@/components/KitIcon";
 import { Arrow } from "@/components/TIcons";
 import { SERVICE_PAGES, SITE, serviceById, money, fromPrice, kitById, whatsappLink } from "@/lib/site";
+import { EXTRA_SERVICES } from "@/lib/extraServices";
+import InterestForm from "@/components/InterestForm";
 
 export const dynamicParams = false;
-export function generateStaticParams() { return SERVICE_PAGES.map((s) => ({ slug: s.id })); }
+export function generateStaticParams() { return [...SERVICE_PAGES, ...EXTRA_SERVICES].map((s) => ({ slug: s.id })); }
 
 export async function generateMetadata({ params }) {
   const { slug } = await params; const s = serviceById(slug);
   if (!s) return {};
-  return { title: s.title, description: `${s.lede} From ${money(fromPrice(s))}. Across the North East.`, alternates: { canonical: `/services/${s.id}/` } };
+  return { title: s.title, description: s.soon ? `${s.lede} Register your interest.` : `${s.lede} From ${money(fromPrice(s))}. Across the North East.`, alternates: { canonical: `/services/${s.id}/` } };
 }
 
 export default async function ServiceDetail({ params }) {
@@ -24,7 +26,8 @@ export default async function ServiceDetail({ params }) {
   if (!s) notFound();
   const homes = s.group === "homes";
   const priceHref = homes ? `/?service=${s.quote}#quote` : `/plan/?mission=${s.id}`;
-  const others = SERVICE_PAGES.filter((x) => x.group === s.group && x.id !== s.id).slice(0, 3);
+  const extra = EXTRA_SERVICES.some((x) => x.id === s.id);
+  const others = (extra ? EXTRA_SERVICES.filter((x) => x.page === s.page) : SERVICE_PAGES.filter((x) => x.group === s.group)).filter((x) => x.id !== s.id).slice(0, 3);
   const kit = (s.kit || []).map(kitById).filter(Boolean);
   const schema = [
     s.soon ? null : { "@context": "https://schema.org", "@type": "Service", name: s.title, description: s.lede, areaServed: SITE.areaServed, provider: { "@type": "LocalBusiness", name: SITE.name, url: SITE.url }, offers: { "@type": "Offer", price: fromPrice(s), priceCurrency: "GBP" } },
@@ -62,11 +65,11 @@ export default async function ServiceDetail({ params }) {
             <span className="t-tag">{s.soon ? "Coming soon" : homes ? "Fixed price" : "Mission spec"}</span>
             {s.soon
               ? <div className="t-spec-price">Soon<small>NOT BOOKABLE YET</small></div>
-              : <div className="t-spec-price">{money(fromPrice(s))}<small>FROM{s.fromLabel ? " · PER VISIT" : ""}{homes ? "" : " · GUIDE PRICE"}</small></div>}
+              : <div className="t-spec-price">{money(fromPrice(s))}<small>FROM{s.fromLabel ? " · PER VISIT" : s.unit ? ` · ${s.unit.toUpperCase()}` : ""}{homes ? "" : " · GUIDE PRICE"}</small></div>}
             {s.facts.map(([k, v]) => <div className="t-spec-row" key={k}><span>{k}</span><span>{v}</span></div>)}
             <div className="t-spec-row"><span>Area</span><span>{SITE.areaServed}</span></div>
             {s.soon
-              ? (SITE.whatsapp && <a className="t-btn t-btn-primary t-btn-block" href={whatsappLink(`Hi Happy Drones, please let me know when ${s.title.toLowerCase()} launches.`)} target="_blank" rel="noopener">Tell me when it launches <Arrow /></a>)
+              ? <InterestForm service={s.title} />
               : <>
                   <Link className="t-btn t-btn-primary t-btn-block" href={priceHref}>{homes ? "Get my price" : "Price this mission"} <Arrow /></Link>
                   {SITE.whatsapp && <a className="t-btn t-btn-ghost t-btn-block" href={whatsappLink(`Hi Happy Drones, I'd like to ask about ${s.title.toLowerCase()}.`)} target="_blank" rel="noopener">Ask on WhatsApp</a>}
@@ -79,7 +82,7 @@ export default async function ServiceDetail({ params }) {
       {others.length > 0 && (
         <section className="t-section t-dark" style={{ paddingTop: 0 }}>
           <div className="wrap">
-            <div className="t-head"><span className="t-tag">More {homes ? "for homes" : "commercial services"}</span></div>
+            <div className="t-head"><span className="t-tag">{extra ? "Related services" : `More ${homes ? "for homes" : "commercial services"}`}</span></div>
             <div className="t-svc-grid">{others.map((o) => <MissionCard key={o.id} s={o} />)}</div>
           </div>
         </section>

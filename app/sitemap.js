@@ -1,5 +1,6 @@
 /* Builds /sitemap.xml automatically: every page plus every journal post. */
 import { SERVICE_PAGES } from "@/lib/site";
+import { EXTRA_SERVICES } from "@/lib/extraServices";
 import { getAllPosts } from "@/lib/posts";
 import { SITE } from "@/lib/site";
 
@@ -17,6 +18,6 @@ export default function sitemap() {
     changeFrequency: "yearly",
     priority: 0.6,
   }));
-  const services = SERVICE_PAGES.map((s) => ({ url: `${SITE.url}/services/${s.id}/`, changeFrequency: "monthly", priority: 0.7 }));
+  const services = [...SERVICE_PAGES, ...EXTRA_SERVICES].map((s) => ({ url: `${SITE.url}/services/${s.id}/`, changeFrequency: "monthly", priority: 0.7 }));
   return [...pages, ...services, ...posts];
 }

@@ -2,9 +2,10 @@
 <!--
   DON'T DELETE THIS FILE.
   Netlify reads this hidden copy of the contact form when the site is
-  deployed, so it knows to collect "quote", "mission" and "agent-account" form submissions.
+  deployed, so it knows to collect "quote", "mission", "agent-account", "interest" and "feedback" form submissions.
   The real forms are in components/ContactSection.jsx (quote),
-  components/MissionPlanner.jsx (mission) and components/agents/AccountSignup.jsx (agent-account).
+  components/MissionPlanner.jsx (mission) and components/agents/AccountSignup.jsx (agent-account)
+  components/InterestForm.jsx (interest) and components/tools/FeedbackForm.jsx (feedback).
   If you add, remove or rename a field there, do the same here.
 -->
 <html lang="en">
@@ -64,6 +65,26 @@
     <input name="branding" />
     <textarea name="message"></textarea>
     <input name="agreed" />
+  </form>
+  <form name="interest" data-netlify="true" netlify-honeypot="bot-field" hidden>
+    <input type="hidden" name="form-name" value="interest" />
+    <input name="bot-field" />
+    <input name="subject" />
+    <input name="service" />
+    <input name="name" />
+    <input name="email" />
+    <input name="postcode" />
+    <textarea name="message"></textarea>
+  </form>
+  <form name="feedback" data-netlify="true" netlify-honeypot="bot-field" hidden>
+    <input type="hidden" name="form-name" value="feedback" />
+    <input name="bot-field" />
+    <input name="subject" />
+    <input name="rating" />
+    <textarea name="good"></textarea>
+    <textarea name="better"></textarea>
+    <input name="name" />
+    <input name="quote" />
   </form>
 </body>
 </html>

@@ -13,6 +13,7 @@ import RoofAnatomy from "@/components/roofs/RoofAnatomy";
 import ScenarioRail from "@/components/roofs/ScenarioRail";
 import SamplePack from "@/components/roofs/SamplePack";
 import { SITE, PLANNER, PAYMENT, money, priceFrom, kitById, whatsappLink, TRAVEL_TEXT } from "@/lib/site";
+import MoreServices from "@/components/MoreServices";
 import {
   roofPrices, RF_METHODS, RF_METHOD_NOTE, RF_DELIVERABLES, RF_FOLDER, RF_PROCESS,
   RF_LIMITS, RF_KIT_NOW, RF_KIT_NEXT, RF_FAQ,
@@ -232,6 +233,8 @@ export default function RoofInspectionsPage() {
       </section>
 
       {/* FAQ */}
+      <MoreServices page="roofs" title="More roof services" lede="A yearly check, storm evidence, gutters and solar surveys, all flown with the same care." />
+
       <section className="t-section t-dark" aria-labelledby="rf-faq-title" style={{ paddingTop: 0 }}>
         <div className="wrap">
           <div className="t-head"><span className="t-tag">Questions about roof checks</span><h2 id="rf-faq-title">Before you book.</h2></div>

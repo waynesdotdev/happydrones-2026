@@ -12,7 +12,7 @@ export default function MissionCard({ s }) {
       <div className="t-svc-foot">
         {s.soon
           ? <span className="t-svc-price"><b>Coming soon</b>Not bookable yet</span>
-          : <span className="t-svc-price">From<b>{money(fromPrice(s))}</b>{s.fromLabel ? "per visit" : s.group === "homes" ? "per property" : "per job"}</span>}
+          : <span className="t-svc-price">From<b>{money(fromPrice(s))}</b>{s.fromLabel ? "per visit" : s.unit ? s.unit : s.group === "homes" ? "per property" : "per job"}</span>}
         <span className="t-arrow"><Arrow /></span>
       </div>
     </Link>

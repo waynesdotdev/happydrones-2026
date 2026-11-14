@@ -5,6 +5,7 @@ import ServiceArt from "@/components/ServiceArt";
 import JsonLd from "@/components/JsonLd";
 import Kit from "@/components/Kit";
 import { SERVICE_PAGES, SITE, priceFrom, whatsappLink, PRICING } from "@/lib/site";
+import MoreServices from "@/components/MoreServices";
 
 export const metadata = {
   title: "Services",
@@ -104,6 +105,8 @@ export default function ServicesPage() {
       </section>
 
       <Kit />
+
+      <MoreServices page="all" title="New and specialist services" lede="Newer services, and the ones coming soon. Tap any one for the details." />
 
       <section className="unsure">
         <div className="wrap unsure-inner">

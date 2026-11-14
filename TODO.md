@@ -28,6 +28,12 @@
 - [ ] **Interior photos.** The site says interiors are shot on the "Osmo Pocket 3 or mirrorless" with a wide-angle lens (8 Nov). A mirrorless camera is coming soon (looking at the Sony A7 II or Canon M50). When it's bought, mark it as owned in the fleet (the "camera" kit in lib/site.js). Check the property photography page's claim that each angle is shot as three exposures and blended matches how you shoot.
 
 ## When ready
+- [ ] **Approve the draft blog posts.** 14 are written and waiting at happydrones.co.uk/drafts (after the next publish, or localhost:3000/drafts). Say "approve" with the title, or what to change. Plan: one a week, with its social posts.
+- [ ] **Google review link.** In Google Business Profile, "Ask for reviews", copy the link into googleReviewUrl in lib/site.js. Until then /review shows the Facebook button only.
+- [ ] **Check the new service prices.** Set 14 Nov in lib/extraServices.js: roof health check £119/yr, claim pack £165, gutter check £79, solar pre-survey £95, before-and-after £195, time-lapse £149, planning photos £195, aerial 360 £95, land and plots £175.
+- [ ] **First real jobs in the gallery.** Add before-and-after photos (with the customer's permission) to lib/gallery.js and public/work/.
+- [ ] **Coming soon services.** Thermal inspections (thermal drone + thermography training), mapping and 3D (Matrice 4E), indoor fly-throughs (Avata 2 practice). Interest requests arrive by email as "Interest: ...".
+- [ ] **Needs an account first (not built yet):** online deposit payments (Stripe), morning-of-shoot text or email to customers (an SMS or email-sending service), a "can a drone fly here?" airspace map (an airspace data provider), a client progress portal and an agent dashboard (logins and file storage). Set up an account and I'll build each one.
 - [ ] **First agent account: set it up in QuickBooks.** Add the agency as a customer with 30-day terms, log each shoot as it happens, and send one invoice at month end with each address as a line, 10% off. Keep what they owe under the £1,000 limit (clause 3.9). Anyone who signed the booking agreement before 8 Nov needs to sign the new version (with 3.9) before their account starts.
 - [ ] **Weather check: new features.** It works (tested live, 8 Nov). Done: the passcode no longer prompts the phone or PC to save a password. Ideas for later:
   - [ ] **Tap-a-map.** An interactive map: tap anywhere to see the forecast and go/no-go for that exact spot, with saved sites shown as pins. Useful for quotes before there's a postcode.
@@ -43,6 +49,7 @@
 - [ ] **Optional hello@ alias.** Add hello@happydrones.co.uk as a free alias in Google Admin.
 
 ## Done
+- [x] Nine new services with pages and prices, three coming-soon services with interest forms, online roof report (/report), review page (/review), before-and-after gallery (/work) and 14 draft blog posts at /drafts. (14 Nov 2026)
 - [x] /plan weather check for customers: verdict, best time, tap-to-pick hour chart, better dates; limited to 3 areas a person and 200 Met Office requests a day for customers. (14 Nov 2026)
 - [x] First three real blog posts (insurance, roof check, 5 listing shots); the old sample posts archived in content/posts/archive, with their addresses redirected to the Viewing Room. (14 Nov 2026)
 - [x] Agent accounts on /estate-agents: how they work, a sign-up form (with purchase order numbers) and a £1,000 credit limit; new clause 3.9 in the booking agreement, on /terms and in the signed doc. (8 Nov 2026)

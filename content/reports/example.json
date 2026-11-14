@@ -1,0 +1,19 @@
+{
+  "id": "example",
+  "title": "Roof check",
+  "place": "Example house, Teesside",
+  "date": "2026-11-14",
+  "client": "",
+  "summary": "Six close-ups worth a closer look: one tile sitting out of line on the front slope, a ridge joint, the chimney flashing, leaves in the front gutter, standing water on the flat roof and the verge at the gable end. Everything else looked as expected from the air.",
+  "overview": "/reports/example/overview.webp",
+  "photos": [
+    { "n": 1, "src": "/reports/example/01.webp", "title": "Front slope: tile out of line", "note": "One tile sits higher than its neighbours, about halfway up the slope." },
+    { "n": 2, "src": "/reports/example/02.webp", "title": "Ridge joint", "note": "A gap is visible in the mortar between two ridge tiles." },
+    { "n": 3, "src": "/reports/example/03.webp", "title": "Chimney flashing", "note": "The lead flashing where the stack meets the roof, photographed from each side." },
+    { "n": 4, "src": "/reports/example/04.webp", "title": "Front gutter: debris", "note": "Leaves and moss in the gutter run above the front door." },
+    { "n": 5, "src": "/reports/example/05.webp", "title": "Flat roof: standing water", "note": "A shallow pool near the back edge of the extension roof." },
+    { "n": 6, "src": "/reports/example/06.webp", "title": "Gable verge", "note": "The verge and bargeboard on the left-hand gable end." }
+  ],
+  "download": "",
+  "example": true
+}

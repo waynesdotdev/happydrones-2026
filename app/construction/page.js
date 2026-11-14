@@ -12,6 +12,7 @@ import BuildScroll from "@/components/construction/BuildScroll";
 import Filmstrip from "@/components/construction/Filmstrip";
 import CapturePlan from "@/components/construction/CapturePlan";
 import { SITE, PLANNER, PAYMENT, money, kitById, whatsappLink, TRAVEL_TEXT } from "@/lib/site";
+import MoreServices from "@/components/MoreServices";
 import {
   constructionPrices, DELIVERABLES, FOLDER, USES, PROCESS, COMPLIANCE,
   TODAY_KIT, LIMITS, MEASURED, CONSTRUCTION_FAQ,
@@ -247,6 +248,8 @@ export default function ConstructionPage() {
       </section>
 
       {/* FAQ */}
+      <MoreServices page="construction" title="More for builders and trades" lede="Before-and-after proof, time-lapse films and planning photos." />
+
       <section className="t-section t-dark" aria-labelledby="cx-faq-title" style={{ paddingTop: 0 }}>
         <div className="wrap">
           <div className="t-head"><span className="t-tag">Questions from site teams</span><h2 id="cx-faq-title">Before you book.</h2></div>

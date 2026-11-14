@@ -6,6 +6,7 @@ import ServiceArt from "@/components/ServiceArt";
 import KitIcon from "@/components/KitIcon";
 import JsonLd from "@/components/JsonLd";
 import { PACKAGES, PACKAGE_ROWS, SINGLES, PRICING, SITE, priceFrom, money, kitById, whatsappLink } from "@/lib/site";
+import MoreServices from "@/components/MoreServices";
 
 export const metadata = {
   title: "Property packages",
@@ -124,6 +125,8 @@ export default function PropertyPage() {
           </div>
         </div>
       </section>
+
+      <MoreServices page="property" title="More for property and land" lede="Aerial 360s, land and plot photos, and indoor fly-throughs coming soon." />
 
       <section className="unsure">
         <div className="wrap unsure-inner">
