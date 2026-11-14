@@ -55,7 +55,8 @@ export default function PlanWeather({ st, minDate, onDate, onTime, onSummary }) 
         body: JSON.stringify({ postcode: st.postcode, name: st.name, email: st.email, hp, ms: Date.now() - opened.current }),
       });
       const j = await r.json().catch(() => ({}));
-      if (!r.ok) { setErr(j.message || "The weather check isn't available right now. Send your plan and I'll check your date for you."); setFc(null); }
+      if (r.status === 404) { setErr("The weather check only works on the live website (it runs on Cloudflare, not on npm run dev)."); setFc(null); }
+      else if (!r.ok) { setErr(j.message || "The weather check isn't available right now. Send your plan and I'll check your date for you."); setFc(null); }
       else setFc(j);
     } catch { setErr("No connection, so no weather right now. Your plan still sends."); }
     setBusy(false);
