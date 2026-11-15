@@ -271,6 +271,7 @@ function Panel({ refId, onClose, onChanged }) {
   const [note, setNote] = useState("");
   const [msg, setMsg] = useState(null);
   const [booking, setBooking] = useState(false);
+  const [noteState, setNoteState] = useState("");
   const load = useCallback(async () => { const r = await api(`/api/admin/enquiry/${refId}`); if (!r.error) { setD(r); setNote(r.enquiry.note || ""); } else setMsg(["err", r.message]); }, [refId]);
   useEffect(() => { load(); setBooking(false); window.scrollTo({ top: 0 }); }, [load]);
   async function act(action, extra = {}, done = "Saved.") {
@@ -331,8 +332,17 @@ function Panel({ refId, onClose, onChanged }) {
           </div>
           <div className="ad-box">
             <h4>Private note <Tip label="About private notes">Only you see this. It isn&apos;t sent to the customer or shown on their link.</Tip></h4>
-            <textarea rows={3} value={note} onChange={(e) => setNote(e.target.value)} aria-label="Private note" />
-            <button type="button" className="t-btn t-btn-ghost" onClick={() => act("note", { note }, "Note saved.")}>Save note</button>
+            <textarea rows={3} value={note} onChange={(e) => { setNote(e.target.value); setNoteState(""); }} aria-label="Private note" />
+            <div className="ad-note-row">
+              <button type="button" className="t-btn t-btn-ghost" disabled={noteState === "saving" || note === (q.note || "")} onClick={async () => {
+                setNoteState("saving");
+                const r = await api(`/api/admin/enquiry/${refId}`, { action: "note", note });
+                if (r.error) return setNoteState(r.message);
+                setNoteState(`✓ Saved at ${new Date().toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" })}`);
+                setD((x) => ({ ...x, enquiry: { ...x.enquiry, note } }));
+              }}>{noteState === "saving" ? "Saving…" : "Save note"}</button>
+              {noteState && noteState !== "saving" && <span className={noteState.startsWith("✓") ? "ad-saved" : "ac-err"} role="status">{noteState}</span>}
+            </div>
           </div>
           <div className="ad-box">
             <h4>Delete <Tip label="What Delete for good does">Removes the enquiry and everything they sent, straight away. It can&apos;t be undone. Use it if they ask you to delete their details. For spam or tests, Scrap is enough: it&apos;s deleted automatically after 12 months.</Tip></h4>

@@ -23,6 +23,7 @@ function BookingPanel({ refId, onClose, onChanged }) {
   const [d, setD] = useState(null);
   const [f, setF] = useState({ date: "", time: "", files: "", amount: "", how: "", note: "", reason: "", refund: "", refundHow: "", anyway: false });
   const [ed, setEd] = useState(null);
+  const [noteState, setNoteState] = useState(""); // "" | saving | saved hh:mm | error text
   const [msg, setMsg] = useState("");
   const load = useCallback(async () => { const r = await api(`/api/admin/booking/${refId}`); if (!r.error) { setD(r); setF((x) => ({ ...x, date: r.booking.confirmed_date || r.booking.wanted_date || "", time: r.booking.confirmed_time || r.booking.wanted_time || "", files: r.booking.files || "", note: r.booking.admin_note || "", anyway: false }));
     const k = r.booking; setEd({ service: k.service, address: k.address || "", postcode: k.postcode, deliverables: k.deliverables || "", delivery: k.delivery || "", licence: k.licence || "", branding: k.branding || "", extras: k.extras || "", notes: k.notes || "", total: k.total, travel: k.travel, mode: k.mode, wanted_date: k.wanted_date || "", wanted_time: k.wanted_time || "" }); } }, [refId]);
@@ -108,8 +109,17 @@ function BookingPanel({ refId, onClose, onChanged }) {
           <button type="button" className="t-btn t-btn-ghost" onClick={() => { if (confirm("Record this refund and email them? Do the actual refund in Stripe or your bank first.")) act("refund"); }}>Record refund</button>
         </fieldset>
         <fieldset><legend>Private note</legend>
-          <textarea rows={3} value={f.note} onChange={(e) => setF({ ...f, note: e.target.value })} aria-label="Note" />
-          <button type="button" className="t-btn t-btn-ghost" onClick={() => act("note")}>Save note</button>
+          <textarea rows={3} value={f.note} onChange={(e) => { setF({ ...f, note: e.target.value }); setNoteState(""); }} aria-label="Note" />
+          <div className="ad-note-row">
+            <button type="button" className="t-btn t-btn-ghost" disabled={noteState === "saving" || (f.note || "") === (d.booking.admin_note || "")} onClick={async () => {
+              setNoteState("saving");
+              const r = await api(`/api/admin/booking/${refId}`, { action: "note", note: f.note });
+              if (r.error) return setNoteState(r.message);
+              setNoteState(`✓ Saved at ${new Date().toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" })}`);
+              setD((x) => ({ ...x, booking: { ...x.booking, admin_note: f.note } }));
+            }}>{noteState === "saving" ? "Saving…" : "Save note"}</button>
+            {noteState && noteState !== "saving" && <span className={noteState.startsWith("✓") ? "ad-saved" : "ac-err"} role="status">{noteState}</span>}
+          </div>
         </fieldset>
         <div className="ac-actions">
           {b.status !== "cancelled" && <button type="button" className="t-btn t-btn-ghost ac-del" onClick={() => act("cancel")}>Cancel booking</button>}
