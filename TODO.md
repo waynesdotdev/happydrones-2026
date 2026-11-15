@@ -22,7 +22,12 @@
 
 ## Accounts and bookings (built 15 Nov, test mode)
 - [x] **Switch it on in Cloudflare (Wayne, about 10 minutes).** Workers & Pages → D1 → Create database, name it `happydrones-db`. Then the Pages project → Settings → Bindings → add D1 database, variable name `DB`, pick `happydrones-db`. Then Settings → Variables and secrets → add `ADMIN_EMAIL` = wayne@happydrones.co.uk and `TEST_MODE` = 1. The tables build themselves on first use.
-- [ ] **Test it end to end.** Sign up at /account with wayne@happydrones.co.uk (that becomes the admin), then /admin → Test tools → create Lynn Fox (lynn.fox@example.com). Sign in as Lynn, book, pay (simulated), cancel, download data, delete. Do the admin side: confirm, deliver, mark paid, cancel, reopen, delete customer, wipe test data.
+- [ ] **NEXT: full test run (Wayne).** Admin → Test tools → Reset everything (type RESET). Then:
+  1. **Quote route:** send a homepage quote with your personal email → confirmation email with Q- reference and private link → wayne@ notification opens it in the Enquiries tab → Contacted → Turn into a booking → customer email "ready to sign" → create the account with that email, sign, pay (card 4242 4242 4242 4242) → It's a go.
+  2. **Direct route:** as Lynn (Test tools) → a service page → Book online → sign → pay → edit the price in the admin → Lynn approves → It's a go → deliver (any https link) → Lynn pays the balance → files unlock.
+  3. **Also try:** decline a change, cancel as the customer, back out of Stripe, a declined card (4000 0000 0000 0002), record a refund, the /plan mission form, delete a customer, a customer downloading and deleting their own data.
+  4. **Note anything odd or clunky** and send it to Claude in one message.
+- [ ] **Stripe webhook check.** After a test payment, Stripe → Webhooks → your destination → Event deliveries should show green ticks. If red, tell Claude the error shown.
 - [x] **Stripe test keys.** When the Stripe account is ready: add `STRIPE_SECRET_KEY` (sk_test_…) as a Cloudflare secret, and a webhook to https://happydrones.co.uk/api/stripe-webhook for `checkout.session.completed`, saving its signing secret as `STRIPE_WEBHOOK_SECRET`. Never paste keys into chat or code.
 - [x] **Real emails.** Free Resend account (3,000 a month, 100 a day), region Ireland, verify happydrones.co.uk (DNS records in Cloudflare), sending-only API key as secret `RESEND_KEY`, plain text `MAIL_FROM` = Happy Drones <bookings@happydrones.co.uk>. Add bookings@ as a free alias in Google Workspace so emails sent to it reach Wayne. Until then emails only appear in the admin's Emails tab.
 - [ ] **ICO registration** (data protection fee, about £52 a year) before real customers sign up.
@@ -30,9 +35,20 @@
 - [ ] **ICO number on the privacy policy.** Once registered, add the registration number to the "Who I am" section.
 - [x] **Booking agreement clauses** for online booking and the 10-listing bundle (3.10), in /terms and the signed document (15 Nov).
 - [ ] **Bundle reminders run when someone opens the site.** They check at most once an hour, when you open the admin or a customer opens their account. On a quiet week a reminder could go out a little late. Later: a scheduled daily check.
-- [ ] **Going live with real customers:** turn `TEST_MODE` off, swap Stripe test keys for live ones. Optional: Workers Paid ($5/month) and `PW_ITER` = 100000 for stronger password hashing.
+- [ ] **Going live with real customers (do these together, Claude can walk through it):**
+  1. Test run above done and any fixes published.
+  2. ICO registration done and the number on the privacy policy.
+  3. A solicitor or small-business legal service has read the booking agreement once (it's now signed online).
+  4. Admin → Test tools → Reset everything, one last time.
+  5. Stripe: switch to live mode, create a live secret key and a live webhook (same URL and event), replace `STRIPE_SECRET_KEY` and `STRIPE_WEBHOOK_SECRET` in Cloudflare.
+  6. Cloudflare: delete `TEST_MODE` (or set it to 0), then redeploy. The Test tools tab disappears and sign-in codes only go by email.
+  7. Do one real booking yourself for a small amount and refund it in Stripe.
+  8. Optional: Workers Paid ($5/month) and `PW_ITER` = 100000 for stronger password hashing.
+  9. Then switch Web3Forms off (`formKey` = "" in lib/site.js) once the admin has proved itself.
 - [x] **E-signing, customer approval of changes, and It's a go confirmation** (15 Nov).
-- [ ] **Old bookings before e-signing.** Bookings made before 15 Nov under test mode have no signature. Wipe test data before going live.
+- [x] **Old test bookings from before e-signing:** cleared with Reset everything (15 Nov).
+- [x] **Every enquiry saved in the admin** (Enquiries tab), with a confirmation and private link for the customer, and Turn into a booking (15 Nov).
+- [ ] **Ideas for later:** a daily scheduled check (bundle reminders, unsigned-booking clean-up) instead of running when someone opens the site; database backups; an "Edit" for the customer's own booking notes; PDF copy of the signed agreement as well as the HTML file.
 - [ ] **Later: click, pay, Wayne turns up.** Fully automatic flow: customer picks a service and a slot from Wayne's real availability, pays in full, it lands in Google Calendar, morning-of reminder email, delivery and a review request afterwards. Needs Google Calendar and Drive connected; backups of the database too.
 
 ## Waiting on Wayne
@@ -63,7 +79,6 @@
 - [ ] **Reviews.** Add real reviews to `reviews` in `lib/site.js` and the section appears by itself.
 - [ ] **Real photos.** Add photos of real shoots (property, aerial, construction) to replace the illustrations.
 - [ ] **Credentials.** Add GVC to `credentials` in `lib/site.js` if you get it (A2 CofC is already listed).
-- [ ] **Web3Forms to business inbox.** Point Web3Forms at wayne@happydrones.co.uk. If that gives a new key, update `formKey` in `lib/site.js`.
 - [ ] **Optional hello@ alias.** Add hello@happydrones.co.uk as a free alias in Google Admin.
 
 ## Done
