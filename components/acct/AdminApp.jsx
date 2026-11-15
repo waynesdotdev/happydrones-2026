@@ -224,6 +224,10 @@ function TestTools() {
   const [f, setF] = useState({ name: "Lynn Fox", email: "lynn.fox@example.com", company: "", password: "" });
   const [msg, setMsg] = useState("");
   async function create(e) { e.preventDefault(); const r = await api("/api/admin/test/customer", f); setMsg(r.error ? r.message : `Test customer created. Sign in at /account as ${f.email}.`); }
+  async function reset() {
+    const c = prompt("This deletes every account except yours and every booking. Type RESET to confirm."); if (c === null) return;
+    const r = await api("/api/admin/test/reset", { confirm: c.trim().toUpperCase() }); setMsg(r.error ? r.message : `Done: removed ${r.accounts} accounts and ${r.bookings} bookings. Your admin account is untouched.`);
+  }
   async function wipe() { if (!confirm("Delete every test customer and their bookings?")) return; const r = await api("/api/admin/test/wipe", {}); setMsg(r.error ? r.message : `Removed ${r.removed} test accounts.`); }
   return (
     <div className="ac-details">
@@ -235,7 +239,8 @@ function TestTools() {
         <div className="t-field"><label htmlFor="tt-p">Password</label><input id="tt-p" type="text" value={f.password} onChange={(e) => setF({ ...f, password: e.target.value })} placeholder="At least 10 characters" /></div>
         <button className="t-btn t-btn-primary">Create test customer</button>
       </form>
-      <div className="ac-form"><h2>Clear test data</h2><p className="ac-small">Deletes every test customer, their bookings and bundles.</p><button type="button" className="t-btn t-btn-ghost ac-del" onClick={wipe}>Delete all test data</button></div>
+      <div className="ac-form"><h2>Clear test data</h2><p className="ac-small">Deletes every test customer made here, their bookings and bundles.</p><button type="button" className="t-btn t-btn-ghost ac-del" onClick={wipe}>Delete all test data</button></div>
+      <div className="ac-form"><h2>Start completely fresh</h2><p className="ac-small">Deletes every account except yours, plus every booking, signed agreement, bundle, email copy and activity record. Only works in test mode. Use it before testing from scratch, and once more before real customers.</p><button type="button" className="t-btn t-btn-ghost ac-del" onClick={reset}>Reset everything</button></div>
       {msg && <p className="ac-ok">{msg}</p>}
     </div>
   );

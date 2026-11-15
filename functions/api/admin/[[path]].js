@@ -225,6 +225,21 @@ export async function onRequest({ request, env, params }) {
       await log(env, actor, "test-customer-created", email);
       return json({ ok: true });
     }
+    // Full reset before going live: everything except the admin account. Test mode only.
+    if (path === "test/reset" && m === "POST") {
+      if (!testMode(env)) return fail("test", "Only in test mode.", 403);
+      const x = await body(request);
+      if (x.confirm !== "RESET") return fail("confirm", "Type RESET to confirm.");
+      const n = await D.prepare("SELECT COUNT(*) n FROM users WHERE role != 'admin'").first();
+      const b = await D.prepare("SELECT COUNT(*) n FROM bookings").first();
+      await D.batch([
+        "DELETE FROM signatures", "DELETE FROM bundles", "DELETE FROM bookings", "DELETE FROM outbox", "DELETE FROM codes",
+        "DELETE FROM sessions WHERE user_id NOT IN (SELECT id FROM users WHERE role = 'admin')",
+        "DELETE FROM users WHERE role != 'admin'", "DELETE FROM audit", "DELETE FROM limits",
+      ].map((q) => D.prepare(q)));
+      await log(env, actor, "full-reset", "", `${n.n} accounts, ${b.n} bookings`);
+      return json({ ok: true, accounts: n.n, bookings: b.n });
+    }
     if (path === "test/wipe" && m === "POST") {
       if (!testMode(env)) return fail("test", "Only in test mode.", 403);
       const { results } = await D.prepare("SELECT id FROM users WHERE test = 1").all();
