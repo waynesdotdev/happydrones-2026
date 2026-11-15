@@ -9,6 +9,7 @@ import { api, STATUS, longDate, when } from "@/lib/acct/client";
 import { PasswordField, NewPassword, newPasswordProblem } from "./PasswordField";
 import { CATALOG, priceFor, zoneFor, MODE_WORDS, bundleSize } from "@/lib/acct/catalog";
 import { money } from "@/lib/site";
+import useScrollToTop from "@/components/useScrollToTop";
 
 const GROUPS = [...new Set(CATALOG.map((c) => c.group))];
 const minDate = () => new Date(Date.now() + 2 * 864e5).toISOString().slice(0, 10);
@@ -194,13 +195,14 @@ export default function AccountApp() {
   useEffect(() => { load(); if (location.hash.startsWith("#paid-")) setFlash("Thanks, your payment went through. It can take a minute to show here."); }, [load]);
   useEffect(() => { if (state.user) reload(); }, [state.user, reload]);
 
+  const topRef = useScrollToTop(`${tab}|${!!state.user}`);
   if (state.loading) return <p className="ac-lede">Loading…</p>;
   if (state.error) return <p className="ac-err">{state.error}</p>;
   const test = state.config?.test && <p className="ac-test ac-banner">{state.config?.stripe ? "Test mode: sign-in codes appear on screen and emails go to the admin outbox. Payments use Stripe\u2019s test checkout (card 4242 4242 4242 4242), so no real money moves." : "Test mode: sign-in codes appear on screen, emails go to the admin outbox, and payments are simulated. Nothing is charged."}</p>;
-  if (!state.user) return <div className="ac-wrap">{test}<SignIn onDone={(user) => setState((s) => ({ ...s, user }))} /></div>;
+  if (!state.user) return <div className="ac-wrap" ref={topRef}>{test}<SignIn onDone={(user) => setState((s) => ({ ...s, user }))} /></div>;
   const u = state.user;
   return (
-    <div className="ac-wrap ac-in">
+    <div className="ac-wrap ac-in" ref={topRef}>
       {test}
       <div className="ac-top">
         <h2>Hi {u.name.split(" ")[0]}</h2>

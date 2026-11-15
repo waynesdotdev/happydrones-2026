@@ -12,6 +12,7 @@ import Link from "next/link";
 import ServiceArt from "./ServiceArt";
 import { PRICING, PLANNER, VACANT, PAYMENT, BUNDLE, AGENT_DISCOUNT, SITE, money, travelFor, depositFor } from "@/lib/site";
 import { DEFAULT_DRONES, demoForecast, jobDay, dayChart, hhmm, dayLong, codeText } from "@/lib/wxClient";
+import useScrollToTop from "@/components/useScrollToTop";
 
 const LIM = DEFAULT_DRONES[0].lim;
 const ymd = (ms) => new Date(ms).toLocaleDateString("en-CA", { timeZone: "Europe/London" });
@@ -97,6 +98,7 @@ export default function Playground() {
   const [pc, setPc] = useState("TS17 6AB");
   const [date, setDate] = useState(() => ymd(Date.now() + 4 * 864e5));
   const [stage, setStage] = useState(-1); // -1 = setting up
+  const topRef = useScrollToTop(stage);
   const [paid, setPaid] = useState(false);
 
   const s = ALL.find((x) => x.id === svcId);
@@ -129,7 +131,7 @@ export default function Playground() {
   const reset = () => { setStage(-1); setPaid(false); };
 
   return (
-    <div className="pg">
+    <div className="pg" ref={topRef}>
       <p className="pg-banner" role="note"><b>Playground.</b> Nothing here is real: no booking, no payment, no emails. Try anything.</p>
 
       {stage < 0 ? (

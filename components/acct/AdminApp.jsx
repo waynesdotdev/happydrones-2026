@@ -6,6 +6,7 @@ import { useCallback, useEffect, useState } from "react";
 import SignIn from "./SignIn";
 import { api, STATUS, longDate, when } from "@/lib/acct/client";
 import { money } from "@/lib/site";
+import useScrollToTop from "@/components/useScrollToTop";
 
 const FILTERS = [["", "All"], ["awaiting_payment", "Waiting for payment"], ["requested", "Date to confirm"], ["confirmed", "Confirmed"], ["delivered", "Delivered"], ["cancel_requested", "Cancel requests"], ["cancelled", "Cancelled"]];
 function Badge({ status }) { const [w, c] = STATUS[status] || [status, "info"]; return <span className={`ac-badge ac-${c}`}>{w}</span>; }
@@ -186,6 +187,7 @@ function TestTools() {
 export default function AdminApp() {
   const [st, setSt] = useState({ loading: true });
   const [tab, setTab] = useState("bookings");
+  const topRef = useScrollToTop(tab);
   const load = useCallback(async () => { const r = await api("/api/admin/overview"); setSt(r.error ? { error: r, loading: false } : r); }, []);
   useEffect(() => { load(); }, [load]);
   if (st.loading) return <p className="ac-lede">Loading…</p>;
@@ -193,7 +195,7 @@ export default function AdminApp() {
   if (st.error) return <div className="ac-wrap"><p className="ac-err">{st.error.message}</p>{st.error.status === 403 && <button type="button" className="t-btn t-btn-ghost" onClick={async () => { await api("/api/acct/logout", {}); load(); }}>Sign out</button>}</div>;
   const tabs = [["bookings", `Bookings (${st.counts.toDo} to do)`], ["customers", `Customers (${st.counts.customers})`], ["outbox", "Emails"], ["activity", "Activity"], ...(st.config.test ? [["test", "Test tools"]] : [])];
   return (
-    <div className="ad">
+    <div className="ad" ref={topRef}>
       {st.config.test && <p className="ac-test ac-banner">Test mode. Payments {st.config.stripe ? "use Stripe's test checkout (no real money)" : "are simulated"}; emails {st.config.mail ? "are sent" : "go to the outbox only"}.</p>}
       <div className="ac-top">
         <h2>Admin</h2>

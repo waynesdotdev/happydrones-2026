@@ -61,7 +61,15 @@ export default function ServicesCam({ items, note = "Typical camera height for t
     document.querySelectorAll(".chapter-nav a").forEach((a) => {
       const on = a.getAttribute("href") === "#" + navId;
       a.classList.toggle("is-active", on);
-      if (on) a.scrollIntoView({ block: "nearest", inline: "center", behavior: reduce ? "auto" : "smooth" });
+      if (!on) return;
+      // Slide the menu bar sideways only. scrollIntoView would also move the
+      // whole page, which dragged visitors to the bottom when they arrived.
+      let bar = a.parentElement;
+      while (bar && bar.scrollWidth <= bar.clientWidth) bar = bar.parentElement;
+      if (!bar || bar === document.body || bar === document.documentElement) return;
+      const r = a.getBoundingClientRect(), br = bar.getBoundingClientRect();
+      const left = bar.scrollLeft + (r.left - br.left) - (bar.clientWidth - r.width) / 2;
+      bar.scrollTo({ left: Math.max(0, left), behavior: reduce ? "auto" : "smooth" });
     });
   }, [navId]);
 

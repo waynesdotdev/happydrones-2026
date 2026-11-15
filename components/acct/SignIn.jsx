@@ -6,6 +6,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { api } from "@/lib/acct/client";
 import { PasswordField, NewPassword, newPasswordProblem, emailSuggestion } from "./PasswordField";
+import useScrollToTop from "@/components/useScrollToTop";
 
 function Code({ email, devCode, purpose, onDone, onBack }) {
   const [code, setCode] = useState("");
@@ -45,6 +46,7 @@ export default function SignIn({ onDone, adminOnly = false }) {
   const [busy, setBusy] = useState(false);
   const set = (k, v) => { setF((s) => ({ ...s, [k]: v })); if (k.startsWith("password")) setMsg(""); };
   const suggestion = emailSuggestion(f.email);
+  const topRef = useScrollToTop(`${view}|${step ? step.purpose : ""}`);
 
   async function submit(e) {
     e.preventDefault(); setMsg("");
@@ -57,10 +59,10 @@ export default function SignIn({ onDone, adminOnly = false }) {
     setStep({ email: r.email, devCode: r.devCode, purpose: r.step === "code" ? "login" : r.step });
   }
 
-  if (step) return <Code {...step} onBack={() => { setStep(null); setView("signin"); }} onDone={(r) => { if (step.purpose === "reset") { setStep(null); setView("signin"); setMsg("Password changed. Sign in with your new password."); } else onDone(r.user); }} />;
+  if (step) return <div ref={topRef}><Code {...step} onBack={() => { setStep(null); setView("signin"); }} onDone={(r) => { if (step.purpose === "reset") { setStep(null); setView("signin"); setMsg("Password changed. Sign in with your new password."); } else onDone(r.user); }} /></div>;
 
   return (
-    <form className="ac-form" onSubmit={submit} noValidate>
+    <form className="ac-form" onSubmit={submit} noValidate ref={topRef}>
       {!adminOnly && (
         <div className="ac-tabs" role="tablist">
           <button type="button" role="tab" aria-selected={view === "signin"} className={view === "signin" ? "is-on" : undefined} onClick={() => { setView("signin"); setMsg(""); }}>Sign in</button>

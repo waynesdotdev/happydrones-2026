@@ -12,6 +12,7 @@ import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Dock from "@/components/Dock";
+import SamePageTop from "@/components/SamePageTop";
 import CookieBanner from "@/components/CookieBanner";
 import JsonLd from "@/components/JsonLd";
 import { SITE, liveSocials } from "@/lib/site";
@@ -56,7 +57,7 @@ const businessSchema = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en-GB">
+    <html lang="en-GB" data-scroll-behavior="smooth">
       <body>
         <a className="skip" href="#main">Skip to content</a>
         <JsonLd data={businessSchema} />
@@ -64,6 +65,7 @@ export default function RootLayout({ children }) {
         <main id="main">{children}</main>
         <Footer />
         <Dock />
+        <SamePageTop />
         <CookieBanner />
       </body>
     </html>
