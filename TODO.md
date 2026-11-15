@@ -26,7 +26,8 @@
 - [x] **Stripe test keys.** When the Stripe account is ready: add `STRIPE_SECRET_KEY` (sk_test_…) as a Cloudflare secret, and a webhook to https://happydrones.co.uk/api/stripe-webhook for `checkout.session.completed`, saving its signing secret as `STRIPE_WEBHOOK_SECRET`. Never paste keys into chat or code.
 - [x] **Real emails.** Free Resend account (3,000 a month, 100 a day), region Ireland, verify happydrones.co.uk (DNS records in Cloudflare), sending-only API key as secret `RESEND_KEY`, plain text `MAIL_FROM` = Happy Drones <bookings@happydrones.co.uk>. Add bookings@ as a free alias in Google Workspace so emails sent to it reach Wayne. Until then emails only appear in the admin's Emails tab.
 - [ ] **ICO registration** (data protection fee, about £52 a year) before real customers sign up.
-- [ ] **Privacy policy update** before real customers: accounts, Stripe, Resend, Cloudflare D1, how long data is kept, and remove the old Netlify line. Claude to draft.
+- [x] **Privacy policy update** for accounts, Stripe, Resend and Cloudflare (15 Nov).
+- [ ] **ICO number on the privacy policy.** Once registered, add the registration number to the "Who I am" section.
 - [ ] **Booking agreement clauses** for the 10-listing bundle (paid up front, 3 months) and small jobs paid in full online. Update the signed contract and /terms together.
 - [ ] **Going live with real customers:** turn `TEST_MODE` off, swap Stripe test keys for live ones. Optional: Workers Paid ($5/month) and `PW_ITER` = 100000 for stronger password hashing.
 - [ ] **Later: click, pay, Wayne turns up.** Fully automatic flow: customer picks a service and a slot from Wayne's real availability, pays in full, it lands in Google Calendar, morning-of reminder email, delivery and a review request afterwards. Needs Google Calendar and Drive connected; backups of the database too.

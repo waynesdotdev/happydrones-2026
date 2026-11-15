@@ -7,7 +7,7 @@ import Link from "next/link";
 import SignIn from "./SignIn";
 import { api, STATUS, longDate, when } from "@/lib/acct/client";
 import { PasswordField, NewPassword, newPasswordProblem } from "./PasswordField";
-import { CATALOG, priceFor, zoneFor, MODE_WORDS, bundleSize } from "@/lib/acct/catalog";
+import { CATALOG, priceFor, zoneFor, MODE_WORDS, bundleSize, greeting } from "@/lib/acct/catalog";
 import { money } from "@/lib/site";
 import useScrollToTop from "@/components/useScrollToTop";
 
@@ -205,7 +205,7 @@ export default function AccountApp() {
     <div className="ac-wrap ac-in" ref={topRef}>
       {test}
       <div className="ac-top">
-        <h2>Hi {u.name.split(" ")[0]}</h2>
+        <h2>{greeting(u.name)}</h2>
         <nav className="ac-tabs">
           {[["bookings", "My bookings"], ["book", "Book a job"], ["details", "My details"]].map(([k, w]) => <button key={k} type="button" className={tab === k ? "is-on" : undefined} onClick={() => { setTab(k); setBundleStart(false); }}>{w}</button>)}
           {u.role === "admin" && <a href="/admin/">Admin</a>}
