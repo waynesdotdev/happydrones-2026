@@ -4,7 +4,7 @@
 Netlify's free plan gives 300 credits a month, and each live deploy costs 15. When they run out, the site goes offline.
 - **Netlify only deploys the `live` branch.** Everyday work goes on `main`. Pushing to `main` is free and doesn't change the website.
 - **Never push to `live` unless Wayne says to publish.** To publish: `git checkout live && git merge --ff-only main && git push origin live && git checkout main`.
-- Group changes together, and test locally (`npm run dev` or `npx next build`) before publishing.
+- Group changes together, and test locally (`npm run dev` or `npm run build`) before publishing.
 - Builds are skipped when a commit only changes notes files (see `ignore` in `netlify.toml`).
 
 ## Marketing campaigns (Wayne's standing rule)
@@ -25,9 +25,15 @@ The entries are shown on the unlisted page happydrones.co.uk/changelog.
 - At the start of the next change, fill in the missing `commit` ids on earlier entries using `git log`.
 - Wayne's own commits since the last entry get logged as well (by: "Wayne").
 
+## Security (Wayne's rule: every page, no matter what)
+- Every page gets the security headers in `public/_headers` (the `/*` block): HSTS, frame protection, nosniff, Referrer-Policy, Permissions-Policy and a Content Security Policy. Never remove, switch off (`! Header`) or loosen them for any page.
+- `scripts/check-security.mjs` runs on every build and fails it if the headers are missing or weakened, if code or a page loads from an outside address that isn't approved, or if a server route returns HTML without its own CSP.
+- Adding an outside service (embed, widget, analytics, map tiles, an API called from the browser): add its exact `https://` address to the right CSP directive in `public/_headers`. A plain link people click goes in `LINK_ONLY` in the check script. Never use `*`, `https:`, `http:` or `'unsafe-eval'`.
+- After adding anything that loads from outside, load the affected pages with the headers on (`wrangler pages dev out`) and check nothing is blocked.
+
 ## Working on the site
 - Run `git pull` before editing.
-- Run `npx next build` before pushing.
+- Run `npm run build` before pushing (it includes the security check).
 - Write commit messages in plain English.
 - Most settings live in `lib/site.js`.
 - `TODO.md` holds the to-do list. Tick items off there as they're done.

@@ -48,6 +48,7 @@
 - [x] **E-signing, customer approval of changes, and It's a go confirmation** (15 Nov).
 - [x] **Old test bookings from before e-signing:** cleared with Reset everything (15 Nov).
 - [x] **Every enquiry saved in the admin** (Enquiries tab), with a confirmation and private link for the customer, and Turn into a booking (15 Nov).
+- [ ] **Check Cloudflare's build command is `npm run build`** (Workers & Pages → project → Settings → Build). That runs the full security check, including every built page. If it says `npx next build`, change it to `npm run build`.
 - [ ] **After publishing the security headers:** re-run the Mozilla Observatory (developer.mozilla.org/en-US/observatory) and SSL Labs, and send Claude the results. The CSP still allows inline scripts because Next.js needs them; tightening that (per-page hashes) is a later job. HSTS has no includeSubDomains/preload yet: add once every subdomain is known to be https.
 - [ ] **Ideas for later:** a daily scheduled check (bundle reminders, unsigned-booking clean-up) instead of running when someone opens the site; database backups; an "Edit" for the customer's own booking notes; PDF copy of the signed agreement as well as the HTML file.
 - [ ] **Later: click, pay, Wayne turns up.** Fully automatic flow: customer picks a service and a slot from Wayne's real availability, pays in full, it lands in Google Calendar, morning-of reminder email, delivery and a review request afterwards. Needs Google Calendar and Drive connected; backups of the database too.

@@ -4,8 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
-    "start": "npx serve out"
+    "build": "node scripts/check-security.mjs source && next build && node scripts/check-security.mjs",
+    "start": "npx serve out",
+    "check:security": "node scripts/check-security.mjs"
   },
   "dependencies": {
     "@fontsource/blinker": "^5.3.0",

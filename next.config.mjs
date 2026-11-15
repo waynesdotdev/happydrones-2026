@@ -1,3 +1,10 @@
+import { execFileSync } from "node:child_process";
+
+// Security check (scripts/check-security.mjs): every build stops if the
+// security headers are missing or weakened, or if code uses an outside
+// address that isn't approved. Runs however the site is built.
+execFileSync(process.execPath, ["scripts/check-security.mjs", "source"], { stdio: "inherit" });
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   // Build the whole site as plain HTML files in the "out" folder.
