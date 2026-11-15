@@ -37,6 +37,7 @@ async function save(request, env) {
   const name = clean(x.name, 80), email = clean(x.email, 120).toLowerCase(), phone = clean(x.phone, 30);
   if (email && !EMAIL.test(email)) return fail("email", "That email address doesn't look right.");
   if (kind !== "feedback" && (name.length < 2 || (!email && phone.replace(/\D/g, "").length < 10))) return fail("details", "Add your name and an email or phone number.");
+  if ((kind === "quote" || kind === "mission") && !/^\d{4}-\d{2}-\d{2}$/.test(String(x.date || ""))) return fail("date", "Pick the date you'd like.");
 
   // Every field, with its readable label, in the order sent (max 40)
   const fields = Object.entries(x).filter(([k, v]) => !SKIP.has(k) && clean(v) !== "").slice(0, 40).map(([k, v]) => [LABELS[k] || clean(k, 60), clean(v)]);

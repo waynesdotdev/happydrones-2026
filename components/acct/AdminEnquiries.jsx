@@ -81,12 +81,13 @@ const sendLines = (lines) => lines.map((l) => [l.name.trim(), Math.round(Number(
 /* Quick checks before accepting: Wayne's Google Calendar for that day, and the
    job page (map, travel and the weather for that day at that postcode). */
 const calendarDay = (date) => (date ? `https://calendar.google.com/calendar/r/day/${date.replace(/-/g, "/")}` : "https://calendar.google.com/calendar/r");
-const jobPage = (q, f0, total) => { const p = new URLSearchParams({ pc: q.postcode || "" }); if (f0.date) p.set("d", f0.date); if (f0.time) p.set("h", f0.time); if (f0.service) p.set("k", f0.service); p.set("c", q.ref); p.set("m", f0.serviceName || CATALOG.find((c) => c.id === f0.service)?.name || ""); p.set("t", money(total)); if (f0.notes) p.set("n", f0.notes.slice(0, 300)); return `/map/?${p}`; };
+const jobPage = (q, f0, total) => { const p = new URLSearchParams({ pc: q.postcode || "" }); if (f0.date) p.set("d", f0.date); if (f0.time) p.set("h", f0.time); if (f0.service) p.set("k", f0.service); p.set("c", q.ref); p.set("m", f0.serviceName || CATALOG.find((c) => c.id === f0.service)?.name || ""); if (total) p.set("t", money(total)); if (f0.notes) p.set("n", f0.notes.slice(0, 300)); return `/map/?${p}`; };
 
 /* The main thing on an enquiry: check it and accept it exactly as quoted. */
 function AcceptCard({ q, account, onDone, onEdit }) {
   const { f0, lines, role } = useMemo(() => draftFrom(q), [q]);
   const [as, setAs] = useState(f0.bookingAs);
+  const [when, setWhen] = useState({ date: f0.date, time: f0.time });
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState("");
   const total = linesTotal(lines);
@@ -96,18 +97,33 @@ function AcceptCard({ q, account, onDone, onEdit }) {
     setMsg("");
     if (!confirm(`Accept and send ${q.name || "them"} the booking for ${money(total)}?\n\nThey'll get an email to sign the booking agreement${deposit ? ` and pay the ${money(deposit)} deposit` : ""}.`)) return;
     setBusy(true);
-    const r = await api(`/api/admin/enquiry/${q.ref}`, { action: "book", ...f0, bookingAs: as, lines: sendLines(lines) });
+    const r = await api(`/api/admin/enquiry/${q.ref}`, { action: "book", ...f0, ...when, bookingAs: as, lines: sendLines(lines) });
     setBusy(false);
     if (r.error) return setMsg(r.message);
     onDone(`Accepted. Booking ${r.booking} for ${money(total)} sent to ${q.email} to sign${deposit ? " and pay" : ""}.`);
   }
-  if (!lines.length) return null;
+  if (!lines.length) return (
+    <div className="ad-accept ad-noprice">
+      <h4>Check and book</h4>
+      <dl className="ad-accept-dl">
+        <div><dt>When</dt><dd>{f0.date ? `${longDate(f0.date)}${f0.time ? `, ${f0.time}` : ""}` : "No date given"}</dd></div>
+        <div><dt>Where</dt><dd>{[f0.address, f0.postcode].filter(Boolean).join(", ") || "No postcode given"}</dd></div>
+        {f0.notes && <div><dt>Their notes</dt><dd>{f0.notes}</dd></div>}
+      </dl>
+      <p><b>No price yet:</b> they sent the form without building a quote. Pick the service and set the price you agree with them, then book it.</p>
+      <div className="ac-actions ad-checks">
+        <a className="t-btn t-btn-ghost" href={calendarDay(f0.date)} target="_blank" rel="noopener">📅 Your calendar{f0.date ? ` for ${longDate(f0.date).replace(/ \d{4}$/, "")}` : ""} ↗</a>
+        {q.postcode && <a className="t-btn t-btn-ghost" href={jobPage(q, f0, 0)} target="_blank" rel="noopener">🌤 Weather and map{f0.date ? " for that day" : ""} ↗</a>}
+      </div>
+      <div className="ac-actions"><button type="button" className="t-btn t-btn-primary ad-accept-btn" onClick={onEdit} disabled={!q.email}>Set the price and book</button></div>
+    </div>
+  );
   return (
     <div className="ad-accept">
       <h4>Check and accept</h4>
       <dl className="ad-accept-dl">
         <div><dt>Job</dt><dd><b>{svcName}</b></dd></div>
-        <div><dt>When</dt><dd>{f0.date ? `${longDate(f0.date)}${f0.time ? `, ${f0.time}` : ""}` : "No date given: agree it with them"}</dd></div>
+        <div><dt>When</dt><dd>{f0.date ? `${longDate(f0.date)}${f0.time ? `, ${f0.time}` : ""}` : <span className="ad-from ad-need">no date given: add the one you agree below</span>}</dd></div>
         <div><dt>Where</dt><dd>{[f0.address, f0.postcode].filter(Boolean).join(", ") || "No postcode given"}</dd></div>
         {f0.notes && <div><dt>Their notes</dt><dd>{f0.notes}</dd></div>}
       </dl>
@@ -117,9 +133,15 @@ function AcceptCard({ q, account, onDone, onEdit }) {
       </ul>
       <p className="ac-small">{f0.mode === "deposit" ? `They pay a ${money(deposit)} deposit when they sign, and ${money(total - deposit)} before the files.` : "Invoice after the visit (3.8): nothing to pay up front."}{q.price && total !== q.price ? ` Their on-screen quote was ${money(q.price)}${lines.some((l) => l.src === "auto") ? "; travel for their postcode is added here" : ""}.` : ""}</p>
       <div className="ac-actions ad-checks">
-        <a className="t-btn t-btn-ghost" href={calendarDay(f0.date)} target="_blank" rel="noopener">📅 Your calendar{f0.date ? ` for ${longDate(f0.date).replace(/ \d{4}$/, "")}` : ""} ↗</a>
-        {q.postcode && <a className="t-btn t-btn-ghost" href={jobPage(q, f0, total)} target="_blank" rel="noopener">🌤 Weather and map{f0.date ? " for that day" : ""} ↗</a>}
+        <a className="t-btn t-btn-ghost" href={calendarDay(when.date)} target="_blank" rel="noopener">📅 Your calendar{when.date ? ` for ${longDate(when.date).replace(/ \d{4}$/, "")}` : ""} ↗</a>
+        {q.postcode && <a className="t-btn t-btn-ghost" href={jobPage(q, { ...f0, ...when }, total)} target="_blank" rel="noopener">🌤 Weather and map{when.date ? " for that day" : ""} ↗</a>}
       </div>
+      {!f0.date && (
+        <div className="t-c2 ad-when">
+          <div className="t-field"><label htmlFor="ac-date">Date agreed with them <span className="ad-from ad-need">needed</span></label><input id="ac-date" type="date" min={new Date().toISOString().slice(0, 10)} value={when.date} onChange={(e) => setWhen({ ...when, date: e.target.value })} /></div>
+          <div className="t-field"><label htmlFor="ac-time">Time</label><input id="ac-time" value={when.time} onChange={(e) => setWhen({ ...when, time: e.target.value })} placeholder="e.g. 10:00 or Morning" /></div>
+        </div>
+      )}
       {!f0.bookingAs && (
         <fieldset className="ac-radio ad-as"><legend>Are they booking as a private customer or a business? <span className="ad-from ad-need">needed for the agreement</span></legend>
           <label><input type="radio" name="ac-as" checked={as === "consumer"} onChange={() => setAs("consumer")} /> Private customer</label>
@@ -128,7 +150,7 @@ function AcceptCard({ q, account, onDone, onEdit }) {
       )}
       {msg && <p className="ac-err" role="alert">{msg}</p>}
       <div className="ac-actions">
-        <button type="button" className="t-btn t-btn-primary ad-accept-btn" disabled={busy || !q.email || !as} onClick={accept}>{busy ? "Sending…" : `✓ Accept and send booking (${money(total)})`}</button>
+        <button type="button" className="t-btn t-btn-primary ad-accept-btn" disabled={busy || !q.email || !as || !when.date} onClick={accept}>{busy ? "Sending…" : `✓ Accept and send booking (${money(total)})`}</button>
         <button type="button" className="t-btn t-btn-ghost" onClick={onEdit}>Change something first</button>
       </div>
       <p className="ac-small">{!q.email ? "They didn't give an email, so they can't sign online. Call them for it first." : `Accepting emails ${q.email} to ${account ? "sign in" : "create an account"}, sign the booking agreement${deposit ? " and pay the deposit" : ""}. It's held for 7 days. You confirm the date with It's a go once they've signed${deposit ? " and paid" : ""}.`}{f0.bookingAs ? ` Booking as ${f0.bookingAs === "consumer" ? "a private customer" : "a business"} (from "${role || "company"}").` : ""}</p>
@@ -201,7 +223,7 @@ function BookForm({ q, account, onDone, onCancel }) {
         <div className="t-field"><label htmlFor="bf-addr">Site address {from("address") || <span className="ad-from ad-need">add if you have it</span>}</label><input id="bf-addr" value={f.address} onChange={(e) => set("address", e.target.value)} /></div>
       </div>
       <div className="t-c2">
-        <div className="t-field"><label htmlFor="bf-date">Date agreed (optional) {from("date")}</label><input id="bf-date" type="date" value={f.date} onChange={(e) => set("date", e.target.value)} /></div>
+        <div className="t-field"><label htmlFor="bf-date">Date agreed {from("date") || <span className="ad-from ad-need">needed</span>}</label><input id="bf-date" type="date" value={f.date} onChange={(e) => set("date", e.target.value)} /></div>
         <div className="t-field"><label htmlFor="bf-time">Time {from("time")}</label><input id="bf-time" value={f.time} onChange={(e) => set("time", e.target.value)} placeholder="10:00" /></div>
       </div>
 
@@ -237,7 +259,7 @@ function BookForm({ q, account, onDone, onCancel }) {
       <div className="t-field"><label htmlFor="bf-notes">Special notes (in the agreement) {from("notes")}</label><input id="bf-notes" value={f.notes} onChange={(e) => set("notes", e.target.value)} placeholder="Access, site rules…" /></div>
       {msg && <p className="ac-err" role="alert">{msg}</p>}
       <div className="ac-actions">
-        <button className="t-btn t-btn-primary" disabled={total <= 0}>Create booking for {money(total)} and email them</button>
+        <button className="t-btn t-btn-primary" disabled={total <= 0 || !f.date}>Create booking for {money(total)} and email them</button>
         <button type="button" className="t-btn t-btn-ghost" onClick={onCancel}>Cancel</button>
       </div>
     </form>

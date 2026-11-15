@@ -122,9 +122,16 @@ export default function ContactSection() {
             <label className="field"><span>Phone</span><input type="tel" name="phone" autoComplete="tel" /></label>
           </div>
           <div className="field-pair">
-            <label className="field"><span>Property postcode</span><input name="postcode" autoComplete="postal-code" /></label>
-            <label className="field"><span>Preferred date</span><input type="date" name="date" min={minDate || undefined} /></label>
+            <label className="field"><span>Property postcode</span><input name="postcode" autoComplete="postal-code" required /></label>
+            <label className="field"><span>Preferred date</span><input type="date" name="date" min={minDate || undefined} required /></label>
           </div>
+          <label className="field"><span>Preferred time</span>
+            <select name="time" defaultValue="">
+              <option value="">Any time that day</option>
+              <option>Morning</option><option>Afternoon</option>
+              {Array.from({ length: 11 }, (_, i) => `${String(i + 8).padStart(2, "0")}:00`).map((t) => <option key={t}>{t}</option>)}
+            </select>
+          </label>
           <label className="field"><span>Anything I should know?</span><textarea name="message" rows={4} placeholder="Number of bedrooms, access, deadlines, how many listings a month…"></textarea></label>
 
           {status === "error" && (

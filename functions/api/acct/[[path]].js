@@ -162,6 +162,7 @@ export async function onRequest(ctx) {
       if (!postcode) return fail("postcode", "Add the full postcode of the site, e.g. TS17 6AB.");
       if (!["consumer", "business"].includes(b.bookingAs)) return fail("as", "Say whether you're booking as a private customer or a business.");
       const date = /^\d{4}-\d{2}-\d{2}$/.test(b.date || "") ? b.date : "";
+      if (!date && b.service !== "bundle") return fail("date", "Pick the date you'd like. Wayne confirms it after checking the weather.");
       if (date && date < new Date(Date.now() + 2 * 864e5).toISOString().slice(0, 10)) return fail("date", "Pick a date at least 2 days from now.");
       let bundle = null;
       if (b.useBundle) {

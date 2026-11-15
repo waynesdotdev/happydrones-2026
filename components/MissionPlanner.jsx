@@ -89,6 +89,7 @@ export default function MissionPlanner() {
     e.preventDefault();
     if (!st.name.trim() || (!st.email.trim() && st.phone.replace(/\D/g, "").length < 10)) { setMsg("Add your name and an email or phone number so I can send the plan."); return; }
     if (!pc.ok) { setMsg("Add the site postcode so I can check the airspace."); return; }
+    if (!st.date) { setMsg("Pick the date you'd like the first flight. I'll confirm it after checking the weather."); return; }
     setStatus("sending"); setMsg("");
     // Where the site is: an "Area" line and a link to the map page (/map).
     // If the lookup fails the plan still sends, just without these two lines.
@@ -175,7 +176,7 @@ export default function MissionPlanner() {
             <header><span className="t-mono">05</span><h2>Where and when</h2></header>
             <div className="t-fields t-c2">
               <div className="t-field"><label htmlFor="pl-postcode">Site postcode</label><input id="pl-postcode" name="postcode" autoComplete="postal-code" placeholder="TS1 2AB" value={st.postcode} onChange={(e) => set("postcode", e.target.value)} aria-describedby="pl-pc-hint" /><span id="pl-pc-hint" className={`t-hint ${pc.cls ? "t-" + pc.cls : ""}`}>{pc.msg}</span></div>
-              <div className="t-field"><label htmlFor="pl-date">First flight (preferred)</label><input id="pl-date" name="date" type="date" className={st.date ? undefined : "is-empty"} min={minDate} value={st.date} onChange={(e) => set("date", e.target.value)} /><span className="t-hint">A backup weather date is set when you book.</span></div>
+              <div className="t-field"><label htmlFor="pl-date">First flight date</label><input id="pl-date" name="date" type="date" className={st.date ? undefined : "is-empty"} min={minDate} value={st.date} onChange={(e) => set("date", e.target.value)} /><span className="t-hint">Needed. A backup weather date is set when you book.</span></div>
               <div className="t-field"><label htmlFor="pl-time">Preferred time</label><select id="pl-time" name="time" value={st.time} onChange={(e) => set("time", e.target.value)}><option value="">Any time</option>{TIMES.map((t) => <option key={t} value={t}>{t}</option>)}</select><span className="t-hint">Optional. The weather check in step 07 shows how each hour looks.</span></div>
             </div>
           </fieldset>

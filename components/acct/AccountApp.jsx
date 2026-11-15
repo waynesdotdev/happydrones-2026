@@ -185,7 +185,7 @@ function Book({ hasBundle, startWithBundle, onBooked, config, initialService = "
         <div className="t-field"><label htmlFor="bk-addr">First line of the address</label><input id="bk-addr" autoComplete="address-line1" value={f.address} onChange={(e) => set("address", e.target.value)} /></div>
       </div>
       <div className="t-c2">
-        <div className="t-field"><label htmlFor="bk-date">Date you&apos;d like</label><input id="bk-date" type="date" min={minDate()} value={f.date} onChange={(e) => set("date", e.target.value)} /><span className="t-hint">Optional. Wayne confirms the date after checking the weather and airspace.</span></div>
+        <div className="t-field"><label htmlFor="bk-date">Date you&apos;d like</label><input id="bk-date" type="date" min={minDate()} value={f.date} onChange={(e) => set("date", e.target.value)} required /><span className="t-hint">Wayne confirms it after checking the weather and airspace, and moves it free if the weather turns.</span></div>
         <div className="t-field"><label htmlFor="bk-time">Time you&apos;d like</label><input id="bk-time" value={f.time} onChange={(e) => set("time", e.target.value)} placeholder="e.g. morning, or 10:00" /></div>
       </div>
       <div className="t-field"><label htmlFor="bk-notes">Anything I should know? <span className="if-opt">(optional)</span></label><textarea id="bk-notes" rows={3} value={f.notes} onChange={(e) => set("notes", e.target.value)} placeholder="Access, parking, site rules, what the photos are for" /></div>

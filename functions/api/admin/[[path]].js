@@ -255,6 +255,7 @@ export async function onRequest({ request, env, params }) {
         const breakdown = lines.filter(([, , k]) => k !== "service" && k !== "travel").map(([n, p]) => `${n} ${p < 0 ? "−" : ""}£${Math.abs(p)}`).join("; ");
         const mode = x.mode === "invoice" ? "invoice" : "deposit";
         const date = DATE.test(x.date || "") ? x.date : "";
+        if (!date) return fail("date", "Add the date you've agreed with them. It goes in the agreement they sign.");
         const acct = await D.prepare("SELECT * FROM users WHERE email = ?").bind(q.email).first();
         const ref = `HD-${randomHex(3).toUpperCase()}`, t = now();
         await D.prepare(`INSERT INTO bookings (ref, user_id, invite_email, service_id, service, postcode, address, wanted_date, wanted_time, notes, booking_as, early_start, agreement,
