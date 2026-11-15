@@ -81,7 +81,7 @@ const sendLines = (lines) => lines.map((l) => [l.name.trim(), Math.round(Number(
 /* Quick checks before accepting: Wayne's Google Calendar for that day, and the
    job page (map, travel and the weather for that day at that postcode). */
 const calendarDay = (date) => (date ? `https://calendar.google.com/calendar/r/day/${date.replace(/-/g, "/")}` : "https://calendar.google.com/calendar/r");
-const jobPage = (q, f0, total) => { const p = new URLSearchParams({ pc: q.postcode || "" }); if (f0.date) p.set("d", f0.date); p.set("c", q.ref); p.set("m", f0.serviceName || CATALOG.find((c) => c.id === f0.service)?.name || ""); p.set("t", money(total)); if (f0.notes) p.set("n", f0.notes.slice(0, 300)); return `/map/?${p}`; };
+const jobPage = (q, f0, total) => { const p = new URLSearchParams({ pc: q.postcode || "" }); if (f0.date) p.set("d", f0.date); if (f0.time) p.set("h", f0.time); if (f0.service) p.set("k", f0.service); p.set("c", q.ref); p.set("m", f0.serviceName || CATALOG.find((c) => c.id === f0.service)?.name || ""); p.set("t", money(total)); if (f0.notes) p.set("n", f0.notes.slice(0, 300)); return `/map/?${p}`; };
 
 /* The main thing on an enquiry: check it and accept it exactly as quoted. */
 function AcceptCard({ q, account, onDone, onEdit }) {

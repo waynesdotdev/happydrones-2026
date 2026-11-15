@@ -93,7 +93,7 @@ export default function MissionPlanner() {
     // Where the site is: an "Area" line and a link to the map page (/map).
     // If the lookup fails the plan still sends, just without these two lines.
     const [site, base] = await Promise.all([lookupPostcode(st.postcode), lookupPostcode(SITE.basePostcode)]);
-    const where = site ? { area: areaLine(site, base), map: mapPageUrl(site, fullCode, { kind: st.mission, mission: q.m.name, scale: q.sc.name, freq: q.fr.name, extras: q.extras.map((x) => x.name).join(", "), date: st.date, total: money(q.total), notes: st.notes }) } : {};
+    const where = site ? { area: areaLine(site, base), map: mapPageUrl(site, fullCode, { kind: st.mission, mission: q.m.name, scale: q.sc.name, freq: q.fr.name, extras: q.extras.map((x) => x.name).join(", "), date: st.date, time: st.time, total: money(q.total), notes: st.notes }) } : {};
     const v = q.fr.visits, times = v > 1 ? ` × ${v} visits` : "";
     const priceLines = [[`${q.m.name}, ${q.sc.name}${times}`, q.base * v, "service"], ...q.extras.map((x) => [`${x.name}${times}`, x.price * v, "extra"]),
       ...(q.disc ? [[`${q.fr.name} saving`, -q.disc, "discount"]] : []), ...(q.travel ? [[`Travel${times}`, q.travel * v, "travel"]] : [])];

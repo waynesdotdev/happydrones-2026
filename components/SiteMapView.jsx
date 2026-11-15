@@ -10,7 +10,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { SITE, travelFor } from "@/lib/site";
 import { lookupPostcode, milesBetween, gridRef, mapLinks, toWorld, tidyPostcode, jobFromUrl } from "@/lib/siteMap";
-import { DEFAULT_DRONES, LEVELS, jobDay, timeline, bestWindows, sunTimes, codeText, hhmm, dateLong, dayLong, MPH } from "@/lib/wxClient";
+import { DEFAULT_DRONES, LEVELS, jobDay, dayChart, timeline, bestWindows, sunTimes, codeText, hhmm, dateLong, dayLong, MPH } from "@/lib/wxClient";
 
 const TILE = 256;
 const FC_MAX_AGE = 55 * 60e3;
@@ -66,6 +66,18 @@ function TileMap({ center, zoom, href, label, links }) {
     </a>
   );
 }
+
+/* The hours the customer asked for: "10:00" is that hour; Morning, Afternoon
+   and Evening are a spread of hours. Returns a list of "HH:00". */
+const hourOf = (ms) => hhmm(ms).slice(0, 2) + ":00";
+const SPANS = { morning: [8, 12], afternoon: [12, 17], evening: [17, 20], "golden hour": [], sunrise: [], sunset: [] };
+function wantedHours(t) {
+  const m = /^(\d{1,2})(?::\d{2})?/.exec(String(t || "").trim());
+  if (m) return [`${m[1].padStart(2, "0")}:00`];
+  const span = SPANS[String(t || "").trim().toLowerCase()];
+  return span && span.length ? Array.from({ length: span[1] - span[0] }, (_, i) => `${String(span[0] + i).padStart(2, "0")}:00`) : [];
+}
+const LEVEL_WORD = ["Good", "Some risk", "Poor"];
 
 /* Passcode box: same passcode as the weather check. */
 function Passcode({ onDone }) {
@@ -138,6 +150,14 @@ function JobWeather({ site, job }) {
     return bestWindows(timeline(fc, 96), lim, site.lat, site.lon).filter((w) => w.hours >= 1).slice(0, 4);
   }, [fc, day, lim, site]);
   const opens = date ? new Date(new Date(`${date}T12:00:00Z`).getTime() - 6 * 864e5) : null;
+  // The whole day as bars (like the booking page), with the hours they asked for highlighted
+  const chart = useMemo(() => (day ? dayChart(fc, date, site.lat, site.lon, lim) : null), [day, fc, date, site, lim]);
+  const want = useMemo(() => wantedHours(job.time), [job.time]);
+  const [pickT, setPickT] = useState("");
+  const shownT = pickT || want[0] || "";
+  const pick = chart?.rows.find((r) => hourOf(r.ms) === shownT);
+  const wantRows = chart ? chart.rows.filter((r) => want.includes(hourOf(r.ms))) : [];
+  const wantWorst = wantRows.length ? (wantRows.some((r) => r.dark || !r.has) ? null : Math.max(...wantRows.map((r) => r.level))) : null;
 
   return (
     <section className="sm-card sm-wx" aria-labelledby="sm-wx-h">
@@ -177,14 +197,52 @@ function JobWeather({ site, job }) {
             </div>
           )}
 
+          {chart && (
+            <figure className="pw-chart sm-chart">
+              <figcaption>
+                <span>{want.length ? <>The whole day. <b>Highlighted: the time they asked for ({job.time})</b>. Tap any hour for detail.</> : "The whole day. Tap any hour for detail."}</span>
+                <span className="pw-key"><i className="k-good" />Good <i className="k-risk" />Some risk <i className="k-poor" />Poor <i className="k-dark" />Dark</span>
+              </figcaption>
+              {want.length > 0 && (
+                <p className={`sm-want sm-${wantWorst == null ? "na" : LEVELS[wantWorst].cls}`}>
+                  <b>Their time, {job.time}:</b>{" "}
+                  {!wantRows.length ? "outside daylight." : wantWorst == null ? "partly dark or no forecast yet." : want.length > 1 ? `${LEVEL_WORD[wantWorst]} at worst across those hours.` : `${LEVEL_WORD[wantWorst]}.`}
+                </p>
+              )}
+              <div className="pw-bars" role="radiogroup" aria-label="Pick an hour">
+                {chart.rows.map((r) => {
+                  const t = hourOf(r.ms);
+                  const cls = !r.has ? "na" : r.dark ? "dark" : ["good", "risk", "poor"][r.level];
+                  const label = `${t}: ${!r.has ? "no forecast" : r.dark ? "dark" : LEVEL_WORD[r.level]}${want.includes(t) ? " (their time)" : ""}`;
+                  return (
+                    <button type="button" key={r.ms} role="radio" aria-checked={shownT === t} aria-label={label} title={label}
+                      className={`pw-bar pw-${cls}${shownT === t ? " is-on" : ""}${want.includes(t) ? " is-want" : ""}`} onClick={() => setPickT(t)}>
+                      <span className="pw-fill" style={{ height: `${r.has ? (r.dark ? 100 : r.strength) : 0}%` }} />
+                      <span className="pw-h">{t.slice(0, 2)}</span>
+                    </button>
+                  );
+                })}
+              </div>
+              <p className="sm-chart-key">{want.length > 0 && <span><i style={{ boxShadow: "inset 0 0 0 3px #6CB8FF" }} />Their time</span>}{day.best && day.best.level < 2 && <span><i style={{ boxShadow: "inset 0 0 0 3px #FF915F" }} />Best time (in the list below)</span>}<span><i style={{ outline: "2px dashed #fff", outlineOffset: "1px" }} />The hour you tapped</span></p>
+              {pick && (
+                <p className={`pw-pick pw-${!pick.has ? "na" : pick.dark ? "dark" : ["good", "risk", "poor"][pick.level]}`}>
+                  <b>{shownT}{want.includes(shownT) ? " (their time)" : ""}:</b>{" "}
+                  {!pick.has ? "no forecast for that hour yet." : pick.dark ? `dark (sunset ${hhmm(chart.sun.sunset)}).`
+                    : `${LEVEL_WORD[pick.level]}. ${[codeText(pick.x), `wind ${Math.round((pick.w || 0) * MPH)} mph ${shortDir(pick.d)}`, `gusts ${Math.round(pick.gust)} mph`, pick.p != null ? `${pick.p}% chance of rain` : "", pick.c != null ? `${Math.round(pick.c)}°C` : ""].filter(Boolean).join(", ")}.${pick.level > 0 && pick.reasons?.[0] ? ` ${pick.reasons[0].why}` : ""}`}
+                </p>
+              )}
+            </figure>
+          )}
+
           {day && (
             <ol className="sm-hours" aria-label="Hour by hour, daylight only">
               {day.rows.map((r) => {
                 const inBest = day.best && r.ms >= day.best.start && r.ms < day.best.end;
                 const L = LEVELS[r.level];
+                const isWant = want.includes(hourOf(r.ms));
                 return (
-                  <li key={r.ms} className={inBest ? "is-best" : undefined}>
-                    <span className="sm-h-time">{hhmm(r.ms)}</span>
+                  <li key={r.ms} className={[inBest ? "is-best" : "", isWant ? "is-want" : ""].filter(Boolean).join(" ") || undefined}>
+                    <span className="sm-h-time">{hhmm(r.ms)}{isWant && <span className="sm-h-want">their time</span>}</span>
                     <span className={`sm-h-lvl sm-${L.cls}`}>{L.word}</span>
                     <span className="sm-h-data">
                       <span>{codeText(r.x) || "—"}{r.c != null ? `, ${Math.round(r.c)}°C` : ""}</span>
@@ -277,6 +335,7 @@ export default function SiteMapView() {
                     {job.freq && <div><dt>How often</dt><dd>{job.freq}</dd></div>}
                     <div><dt>Extras</dt><dd>{job.extras || "None"}</dd></div>
                     <div><dt>Date wanted</dt><dd>{job.date ? dateLong(`${job.date}T12:00:00Z`) : "No date given"}</dd></div>
+                    {job.time && <div><dt>Time wanted</dt><dd>{job.time}</dd></div>}
                     {job.total && <div><dt>Guide price</dt><dd>{job.total}</dd></div>}
                     {job.notes && <div className="sm-notes"><dt>Their notes</dt><dd>{job.notes}</dd></div>}
                   </dl>
