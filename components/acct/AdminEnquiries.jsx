@@ -52,7 +52,9 @@ const travelFee = (pc) => zoneFor(pc)?.fee ?? null;
 let lineId = 0;
 const L = (name, price, kind, src) => ({ id: ++lineId, name, price: String(price), kind, src });
 
-function BookForm({ q, account, onDone, onCancel }) {
+/* Everything about the job as the customer asked for it: the booking
+   details and the price lines (plus travel for their postcode). */
+function draftFrom(q) {
   const svcOk = CATALOG.some((c) => c.id === q.service_id && !c.pay);
   const role = fieldOf(q, "role");
   const d0 = fieldOf(q, "date");
@@ -65,16 +67,79 @@ function BookForm({ q, account, onDone, onCancel }) {
     mode: "deposit",
     notes: [fieldOf(q, "message"), fieldOf(q, "notes")].filter(Boolean).join(" ").slice(0, 1000),
   };
-  // Price lines: exactly what they were quoted, plus travel for the postcode if the quote didn't include it
-  const lines0 = useMemo(() => {
-    const cat = CATALOG.find((c) => c.id === q.service_id);
-    let ls = q.lines?.length ? q.lines.map(([n, p, k]) => L(n, p, k, "enquiry"))
-      : cat ? [L(cat.name, cat.price, "service", "list")]
-      : q.price ? [L(f0.serviceName || "As quoted", q.price, "service", "enquiry")] : [];
-    const fee = travelFee(q.postcode);
-    if (fee && !ls.some((l) => l.kind === "travel")) ls = [...ls, L(`Travel (${zoneFor(q.postcode).name})`, fee, "travel", "auto")];
-    return ls;
-  }, [q]); // eslint-disable-line react-hooks/exhaustive-deps
+  const cat = CATALOG.find((c) => c.id === q.service_id);
+  let lines = q.lines?.length ? q.lines.map(([n, p, k]) => L(n, p, k, "enquiry"))
+    : cat ? [L(cat.name, cat.price, "service", "list")]
+    : q.price ? [L(f0.serviceName || "As quoted", q.price, "service", "enquiry")] : [];
+  const fee = travelFee(q.postcode);
+  if (fee && !lines.some((l) => l.kind === "travel")) lines = [...lines, L(`Travel (${zoneFor(q.postcode).name})`, fee, "travel", "auto")];
+  if (lines.reduce((a, l) => a + Number(l.price), 0) >= PAYMENT.largeFrom) f0.mode = "invoice";
+  return { f0, lines, role };
+}
+const linesTotal = (lines) => lines.reduce((a, l) => a + (Math.round(Number(l.price)) || 0), 0);
+const sendLines = (lines) => lines.map((l) => [l.name.trim(), Math.round(Number(l.price)) || 0, l.kind]);
+/* Quick checks before accepting: Wayne's Google Calendar for that day, and the
+   job page (map, travel and the weather for that day at that postcode). */
+const calendarDay = (date) => (date ? `https://calendar.google.com/calendar/r/day/${date.replace(/-/g, "/")}` : "https://calendar.google.com/calendar/r");
+const jobPage = (q, f0, total) => { const p = new URLSearchParams({ pc: q.postcode || "" }); if (f0.date) p.set("d", f0.date); p.set("c", q.ref); p.set("m", f0.serviceName || CATALOG.find((c) => c.id === f0.service)?.name || ""); p.set("t", money(total)); if (f0.notes) p.set("n", f0.notes.slice(0, 300)); return `/map/?${p}`; };
+
+/* The main thing on an enquiry: check it and accept it exactly as quoted. */
+function AcceptCard({ q, account, onDone, onEdit }) {
+  const { f0, lines, role } = useMemo(() => draftFrom(q), [q]);
+  const [as, setAs] = useState(f0.bookingAs);
+  const [busy, setBusy] = useState(false);
+  const [msg, setMsg] = useState("");
+  const total = linesTotal(lines);
+  const deposit = f0.mode === "deposit" ? depositFor(total) : 0;
+  const svcName = f0.serviceName || CATALOG.find((c) => c.id === f0.service)?.name || "Service to confirm";
+  async function accept() {
+    setMsg("");
+    if (!confirm(`Accept and send ${q.name || "them"} the booking for ${money(total)}?\n\nThey'll get an email to sign the booking agreement${deposit ? ` and pay the ${money(deposit)} deposit` : ""}.`)) return;
+    setBusy(true);
+    const r = await api(`/api/admin/enquiry/${q.ref}`, { action: "book", ...f0, bookingAs: as, lines: sendLines(lines) });
+    setBusy(false);
+    if (r.error) return setMsg(r.message);
+    onDone(`Accepted. Booking ${r.booking} for ${money(total)} sent to ${q.email} to sign${deposit ? " and pay" : ""}.`);
+  }
+  if (!lines.length) return null;
+  return (
+    <div className="ad-accept">
+      <h4>Check and accept</h4>
+      <dl className="ad-accept-dl">
+        <div><dt>Job</dt><dd><b>{svcName}</b></dd></div>
+        <div><dt>When</dt><dd>{f0.date ? `${longDate(f0.date)}${f0.time ? `, ${f0.time}` : ""}` : "No date given: agree it with them"}</dd></div>
+        <div><dt>Where</dt><dd>{[f0.address, f0.postcode].filter(Boolean).join(", ") || "No postcode given"}</dd></div>
+        {f0.notes && <div><dt>Their notes</dt><dd>{f0.notes}</dd></div>}
+      </dl>
+      <ul className="ad-accept-lines">
+        {lines.map((l) => <li key={l.id}><span>{l.name}</span><b>{Number(l.price) < 0 ? "−" : ""}{money(Math.abs(Number(l.price)))}</b></li>)}
+        <li className="ad-accept-total"><span>Total</span><b>{money(total)}</b></li>
+      </ul>
+      <p className="ac-small">{f0.mode === "deposit" ? `They pay a ${money(deposit)} deposit when they sign, and ${money(total - deposit)} before the files.` : "Invoice after the visit (3.8): nothing to pay up front."}{q.price && total !== q.price ? ` Their on-screen quote was ${money(q.price)}${lines.some((l) => l.src === "auto") ? "; travel for their postcode is added here" : ""}.` : ""}</p>
+      <div className="ac-actions ad-checks">
+        <a className="t-btn t-btn-ghost" href={calendarDay(f0.date)} target="_blank" rel="noopener">📅 Your calendar{f0.date ? ` for ${longDate(f0.date).replace(/ \d{4}$/, "")}` : ""} ↗</a>
+        {q.postcode && <a className="t-btn t-btn-ghost" href={jobPage(q, f0, total)} target="_blank" rel="noopener">🌤 Weather and map{f0.date ? " for that day" : ""} ↗</a>}
+      </div>
+      {!f0.bookingAs && (
+        <fieldset className="ac-radio ad-as"><legend>Are they booking as a private customer or a business? <span className="ad-from ad-need">needed for the agreement</span></legend>
+          <label><input type="radio" name="ac-as" checked={as === "consumer"} onChange={() => setAs("consumer")} /> Private customer</label>
+          <label><input type="radio" name="ac-as" checked={as === "business"} onChange={() => setAs("business")} /> Business</label>
+        </fieldset>
+      )}
+      {msg && <p className="ac-err" role="alert">{msg}</p>}
+      <div className="ac-actions">
+        <button type="button" className="t-btn t-btn-primary ad-accept-btn" disabled={busy || !q.email || !as} onClick={accept}>{busy ? "Sending…" : `✓ Accept and send booking (${money(total)})`}</button>
+        <button type="button" className="t-btn t-btn-ghost" onClick={onEdit}>Change something first</button>
+      </div>
+      <p className="ac-small">{!q.email ? "They didn't give an email, so they can't sign online. Call them for it first." : `Accepting emails ${q.email} to ${account ? "sign in" : "create an account"}, sign the booking agreement${deposit ? " and pay the deposit" : ""}. It's held for 7 days. You confirm the date with It's a go once they've signed${deposit ? " and paid" : ""}.`}{f0.bookingAs ? ` Booking as ${f0.bookingAs === "consumer" ? "a private customer" : "a business"} (from "${role || "company"}").` : ""}</p>
+    </div>
+  );
+}
+
+function BookForm({ q, account, onDone, onCancel }) {
+  const draft = useMemo(() => draftFrom(q), [q]);
+  const { f0, role } = draft;
+  const lines0 = draft.lines;
   const [f, setF] = useState(f0);
   const [lines, setLines] = useState(lines0);
   const [pick, setPick] = useState("");
@@ -210,6 +275,8 @@ function Panel({ refId, onClose, onChanged }) {
       {booking ? <BookForm q={q} account={d.account} onCancel={() => setBooking(false)} onDone={(m) => { setMsg(["ok", m]); setBooking(false); load(); onChanged(); }} /> : (
       <div className="ad-enq-grid">
         <section className="ad-enq-main">
+          {!q.booking_ref && q.kind !== "feedback" && <AcceptCard q={q} account={d.account} onEdit={() => { setMsg(null); setBooking(true); }} onDone={(m) => { setMsg(["ok", m]); load(); onChanged(); }} />}
+          {q.booking_ref && <div className="ad-accept ad-accepted"><h4>✓ Accepted</h4><p>Booked as <b className="t-mono">{q.booking_ref}</b>. Follow it in the Bookings tab: they sign, pay, then you confirm the date with It&apos;s a go.</p></div>}
           <div className="ad-contact">
             <b>{q.name || "No name"}{q.company ? `, ${q.company}` : ""}</b>
             <div className="ac-actions">
@@ -240,12 +307,6 @@ function Panel({ refId, onClose, onChanged }) {
               </ul>
             )}
           </div>
-          {!q.booking_ref && q.kind !== "feedback" && (
-            <div className="ad-box">
-              <h4>Book it <Tip label="What Turn into a booking does">Creates the booking with the details from this enquiry already filled in. You check and change anything you agreed, then they get an email to sign the booking agreement and pay online. If they have no account, the booking waits for them to create one with {q.email || "their email"}.</Tip></h4>
-              <button type="button" className="t-btn t-btn-primary" onClick={() => { setMsg(null); setBooking(true); }} disabled={!q.email}>{q.email ? "Turn into a booking" : "Needs their email to book online"}</button>
-            </div>
-          )}
           <div className="ad-box">
             <h4>Private note <Tip label="About private notes">Only you see this. It isn&apos;t sent to the customer or shown on their link.</Tip></h4>
             <textarea rows={3} value={note} onChange={(e) => setNote(e.target.value)} aria-label="Private note" />

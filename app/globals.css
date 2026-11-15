@@ -4369,3 +4369,18 @@ body:has(.sm-app) { background: #001A33; }
 .ad-addline select { flex: 1; min-width: 200px; }
 .ad-total { display: flex; justify-content: space-between; align-items: baseline; padding-top: 10px; border-top: 1px solid var(--t-line-strong); font: 800 1.25rem var(--font-display); }
 .ad-compare { margin: 0; }
+/* Check and accept (components/acct/AdminEnquiries.jsx) */
+.ad-accept { display: grid; gap: 12px; padding: 18px 20px; border-radius: 12px; border: 2px solid rgba(47,191,113,.55); background: rgba(47,191,113,.07); }
+.ad-accept h4 { margin: 0; font: 800 1.25rem var(--font-display); }
+.ad-accept-dl { display: grid; gap: 6px; margin: 0; }
+.ad-accept-dl div { display: grid; grid-template-columns: 110px minmax(0, 1fr); gap: 10px; }
+.ad-accept-dl dt { color: var(--t-fg-soft); font-weight: 600; }
+.ad-accept-dl dd { margin: 0; }
+.ad-accept-lines { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+.ad-accept-lines li { display: flex; justify-content: space-between; gap: 12px; padding: 4px 0; border-bottom: 1px dashed var(--t-line); }
+.ad-accept-total { border-bottom: 0 !important; padding-top: 8px !important; font: 800 1.2rem var(--font-display); }
+.ad-accept p { margin: 0; }
+.ad-accept-btn { font-size: 1.05rem; padding-inline: 26px; }
+.ad-accepted { border-color: rgba(140,185,235,.4); background: rgba(140,185,235,.06); }
+.ad-as { margin: 0; }
+@media (max-width: 560px) { .ad-accept-dl div { grid-template-columns: 1fr; gap: 0; } }
