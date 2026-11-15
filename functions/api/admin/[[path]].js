@@ -23,13 +23,14 @@ export async function onRequest({ request, env, params }) {
       await tidy(env);
       await bundleJobs(env);
       const q = (sql) => D.prepare(sql).first();
-      const [c, b, o, n] = await Promise.all([
+      const [c, b, o, n, tc] = await Promise.all([
         q("SELECT COUNT(*) n FROM users WHERE role = 'customer'"),
         q("SELECT COUNT(*) n FROM bookings"),
         q("SELECT COUNT(*) n FROM bookings WHERE status IN ('requested','awaiting_payment','cancel_requested')"),
         q("SELECT COUNT(*) n FROM bookings WHERE status = 'confirmed'"),
+        q("SELECT COUNT(*) n FROM users WHERE test = 1"),
       ]);
-      return json({ me: publicUser(me), counts: { customers: c.n, bookings: b.n, toDo: o.n, upcoming: n.n }, config: { test: testMode(env), stripe: !!env.STRIPE_SECRET_KEY, mail: !!env.RESEND_KEY } });
+      return json({ me: publicUser(me), counts: { customers: c.n, bookings: b.n, toDo: o.n, upcoming: n.n, testCustomers: tc.n }, config: { test: testMode(env), stripe: !!env.STRIPE_SECRET_KEY, mail: !!env.RESEND_KEY } });
     }
 
     if (path === "bookings" && m === "GET") {

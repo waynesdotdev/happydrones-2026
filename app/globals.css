@@ -4314,3 +4314,4 @@ body:has(.sm-app) { background: #001A33; }
 .ad-sig a { color: var(--t-accent-hi); }
 .pk-book { display: block; margin-top: 10px; text-align: center; font-weight: 700; font-size: .92rem; color: inherit; text-decoration: underline; text-underline-offset: 3px; }
 .pk-book:hover { opacity: .8; }
+.ad-now { margin: 0 0 4px; padding: 10px 12px; border-radius: 8px; background: rgba(255,255,255,.05); }
