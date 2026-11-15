@@ -15,7 +15,7 @@ export default function PrivacyPage() {
       <section className="simple">
         <div className="wrap simple-inner">
           <h1 className="section-title">Privacy policy</h1>
-          <p><em>Last updated: 25 October 2026</em></p>
+          <p><em>Last updated: 15 November 2026</em></p>
 
           <h2>Who I am</h2>
           <p>Happy Drones is run by Wayne Fox, {SITE.base}, United Kingdom. Contact me at <a href={`mailto:${SITE.email}`}>{SITE.email}</a> about anything on this page.</p>
@@ -38,6 +38,9 @@ export default function PrivacyPage() {
             <li>YouTube plays videos, only after you press play, in privacy-enhanced mode.</li>
             <li>Cloudflare protects the site and may set a short-lived security cookie. See the <Link href="/cookies/">cookie policy</Link>.</li>
           </ul>
+
+          <h2>How this website is built</h2>
+          <p>The website and its tools were built with the help of AI and checked by Wayne before going live. No AI is used to handle your booking or your personal details: your enquiry goes to Wayne, and every price, date and decision about your job is made by a person.</p>
 
           <h2>Filming and people</h2>
           <p>I plan flights to avoid filming people who aren&apos;t part of the job. If you think you appear in my footage and want it removed, contact me.</p>

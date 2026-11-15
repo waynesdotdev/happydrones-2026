@@ -4179,3 +4179,4 @@ body:has(.sm-app) { background: #001A33; }
 .pg-hint { margin: -6px 0 0; text-align: right; }
 .pg-real { margin: 0; color: var(--t-fg-soft); font-size: .92rem; }
 .pg-real a { color: var(--t-accent-hi); font-weight: 700; }
+.footer-ai { opacity: .75; }

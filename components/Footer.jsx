@@ -70,7 +70,7 @@ export default function Footer() {
       </div>
 
       <div className="wrap footer-base">
-        <p>&copy; {new Date().getFullYear()} {SITE.name}</p>
+        <p>&copy; {new Date().getFullYear()} {SITE.name} <span className="footer-ai">· Tools built with AI, checked by Wayne. Final decisions are always made by a person.</span></p>
         {SITE.email && <p><a href={`mailto:${SITE.email}`}>{SITE.email}</a></p>}
       </div>
     </footer>
