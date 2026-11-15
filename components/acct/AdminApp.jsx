@@ -105,6 +105,10 @@ function Customers() {
   const load = useCallback(async () => { const r = await api(`/api/admin/customers?q=${encodeURIComponent(q)}`); setRows(r.customers || []); }, [q]);
   useEffect(() => { const t = setTimeout(load, 250); return () => clearTimeout(t); }, [load]);
   async function view(id) { const r = await api(`/api/admin/customer/${id}`); setOpen(r.error ? null : r); }
+  async function extend(id) {
+    if (!confirm("Extend this bundle by 1 month? It's the one extension in 3.10, and the customer gets an email.")) return;
+    const r = await api(`/api/admin/bundle/${id}/extend`, {}); if (r.error) return alert(r.message); view(open.customer.id);
+  }
   async function del(id) {
     if (!confirm("Delete this customer's account and personal details? Their bookings stay, without their details, for the tax records. This can't be undone.")) return;
     const r = await api(`/api/admin/customer/${id}/delete`, {}); if (r.error) return alert(r.message); setOpen(null); load();
@@ -133,7 +137,13 @@ function Customers() {
           </dl>
           <h4>Bookings</h4>
           <ul className="ad-hist">{open.bookings.map((b) => <li key={b.ref}><span className="t-mono">{b.ref}</span> {b.service} · {b.postcode} · {money(b.total)} · {STATUS[b.status]?.[0]}</li>)}</ul>
-          {open.bundles.map((b) => <p key={b.id} className="ac-small">Bundle: {b.used} of {b.size} used{b.active ? "" : " (not paid yet)"}</p>)}
+          {open.bundles.map((b) => (
+            <div key={b.id} className="ac-small ad-bundle">
+              Bundle: {b.used} of {b.size} used
+              {!b.active ? " (not paid yet)" : b.closed ? ` · ended${b.refund ? ` · refund due £${b.refund}` : ""}` : ` · ends ${when(b.expires)}${b.extended ? " (extended)" : ""}`}
+              {b.active && !b.closed && !b.extended && <button type="button" className="ac-link" onClick={() => extend(b.id)}> Extend by 1 month</button>}
+            </div>
+          ))}
           <div className="ac-actions">
             <a className="t-btn t-btn-ghost" href={`/api/admin/customer/${open.customer.id}/export`}>Export their data</a>
             {open.customer.role !== "admin" && <button type="button" className="t-btn t-btn-ghost ac-del" onClick={() => del(open.customer.id)}>Delete customer</button>}

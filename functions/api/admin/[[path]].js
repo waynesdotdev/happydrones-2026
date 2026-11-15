@@ -2,7 +2,7 @@
    the account whose email matches ADMIN_EMAIL, signed in with
    password + emailed code. Every change is written to the activity log. */
 import { json, fail, now, testMode, sameSite, body, db, tidy, log, currentUser, publicUser, hashPassword, passwordProblem,
-  MAIL, sendMail, recordPayment, deleteUser } from "../../../lib/acct/server.js";
+  MAIL, sendMail, recordPayment, deleteUser, bundleJobs, extendBundle } from "../../../lib/acct/server.js";
 
 const clean = (s, n = 500) => String(s || "").replace(/[\u0000-\u001f]/g, " ").trim().slice(0, n);
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
@@ -19,6 +19,7 @@ export async function onRequest({ request, env, params }) {
 
     if (path === "overview" && m === "GET") {
       await tidy(env);
+      await bundleJobs(env);
       const q = (sql) => D.prepare(sql).first();
       const [c, b, o, n] = await Promise.all([
         q("SELECT COUNT(*) n FROM users WHERE role = 'customer'"),
@@ -73,6 +74,7 @@ export async function onRequest({ request, env, params }) {
         case "cancel": {
           await set("status = 'cancelled'");
           if (b.bundle_id) await D.prepare("UPDATE bundles SET used = MAX(0, used - 1) WHERE id = ?").bind(b.bundle_id).run();
+          if (b.service_id === "bundle") await D.prepare("UPDATE bundles SET closed = 1 WHERE booking_id = ?").bind(b.id).run();
           await log(env, actor, "cancelled", b.ref, clean(x.reason, 200));
           if (u) await sendMail(env, u.email, MAIL.cancelled(u, b), "cancelled");
           break;
@@ -84,6 +86,7 @@ export async function onRequest({ request, env, params }) {
         }
         case "reopen": {
           await set("status = 'requested', confirmed_date = NULL, confirmed_time = NULL");
+          if (b.service_id === "bundle") await D.prepare("UPDATE bundles SET closed = 0, refund = 0 WHERE booking_id = ? AND (expires IS NULL OR expires > ?)").bind(b.id, now()).run();
           await log(env, actor, "reopened", b.ref);
           break;
         }
@@ -121,6 +124,15 @@ export async function onRequest({ request, env, params }) {
         await log(env, actor, "customer-deleted", `user ${u.id}`);
         return json({ ok: true });
       }
+    }
+
+    const bx = path.match(/^bundle\/(\d+)\/extend$/);
+    if (bx && m === "POST") {
+      const x = await D.prepare("SELECT * FROM bundles WHERE id = ?").bind(Number(bx[1])).first();
+      if (!x || !x.active || x.closed) return fail("missing", "No open bundle with that number.", 404);
+      if (x.extended) return fail("extended", "This bundle has already had its extension.");
+      const expires = await extendBundle(env, x, actor);
+      return json({ ok: true, expires });
     }
 
     if (path === "outbox" && m === "GET") {

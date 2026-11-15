@@ -12,7 +12,7 @@ export const metadata = {
   alternates: { canonical: "/terms/" },
 };
 
-const UPDATED = "8 November 2026";
+const UPDATED = "15 November 2026";
 
 // Numbered clause: <C n="3.2" t="Deposit:">text</C>
 function C({ n, t, children }) {
@@ -39,7 +39,7 @@ const JOB_ROWS = [
   ["Shoot date and time (or visit schedule)", ""],
   ["Delivery time", "e.g. within 72 hours of the shoot"],
   ["Price", "£"],
-  ["Payment terms", "Standard: 25% deposit, balance before full files (3.2–3.5) / Invoice terms: 30 days per invoice (3.8) / Agent account: monthly invoice, 30 days, £1,000 credit limit (3.9)"],
+  ["Payment terms", "Standard: 25% deposit, balance before full files (3.2–3.5) / Invoice terms: 30 days per invoice (3.8) / Agent account: monthly invoice, 30 days, £1,000 credit limit (3.9) / Listing bundle: paid in full up front (3.10)"],
   ["Deposit (standard terms only)", "£, due on signing"],
   ["Balance (standard terms only)", "£, due before full files are released"],
   ["Costs invoiced in advance (invoice terms only)", ""],
@@ -75,7 +75,7 @@ export default function TermsPage() {
 
           <h2>At a glance</h2>
           <ul>
-            <li><b>Your booking is secured</b> when you sign and pay a 25% deposit. Bigger jobs on invoice terms just need your signature.</li>
+            <li><b>Your booking is secured</b> when you sign (or accept online) and pay a 25% deposit. Bigger jobs on invoice terms just need your signature.</li>
             <li><b>The balance is paid before you get the full files.</b> You&apos;ll see previews first; full-resolution files are released as soon as payment clears. Jobs of £1,000 or more, and contracts with repeat visits, are invoiced on 30-day terms instead (see 3.8). Estate agent accounts get one monthly invoice instead, with a £1,000 credit limit (see 3.9).</li>
             <li><b>The deposit is non-refundable if you cancel.</b> Homeowners keep their legal 14-day right to cancel (see section 7).</li>
             <li><b>If the weather or safety rules stop the flight, we reschedule at no cost.</b> I make the call on whether it&apos;s safe and legal to fly.</li>
@@ -90,8 +90,8 @@ export default function TermsPage() {
             {SITE.email && <> Email <a href={`mailto:${SITE.email}`}>{SITE.email}</a>.</>} Website {site}.
           </C>
           <C n="1.2" t="You:">the person or business named in the Job Details. If you&apos;re booking for a business, you confirm you&apos;re allowed to sign for it.</C>
-          <C n="1.3" t="How this agreement works:">it&apos;s made up of these terms plus the Job Details at the end. If they ever disagree, the Job Details win.</C>
-          <C n="1.4" t="Signing:">you can sign electronically. An electronic signature is as binding as a handwritten one. You&apos;ll get a signed copy by email for your records.</C>
+          <C n="1.3" t="How this agreement works:">it&apos;s made up of these terms plus the Job Details at the end. If they ever disagree, the Job Details win. When you book online, the booking details shown in your account and in your confirmation email are the Job Details.</C>
+          <C n="1.4" t="Signing:">you can sign electronically, or accept this agreement online by ticking the box when you book through your Happy Drones account. Either way, it&apos;s as binding as a handwritten signature. You&apos;ll get a copy by email for your records.</C>
 
           <h2>2. The job</h2>
           <C n="2.1">I&apos;ll do the work described in the Job Details: the service, location, date and what you&apos;ll receive.</C>
@@ -100,10 +100,10 @@ export default function TermsPage() {
 
           <h2>3. Price, deposit and payment</h2>
           <C n="3.1" t="The price">is in the Job Details. If I&apos;m VAT registered, VAT is shown separately.</C>
-          <C n="3.2" t="Deposit:">a 25% deposit secures your date. Until it&apos;s paid, the date isn&apos;t held and I can offer it to someone else.</C>
+          <C n="3.2" t="Deposit:">a 25% deposit secures your date. Until it&apos;s paid, the date isn&apos;t held and I can offer it to someone else. When you book online, you pay the deposit by card as you book.</C>
           <C n="3.3" t="Balance:">after the shoot I&apos;ll send watermarked previews and an invoice for the balance. The full-resolution files are released once that payment clears.</C>
           <C n="3.4" t="Previews are for checking only.">Please don&apos;t publish, upload or share them anywhere.</C>
-          <C n="3.5" t="Pay within 14 days">of the invoice by bank transfer or the card payment link I send. Bank details are on the invoice.</C>
+          <C n="3.5" t="Pay within 14 days">of the invoice by bank transfer, the card payment link I send, or by card in your online account. Bank details are on the invoice.</C>
           <C n="3.6" t="Late payment:">if the balance is late, I can charge interest.</C>
           <ul>
             <li><b>Businesses:</b> statutory interest and compensation under the Late Payment of Commercial Debts (Interest) Act 1998.</li>
@@ -126,6 +126,17 @@ export default function TermsPage() {
             <li>The account has a credit limit of £1,000. That&apos;s the most that can be owed at any time, counting work done but not yet paid for. Once it&apos;s reached, new shoots wait until a payment brings the total back under £1,000.</li>
             <li>If an invoice is overdue, I can pause bookings and hold back files not yet delivered until it&apos;s paid. I can also close the account and go back to standard terms for future bookings. Sections 3.6 and 3.7 still apply.</li>
             <li>This agreement covers every listing on the account. Each listing&apos;s address, package and shoot date are confirmed in writing when it&apos;s booked; an email or message is fine.</li>
+          </ul>
+          <C n="3.10" t="Listing bundles:">a bundle of 10 listings is paid in full up front, at a discount. For a bundle and the listings booked from it, the following replaces 3.2 to 3.5:</C>
+          <ul>
+            <li>You pay for the whole bundle when you book it. Each listing you then book from it only costs the travel fee for that address, if there is one, paid when you book the listing.</li>
+            <li>You have 3 months from the day your payment clears to book the listings. A listing counts as used once it&apos;s booked. If it&apos;s cancelled, it goes back into the bundle.</li>
+            <li>2 weeks before the end, I&apos;ll email you a reminder with the end date and how many listings are left.</li>
+            <li>You can extend the bundle once, by 1 month, free. You can do this yourself in your online account in the last 2 weeks, or ask me.</li>
+            <li>When the bundle ends, if you booked it as a business, any listings not yet booked expire and aren&apos;t refunded.</li>
+            <li>If you booked it as a consumer, I&apos;ll refund any listings not yet booked at the bundle price (the bundle price divided by 10, for each one) to your original payment method, within 14 days of the end date.</li>
+            <li>Files for each listing are sent as soon as they&apos;re ready, as the bundle is already paid for.</li>
+            <li>Consumers also have the 14-day right to cancel in section 7. If you cancel the bundle within those 14 days after some listings have been done, you pay for those at the bundle price and I refund the rest.</li>
           </ul>
 
           <h2>4. Weather, safety and the law</h2>
@@ -155,10 +166,10 @@ export default function TermsPage() {
 
           <h2>7. Your right to cancel (homeowners and other consumers)</h2>
           <p>This section only applies if you&apos;re booking as a private individual, not for a business such as an estate agent or developer. It&apos;s your legal right under the Consumer Contracts (Information, Cancellation and Additional Charges) Regulations 2013.</p>
-          <C n="7.1" t="You can cancel within 14 days">of the day you sign, for any reason.</C>
-          <C n="7.2" t="To cancel,">tell me clearly by email to {SITE.email || "the email address on your agreement"}, or by letter. You can use the cancellation form at the end, but you don&apos;t have to. Your message just needs to reach me before the 14 days are up.</C>
+          <C n="7.1" t="You can cancel within 14 days">of the day you sign, or the day you book online, for any reason.</C>
+          <C n="7.2" t="To cancel,">tell me clearly by email to {SITE.email || "the email address on your agreement"}, or by letter, or use the cancel button on the booking in your online account. You can use the cancellation form at the end, but you don&apos;t have to. Your message just needs to reach me before the 14 days are up.</C>
           <C n="7.3" t="If the work hasn't started,">I&apos;ll refund everything you&apos;ve paid, including the deposit, within 14 days of hearing from you. The refund goes back the same way you paid.</C>
-          <C n="7.4" t="If you want the shoot inside the 14 days,">you need to ask me to start early by ticking the box when you sign. If you then cancel after work has started, you&apos;ll pay for the work done up to the moment you told me. That&apos;s a fair share of the price.</C>
+          <C n="7.4" t="If you want the shoot inside the 14 days,">you need to ask me to start early by ticking the box when you sign or book online. If you then cancel after work has started, you&apos;ll pay for the work done up to the moment you told me. That&apos;s a fair share of the price.</C>
           <C n="7.5" t="Once the work is fully done,">having asked me to start early, you lose the right to cancel. The work is complete when the shoot has taken place and the files are delivered.</C>
           <C n="7.6">After the 14 days, section 6 applies.</C>
 
@@ -190,7 +201,7 @@ export default function TermsPage() {
           <ul>
             <li><b>Standard:</b> my credit may appear on the video end card, and 9.5 applies.</li>
             <li><b>Agency-branded (included):</b> your logo goes on the video intro and end cards, and my credit doesn&apos;t appear on any file. I only use the work under 9.5 after the property has sold or let.</li>
-            <li><b>White label:</b> everything is delivered in your branding with no mention of Happy Drones, and I may contact the vendor and attend as your photographer. I won&apos;t credit myself or show the work anywhere, and 9.5 doesn&apos;t apply. I still own the copyright, and your licence is the same as in 9.2. It costs £29 per listing, £15 per listing on an agent account of 4 or more listings a month, and nothing on a bundle of 10 listings paid up front and used within 3 months, or on 10 or more listings a month.</li>
+            <li><b>White label:</b> everything is delivered in your branding with no mention of Happy Drones, and I may contact the vendor and attend as your photographer. I won&apos;t credit myself or show the work anywhere, and 9.5 doesn&apos;t apply. I still own the copyright, and your licence is the same as in 9.2. It costs £29 per listing, £15 per listing on an agent account of 4 or more listings a month, and nothing on a listing bundle (3.10) or on 10 or more listings a month.</li>
           </ul>
 
           <h2>10. Liability and insurance</h2>
@@ -210,6 +221,7 @@ export default function TermsPage() {
           <C n="12.2" t="If part doesn't work:">if a court decides any part of this agreement can&apos;t be enforced, the rest still applies.</C>
           <C n="12.3" t="Sorting out problems:">if something isn&apos;t right, tell me first and I&apos;ll do my best to put it right quickly. Most things can be fixed with a conversation.</C>
           <C n="12.4" t="Law:">this agreement is governed by the law of England and Wales, and the courts of England and Wales deal with any dispute. If you&apos;re a consumer living in Scotland or Northern Ireland, you can also bring a claim in your local courts.</C>
+          <C n="12.5" t="Your online account:">if you book through an online account, keep your password private and don&apos;t let anyone else use it. Bookings made from your account are treated as yours. Tell me straight away if you think someone else has used it. You can delete your account at any time; the <Link href="/privacy/">privacy policy</Link> explains what&apos;s kept for the tax records.</C>
 
           <h2>Job Details</h2>
           <p>Filled in for each booking. If anything here differs from the terms above, this wins.</p>

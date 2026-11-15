@@ -3,7 +3,7 @@
    messages are ignored. Each event is only ever counted once.
    In Stripe: Developers → Webhooks → add https://happydrones.co.uk/api/stripe-webhook
    with the event "checkout.session.completed". */
-import { json, now, db, stripeVerify, recordPayment } from "../../lib/acct/server.js";
+import { json, now, db, stripeVerify, settleSession } from "../../lib/acct/server.js";
 
 export async function onRequestPost({ request, env }) {
   if (!env.STRIPE_WEBHOOK_SECRET || !env.DB) return json({ error: "not set up" }, 503);
@@ -16,7 +16,7 @@ export async function onRequestPost({ request, env }) {
   await D.prepare("INSERT INTO limits (k, n, reset) VALUES (?, 1, ?)").bind(`evt:${evt.id}`, now() + 60 * 86400).run();
   if (evt.type === "checkout.session.completed") {
     const s = evt.data.object;
-    if (s.payment_status === "paid" && s.metadata?.ref) await recordPayment(env, s.metadata.ref, Math.round((s.amount_total || 0) / 100), "stripe");
+    await settleSession(env, s, "stripe");
   }
   return json({ ok: true });
 }

@@ -28,7 +28,8 @@
 - [ ] **ICO registration** (data protection fee, about £52 a year) before real customers sign up.
 - [x] **Privacy policy update** for accounts, Stripe, Resend and Cloudflare (15 Nov).
 - [ ] **ICO number on the privacy policy.** Once registered, add the registration number to the "Who I am" section.
-- [ ] **Booking agreement clauses** for the 10-listing bundle (paid up front, 3 months) and small jobs paid in full online. Update the signed contract and /terms together.
+- [x] **Booking agreement clauses** for online booking and the 10-listing bundle (3.10), in /terms and the signed document (15 Nov).
+- [ ] **Bundle reminders run when someone opens the site.** They check at most once an hour, when you open the admin or a customer opens their account. On a quiet week a reminder could go out a little late. Later: a scheduled daily check.
 - [ ] **Going live with real customers:** turn `TEST_MODE` off, swap Stripe test keys for live ones. Optional: Workers Paid ($5/month) and `PW_ITER` = 100000 for stronger password hashing.
 - [ ] **Later: click, pay, Wayne turns up.** Fully automatic flow: customer picks a service and a slot from Wayne's real availability, pays in full, it lands in Google Calendar, morning-of reminder email, delivery and a review request afterwards. Needs Google Calendar and Drive connected; backups of the database too.
 

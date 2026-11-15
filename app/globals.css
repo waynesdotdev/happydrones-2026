@@ -4262,7 +4262,8 @@ body:has(.sm-app) { background: #001A33; }
 .ac-show { all: unset; position: absolute; top: 50%; right: 8px; transform: translateY(-50%); padding: 6px 10px; border-radius: 999px; font-size: 0.82rem; font-weight: 700; color: var(--t-accent-hi); cursor: pointer; }
 .ac-show:hover { background: rgba(255, 255, 255, 0.06); }
 .ac-show:focus-visible { outline: 2px solid var(--t-accent); }
-.t-hint.ac-good { color: #6EE7A8; }
+.t-hint.ac-good { color: #6EE7A8; background: none; }
 .t-hint.ac-bad { color: #FF9B8A; }
 .ac-pw input[aria-invalid="true"] { border-color: #FF9B8A; }
 .ac-suggest { text-decoration: underline; word-break: break-all; }
+.ac-confirming { background: rgba(47,191,113,.18); color: #8FE5B5; }

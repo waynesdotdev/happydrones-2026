@@ -16,7 +16,7 @@ const minDate = () => new Date(Date.now() + 2 * 864e5).toISOString().slice(0, 10
 
 function Badge({ status }) { const [w, c] = STATUS[status] || [status, "info"]; return <span className={`ac-badge ac-${c}`}>{w}</span>; }
 
-function Bookings({ data, reload, onBook }) {
+function Bookings({ data, reload, onBook, confirming }) {
   const [busy, setBusy] = useState("");
   const [msg, setMsg] = useState("");
   async function pay(ref) {
@@ -36,14 +36,18 @@ function Bookings({ data, reload, onBook }) {
   return (
     <div className="ac-list">
       {data.bundles.map((b) => (
-        <div className="ac-bundle" key={b.id}><b>{b.used} of {b.size}</b> bundle listings used · {b.size - b.used} left · use by {longDate(new Date(b.expires * 1000).toISOString().slice(0, 10))}
-          {b.used < b.size && <button type="button" className="t-btn t-btn-ghost" onClick={() => onBook(true)}>Book a listing</button>}</div>
+        <div className="ac-bundle" key={b.id}><b>{b.used} of {b.size}</b> bundle listings used · {b.size - b.used} left · use by {longDate(new Date(b.expires * 1000).toISOString().slice(0, 10))}{b.extended ? " (extended)" : ""}
+          {b.used < b.size && <button type="button" className="t-btn t-btn-ghost" onClick={() => onBook(true)}>Book a listing</button>}
+          {b.canExtend && b.used < b.size && <button type="button" className="t-btn t-btn-ghost" onClick={async () => {
+            if (!confirm("Extend your bundle by 1 month? You can only do this once.")) return;
+            const r = await api(`/api/acct/bundle/${b.id}/extend`, {}); setMsg(r.error ? r.message : "Extended by 1 month. Check your email for the new end date."); reload();
+          }}>Extend by 1 month</button>}</div>
       ))}
       {msg && <p className="ac-ok" role="status">{msg}</p>}
       {data.bookings.length === 0 && <div className="ac-empty"><p>No bookings yet.</p><button type="button" className="t-btn t-btn-primary" onClick={() => onBook(false)}>Book a job</button></div>}
       {data.bookings.map((b) => (
         <article className="ac-card" key={b.ref} id={`booking-${b.ref}`}>
-          <header><span className="t-mono">{b.ref}</span><Badge status={b.status} /></header>
+          <header><span className="t-mono">{b.ref}</span>{confirming === b.ref ? <span className="ac-badge ac-confirming">Confirming payment…</span> : <Badge status={b.status} />}</header>
           <h3>{b.service}</h3>
           <p className="ac-meta">{b.postcode}{b.address ? ` · ${b.address}` : ""}</p>
           <dl className="ac-dl">
@@ -54,7 +58,8 @@ function Bookings({ data, reload, onBook }) {
           {b.files && <a className="t-btn t-btn-primary" href={b.files} target="_blank" rel="noopener">Open your files ↗</a>}
           {b.filesWaiting && <p className="ac-note">Your files are ready. Pay the balance to unlock them.</p>}
           <div className="ac-actions">
-            {b.owed > 0 && <button type="button" className="t-btn t-btn-primary" disabled={busy === b.ref} onClick={() => pay(b.ref)}>Pay {money(b.owed)}</button>}
+            {confirming === b.ref && <p className="ac-note" role="status">Thanks, Stripe has taken your payment. Just confirming it now; you don&apos;t need to pay again.</p>}
+            {b.owed > 0 && confirming !== b.ref && <button type="button" className="t-btn t-btn-primary" disabled={busy === b.ref} onClick={() => pay(b.ref)}>Pay {money(b.owed)}</button>}
             {!["cancelled", "delivered", "cancel_requested"].includes(b.status) && <button type="button" className="t-btn t-btn-ghost" disabled={busy === b.ref} onClick={() => cancel(b.ref)}>{b.status === "confirmed" ? "Ask to cancel" : "Cancel"}</button>}
           </div>
           <p className="ac-small">Booked {when(b.created)} under booking agreement version {b.agreement}.</p>
@@ -192,7 +197,31 @@ export default function AccountApp() {
   const [flash, setFlash] = useState("");
   const load = useCallback(async () => { const r = await api("/api/acct/me"); setState(r.error ? { error: r.message } : { user: r.user, config: r.config }); }, []);
   const reload = useCallback(async () => { const r = await api("/api/acct/bookings"); if (!r.error) setData(r); }, []);
-  useEffect(() => { load(); if (location.hash.startsWith("#paid-")) setFlash("Thanks, your payment went through. It can take a minute to show here."); }, [load]);
+  const [confirming, setConfirming] = useState("");
+  useEffect(() => {
+    load();
+    const h = location.hash;
+    if (h.startsWith("#paid-")) setConfirming(h.slice(6));
+    if (h.startsWith("#booking-")) setFlash("Payment not finished, so nothing was taken. You can pay whenever you're ready.");
+    if (h) history.replaceState(null, "", location.pathname);
+  }, [load]);
+  // Back from Stripe: check with Stripe until the payment shows (usually straight away)
+  useEffect(() => {
+    if (!confirming || !state.user) return;
+    let stop = false;
+    (async () => {
+      // Quick checks for 20 seconds, then every 15 seconds for 5 minutes. The Pay
+      // button stays hidden meanwhile so nobody pays twice.
+      for (let i = 0; i < 28 && !stop; i++) {
+        const r = await api(`/api/acct/booking/${confirming}/check`, {});
+        if (r.paid) { if (!stop) { setFlash("Payment received, thank you. Your receipt is on its way by email."); setConfirming(""); reload(); } return; }
+        if (i === 7 && !stop) setFlash("Stripe has your payment and is still confirming it. You don't need to pay again; it'll show here within a few minutes.");
+        await new Promise((ok) => setTimeout(ok, i < 8 ? 2500 : 15000));
+      }
+      if (!stop) { setFlash("Still waiting for Stripe to confirm. If you paid, you don't need to pay again: Wayne will check and it'll show here. Any questions, just reply to your booking email."); setConfirming(""); reload(); }
+    })();
+    return () => { stop = true; };
+  }, [confirming, state.user, reload]);
   useEffect(() => { if (state.user) reload(); }, [state.user, reload]);
 
   const topRef = useScrollToTop(`${tab}|${!!state.user}`);
@@ -213,7 +242,7 @@ export default function AccountApp() {
         </nav>
       </div>
       {flash && <p className="ac-ok">{flash}</p>}
-      {tab === "bookings" && <Bookings data={data} reload={reload} onBook={(b) => { setBundleStart(b); setTab("book"); }} />}
+      {tab === "bookings" && <Bookings data={data} confirming={confirming} reload={reload} onBook={(b) => { setBundleStart(b); setTab("book"); }} />}
       {tab === "book" && <Book config={state.config} hasBundle={!!data?.bundles?.some((b) => b.used < b.size)} startWithBundle={bundleStart} onBooked={() => { setFlash("Booked. Check your bookings for what happens next."); setTab("bookings"); reload(); }} />}
       {tab === "details" && <Details user={u} onUser={(user) => setState((s) => ({ ...s, user }))} onGone={() => { setState((s) => ({ ...s, user: null })); setFlash(""); alert("Your account has been deleted."); }} />}
     </div>

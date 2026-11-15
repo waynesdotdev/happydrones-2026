@@ -2,8 +2,8 @@
    Sign-in is two-step: password, then a 6-digit code sent by email.
    Helpers and settings: lib/acct/server.js. Prices: lib/acct/catalog.js. */
 import { json, fail, now, ipOf, testMode, sameSite, body, db, tidy, log, limited, hashPassword, checkPassword, passwordProblem,
-  newCode, useCode, startSession, endSession, endCookie, currentUser, publicUser, MAIL, sendMail, stripeCheckout, recordPayment, randomHex, deleteUser } from "../../../lib/acct/server.js";
-import { priceFor, tidyPostcode, AGREEMENT_VERSION, bundleSize } from "../../../lib/acct/catalog.js";
+  newCode, useCode, startSession, endSession, endCookie, currentUser, publicUser, MAIL, sendMail, stripeCheckout, recordPayment, randomHex, deleteUser, bundleJobs, extendBundle, stripeSession, settleSession } from "../../../lib/acct/server.js";
+import { priceFor, tidyPostcode, AGREEMENT_VERSION, bundleSize, BUNDLE_WARN_DAYS } from "../../../lib/acct/catalog.js";
 
 const EMAIL = /^[^\s@]{1,64}@[^\s@]{1,190}\.[a-z]{2,}$/i;
 const cleanEmail = (e) => String(e || "").trim().toLowerCase();
@@ -127,9 +127,24 @@ export async function onRequest(ctx) {
     if (!u) return fail("auth", "Please sign in.", 401);
 
     if (path === "bookings" && m === "GET") {
+      await bundleJobs(env);
       const { results } = await D.prepare("SELECT * FROM bookings WHERE user_id = ? ORDER BY id DESC").bind(u.id).all();
-      const { results: bundles } = await D.prepare("SELECT * FROM bundles WHERE user_id = ? AND active = 1 ORDER BY id DESC").bind(u.id).all();
+      const { results: rows } = await D.prepare("SELECT * FROM bundles WHERE user_id = ? AND active = 1 AND closed = 0 ORDER BY id DESC").bind(u.id).all();
+      const t = now();
+      const bundles = rows.map((x) => ({ id: x.id, size: x.size, used: x.used, expires: x.expires, extended: !!x.extended, canExtend: !x.extended && x.expires > t && x.expires - t <= BUNDLE_WARN_DAYS * 86400 }));
       return json({ bookings: results.map(view), bundles });
+    }
+
+    const bx = path.match(/^bundle\/(\d+)\/extend$/);
+    if (bx && m === "POST") {
+      const x = await D.prepare("SELECT * FROM bundles WHERE id = ? AND user_id = ?").bind(Number(bx[1]), u.id).first();
+      if (!x || !x.active || x.closed) return fail("missing", "Bundle not found.", 404);
+      if (x.extended) return fail("extended", "This bundle has already had its one extension.");
+      const t = now();
+      if (x.expires <= t) return fail("ended", "This bundle has already ended.");
+      if (x.expires - t > BUNDLE_WARN_DAYS * 86400) return fail("early", `You can extend in the last ${BUNDLE_WARN_DAYS} days before it ends.`);
+      const expires = await extendBundle(env, x, u.email);
+      return json({ ok: true, expires });
     }
 
     if (path === "quote" && m === "POST") {
@@ -148,7 +163,7 @@ export async function onRequest(ctx) {
       if (date && date < new Date(Date.now() + 2 * 864e5).toISOString().slice(0, 10)) return fail("date", "Pick a date at least 2 days from now.");
       let bundle = null;
       if (b.useBundle) {
-        bundle = await D.prepare("SELECT * FROM bundles WHERE user_id = ? AND active = 1 AND used < size AND expires > ? ORDER BY id LIMIT 1").bind(u.id, now()).first();
+        bundle = await D.prepare("SELECT * FROM bundles WHERE user_id = ? AND active = 1 AND closed = 0 AND used < size AND expires > ? ORDER BY id LIMIT 1").bind(u.id, now()).first();
         if (!bundle) return fail("bundle", "You don't have a bundle with listings left.");
       }
       const p = priceFor(b.service, postcode, { bundleListing: !!bundle });
@@ -168,7 +183,7 @@ export async function onRequest(ctx) {
       return json({ booking: view(row) });
     }
 
-    const one = path.match(/^booking\/(HD-[A-F0-9]{6})(?:\/(pay|cancel))?$/);
+    const one = path.match(/^booking\/(HD-[A-F0-9]{6})(?:\/(pay|cancel|check))?$/);
     if (one) {
       const b = await D.prepare("SELECT * FROM bookings WHERE ref = ? AND user_id = ?").bind(one[1], u.id).first();
       if (!b) return fail("missing", "Booking not found.", 404);
@@ -186,11 +201,21 @@ export async function onRequest(ctx) {
         const done = await recordPayment(env, b.ref, due, `${u.email} (test payment)`);
         return json({ booking: view(done), simulated: true });
       }
+      if (one[2] === "check" && m === "POST") {
+        // Back from Stripe: ask Stripe directly rather than waiting for the webhook
+        if (b.stripe_session && env.STRIPE_SECRET_KEY && owed(b) > 0) {
+          const s = await stripeSession(env, b.stripe_session);
+          if (s && s.metadata?.ref === b.ref) await settleSession(env, s, `${u.email} (back from Stripe)`);
+        }
+        const fresh = await D.prepare("SELECT * FROM bookings WHERE id = ?").bind(b.id).first();
+        return json({ booking: view(fresh), paid: owed(fresh) === 0 });
+      }
       if (one[2] === "cancel" && m === "POST") {
         if (["cancelled", "delivered", "cancel_requested"].includes(b.status)) return fail("state", "This booking can't be cancelled online.");
         const status = b.status === "confirmed" ? "cancel_requested" : "cancelled";
         await D.prepare("UPDATE bookings SET status = ?, updated = ? WHERE id = ?").bind(status, now(), b.id).run();
         if (b.bundle_id && status === "cancelled") await D.prepare("UPDATE bundles SET used = MAX(0, used - 1) WHERE id = ?").bind(b.bundle_id).run();
+        if (b.service_id === "bundle" && status === "cancelled") await D.prepare("UPDATE bundles SET closed = 1 WHERE booking_id = ?").bind(b.id).run();
         await log(env, u.email, status, b.ref);
         if (status === "cancelled") await sendMail(env, u.email, MAIL.cancelled(u, b), "cancelled");
         if (env.ADMIN_EMAIL) await sendMail(env, env.ADMIN_EMAIL, [`${status === "cancelled" ? "Cancelled" : "Cancellation request"}: ${b.ref}`, `${u.name} (${u.email}) ${status === "cancelled" ? "cancelled" : "asked to cancel"} ${b.service} at ${b.postcode}. Paid so far: £${b.paid}. Check the booking agreement for any refund.`], "admin");
