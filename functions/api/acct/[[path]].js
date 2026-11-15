@@ -9,7 +9,12 @@ import { jobRows, currentTerms, fingerprint, toBase64, ukTime, CONTRACT_FIELDS, 
 const EMAIL = /^[^\s@]{1,64}@[^\s@]{1,190}\.[a-z]{2,}$/i;
 const cleanEmail = (e) => String(e || "").trim().toLowerCase();
 const clean = (s, n = 200) => String(s || "").replace(/[\u0000-\u001f]/g, " ").trim().slice(0, n);
-const dev = (env, code) => (testMode(env) ? { devCode: code } : {});
+/* Test mode shows a code on screen ONLY for test accounts (made in the admin's
+   Test tools) and @example addresses, which can't receive email. Everyone else,
+   including the admin, gets their code by email even in test mode. Showing codes
+   for real accounts would let anyone reset a password and sign in as them. */
+const TEST_ADDR = /@example\.(com|org|net)$/i;
+const dev = (env, code, u) => (testMode(env) && u && (u.test || TEST_ADDR.test(u.email)) ? { devCode: code } : {});
 
 export async function onRequest(ctx) {
   const { request, env, params } = ctx;
@@ -46,7 +51,7 @@ export async function onRequest(ctx) {
       const code = await newCode(env, u.id, "verify");
       await sendMail(env, email, MAIL.verify(u, code), "code");
       await log(env, email, "register");
-      return json({ step: "verify", email, ...dev(env, code) });
+      return json({ step: "verify", email, ...dev(env, code, u) });
     }
 
     if (path === "verify" && m === "POST") {
@@ -78,11 +83,11 @@ export async function onRequest(ctx) {
       if (!u.verified) {
         const code = await newCode(env, u.id, "verify");
         await sendMail(env, u.email, MAIL.verify(u, code), "code");
-        return json({ step: "verify", email: u.email, ...dev(env, code) });
+        return json({ step: "verify", email: u.email, ...dev(env, code, u) });
       }
       const code = await newCode(env, u.id, "login");
       await sendMail(env, u.email, MAIL.login(u, code), "code");
-      return json({ step: "code", email: u.email, ...dev(env, code) });
+      return json({ step: "code", email: u.email, ...dev(env, code, u) });
     }
 
     if (path === "login-code" && m === "POST") {
@@ -101,7 +106,7 @@ export async function onRequest(ctx) {
       const b = await body(request);
       const u = await D.prepare("SELECT * FROM users WHERE email = ? AND verified = 1").bind(cleanEmail(b.email)).first();
       let extra = {};
-      if (u) { const code = await newCode(env, u.id, "reset"); await sendMail(env, u.email, MAIL.reset(u, code), "code"); extra = dev(env, code); }
+      if (u) { const code = await newCode(env, u.id, "reset"); await sendMail(env, u.email, MAIL.reset(u, code), "code"); extra = dev(env, code, u); }
       return json({ step: "reset", email: cleanEmail(b.email), ...extra }); // same answer whether or not the email exists
     }
 
