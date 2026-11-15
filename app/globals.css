@@ -4322,3 +4322,34 @@ body:has(.sm-app) { background: #001A33; }
 .ad-pre { white-space: pre-wrap; word-break: break-word; }
 .ad-pre a { color: var(--t-accent-hi); }
 .ad-panel { grid-auto-rows: max-content; }
+/* Admin detail views are full pages, not pop-overs (Wayne, 15 Nov 2026) */
+.ad-panel { position: static; inset: auto; z-index: auto; width: auto; max-width: 1100px; overflow: visible; padding: 0; background: none; box-shadow: none; }
+.ad-back { justify-self: start; font-weight: 700; }
+/* Enquiry page (components/acct/AdminEnquiries.jsx) */
+.ad-enq-grid { display: grid; gap: 22px; grid-template-columns: minmax(0, 1.6fr) minmax(280px, 1fr); align-items: start; }
+@media (max-width: 860px) { .ad-enq-grid { grid-template-columns: 1fr; } }
+.ad-enq-main { display: grid; gap: 12px; }
+.ad-enq-side { display: grid; gap: 14px; }
+.ad-box { display: grid; gap: 10px; padding: 14px 16px; border: 1px solid var(--t-line-strong); border-radius: 10px; background: rgba(255,255,255,.03); }
+.ad-box h4, .ad-enq h4 { margin: 0; display: flex; align-items: center; gap: 8px; font: 800 1rem var(--font-display); }
+.ad-box p { margin: 0; }
+.ad-moves { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.ad-moves li { display: flex; align-items: center; gap: 8px; }
+.ad-moves .t-btn { flex: 1; }
+.ad-bookform h3 { margin: 0; font: 800 1.2rem var(--font-display); }
+.ad-from { font: 600 .72rem var(--font-body, inherit); padding: 2px 8px; border-radius: 999px; background: rgba(47,191,113,.16); color: #8FE5B5; margin-left: 6px; white-space: nowrap; }
+.ad-from.ad-need { background: rgba(255,193,94,.16); color: #FFD58F; }
+/* (i) tips */
+.ad-tip { position: relative; display: inline-flex; }
+.ad-tip-btn { all: unset; cursor: help; display: inline-grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; box-shadow: inset 0 0 0 1.5px var(--t-line-strong); font: italic 700 .8rem Georgia, serif; color: var(--t-fg-soft); flex: none; }
+.ad-tip-btn:hover, .ad-tip-btn:focus-visible { color: #fff; box-shadow: inset 0 0 0 1.5px var(--t-accent); }
+.ad-tip-box { position: absolute; z-index: 60; right: 0; top: calc(100% + 8px); width: min(300px, 80vw); padding: 10px 12px; border-radius: 8px; background: #0B2C4F; box-shadow: 0 10px 30px rgba(0,0,0,.45), inset 0 0 0 1px var(--t-line-strong); font: 400 .88rem/1.45 var(--font-body, inherit); color: var(--t-fg); text-transform: none; letter-spacing: 0; opacity: 0; visibility: hidden; transition: opacity .12s; }
+.ad-tip:hover .ad-tip-box, .ad-tip:focus-within .ad-tip-box, .ad-tip.is-open .ad-tip-box { opacity: 1; visibility: visible; }
+.ad-filters { align-items: center; }
+.ad-filters .ad-tip-btn { padding: 0; width: 22px; height: 22px; border-radius: 50%; box-shadow: inset 0 0 0 1.5px var(--t-line-strong); }
+/* Job map: only shown once it loads (components/SiteMapView.jsx) */
+.sm-map-wait .sm-tiles { opacity: 0; }
+.sm-map-loading { position: absolute; inset: 0; display: grid; place-items: center; font-weight: 700; color: #4a5b6e; }
+.sm-map-off { height: auto; min-height: 0; display: grid; gap: 12px; padding: 18px; background: rgba(140,185,235,.12); color: inherit; }
+.sm-map-off p { margin: 0; }
+.sm-map-links { display: flex; flex-wrap: wrap; gap: 10px; }

@@ -35,8 +35,9 @@ function BookingPanel({ refId, onClose, onChanged }) {
   if (!d) return <div className="ad-panel"><p>Loading…</p></div>;
   const b = d.booking;
   return (
-    <div className="ad-panel" role="dialog" aria-label={`Booking ${b.ref}`}>
-      <div className="ad-panel-head"><span className="t-mono">{b.ref}</span><Badge status={b.status} /><button type="button" className="ac-link" onClick={onClose}>Close ✕</button></div>
+    <div className="ad-panel" aria-label={`Booking ${b.ref}`}>
+      <button type="button" className="ac-link ad-back" onClick={onClose}>← All bookings</button>
+      <div className="ad-panel-head"><span className="t-mono">{b.ref}</span><Badge status={b.status} /></div>
       <h3>{b.service}</h3>
       <dl className="ac-dl">
         <div><dt>Customer</dt><dd>{b.name || (b.invite_email ? `${b.invite_email} (no account yet)` : "Deleted customer")}{b.company ? `, ${b.company}` : ""}<br />{b.email} {b.phone}</dd></div>
@@ -128,6 +129,7 @@ function Bookings() {
   const [open, setOpen] = useState("");
   const load = useCallback(async () => { const r = await api(`/api/admin/bookings${status ? `?status=${status}` : ""}`); setRows(r.bookings || []); }, [status]);
   useEffect(() => { load(); }, [load]);
+  if (open) return <BookingPanel refId={open} onClose={() => { setOpen(""); load(); }} onChanged={load} />;
   return (
     <div>
       <div className="ad-filters">{FILTERS.map(([k, w]) => <button key={k} type="button" className={status === k ? "is-on" : undefined} onClick={() => setStatus(k)}>{w}</button>)}</div>
@@ -141,7 +143,6 @@ function Bookings() {
             </tr>))}</tbody>
         </table></div>
       )}
-      {open && <BookingPanel refId={open} onClose={() => setOpen("")} onChanged={load} />}
     </div>
   );
 }
@@ -161,7 +162,7 @@ function Customers() {
     if (!confirm("Delete this customer's account and personal details? Their bookings stay, without their details, for the tax records. This can't be undone.")) return;
     const r = await api(`/api/admin/customer/${id}/delete`, {}); if (r.error) return alert(r.message); setOpen(null); load();
   }
-  return (
+  if (!open) return (
     <div>
       <input className="ad-search" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search name, email or company" aria-label="Search customers" />
       {!rows ? <p>Loading…</p> : (
@@ -173,9 +174,13 @@ function Customers() {
             </tr>))}</tbody>
         </table></div>
       )}
-      {open && (
-        <div className="ad-panel" role="dialog" aria-label={open.customer.name}>
-          <div className="ad-panel-head"><b>{open.customer.name}</b><button type="button" className="ac-link" onClick={() => setOpen(null)}>Close ✕</button></div>
+    </div>
+  );
+  return (
+    <div>
+        <div className="ad-panel" aria-label={open.customer.name}>
+          <button type="button" className="ac-link ad-back" onClick={() => { setOpen(null); load(); }}>← All customers</button>
+          <div className="ad-panel-head"><b>{open.customer.name}</b></div>
           <dl className="ac-dl">
             <div><dt>Email</dt><dd>{open.customer.email}</dd></div>
             <div><dt>Phone</dt><dd>{open.customer.phone || "–"}</dd></div>
@@ -197,7 +202,6 @@ function Customers() {
             {open.customer.role !== "admin" && <button type="button" className="t-btn t-btn-ghost ac-del" onClick={() => del(open.customer.id)}>Delete customer</button>}
           </div>
         </div>
-      )}
     </div>
   );
 }

@@ -21,9 +21,14 @@ const shortDir = (deg) => (deg == null ? "" : ["N", "NE", "E", "SE", "S", "SW", 
 const ukToday = () => new Date().toLocaleDateString("en-CA", { timeZone: "Europe/London" }); // YYYY-MM-DD
 
 /* A plain tile map with a pin. The whole map is a link. */
-function TileMap({ center, zoom, href, label }) {
+function TileMap({ center, zoom, href, label, links }) {
   const box = useRef(null);
   const [size, setSize] = useState({ w: 700, h: 360 });
+  // Only show the map once its pictures arrive. If none load (blocked, offline,
+  // the map service down), show plain links instead of an empty box. (Wayne, 15 Nov 2026)
+  const [state, setState] = useState("loading"); // loading | ok | failed
+  const loaded = useRef(0), failed = useRef(0);
+  useEffect(() => { loaded.current = 0; failed.current = 0; setState("loading"); const t = setTimeout(() => setState((s) => (s === "ok" ? s : "failed")), 8000); return () => clearTimeout(t); }, [center.lat, center.lon, zoom]);
   useEffect(() => {
     const el = box.current; if (!el) return;
     const ro = new ResizeObserver(([e]) => setSize({ w: e.contentRect.width, h: e.contentRect.height }));
@@ -38,11 +43,24 @@ function TileMap({ center, zoom, href, label }) {
       if (y < 0 || y >= n) continue;
       tiles.push({ k: `${x}-${y}`, src: tileUrl(zoom, ((x % n) + n) % n, y), left: x * TILE - c.x, top: y * TILE - c.y });
     }
+  if (state === "failed") return (
+    <div className="sm-map sm-map-off" role="group" aria-label={label}>
+      <p><b>The map picture didn&apos;t load.</b> Open the site in a maps app instead:</p>
+      <div className="sm-map-links">
+        <a className="t-btn t-btn-primary" href={links?.google || href} target="_blank" rel="noopener">Google Maps ↗</a>
+        {links?.apple && <a className="t-btn t-btn-ghost" href={links.apple} target="_blank" rel="noopener">Apple Maps ↗</a>}
+      </div>
+    </div>
+  );
+  const onTile = (ok) => {
+    if (ok) { loaded.current += 1; setState("ok"); } else { failed.current += 1; if (failed.current >= tiles.length && !loaded.current) setState("failed"); }
+  };
   return (
-    <a className="sm-map" ref={box} href={href} target="_blank" rel="noopener" aria-label={label}>
+    <a className={`sm-map${state === "ok" ? "" : " sm-map-wait"}`} ref={box} href={href} target="_blank" rel="noopener" aria-label={label} aria-busy={state !== "ok"}>
       <span className="sm-tiles">
-        {tiles.map((t) => <img key={t.k} src={t.src} alt="" width={TILE} height={TILE} style={{ left: `calc(50% + ${t.left}px)`, top: `calc(50% + ${t.top}px)` }} />)}
+        {tiles.map((t) => <img key={t.k} src={t.src} alt="" width={TILE} height={TILE} onLoad={() => onTile(true)} onError={() => onTile(false)} style={{ left: `calc(50% + ${t.left}px)`, top: `calc(50% + ${t.top}px)` }} />)}
       </span>
+      {state !== "ok" && <span className="sm-map-loading">Loading map…</span>}
       <span className="sm-pt sm-site" style={{ left: "50%", top: "50%" }}><i aria-hidden="true"></i></span>
       <span className="sm-open">Open in maps ↗</span>
     </a>
@@ -272,7 +290,7 @@ export default function SiteMapView() {
 
             <div className="sm-a-map">
               <figure className="sm-fig">
-                <TileMap center={site} zoom={site.full === false ? 13 : 16} href={links.google} label="Open the site in Google Maps" />
+                <TileMap center={site} zoom={site.full === false ? 13 : 16} href={links.google} links={links} label="Open the site in Google Maps" />
                 <figcaption>Tap the map to open it in Google Maps. The pin is the middle of the postcode, not the exact building.</figcaption>
               </figure>
               <div className="sm-actions">
