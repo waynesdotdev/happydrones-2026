@@ -10,7 +10,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { SITE, travelFor } from "@/lib/site";
 import { lookupPostcode, milesBetween, gridRef, mapLinks, toWorld, tidyPostcode, jobFromUrl } from "@/lib/siteMap";
-import { DEFAULT_DRONES, LEVELS, jobDay, dayChart, timeline, bestWindows, sunTimes, codeText, hhmm, dateLong, dayLong, MPH } from "@/lib/wxClient";
+import { DEFAULT_DRONES, LEVELS, jobDay, dayChart, lastForecastDay, timeline, bestWindows, sunTimes, codeText, hhmm, dateLong, dayLong, MPH } from "@/lib/wxClient";
 
 const TILE = 256;
 const FC_MAX_AGE = 55 * 60e3;
@@ -141,15 +141,31 @@ function JobWeather({ site, job }) {
   useEffect(() => { load(); }, [load]);
 
   const today = ukToday();
-  const date = /^\d{4}-\d{2}-\d{2}$/.test(job.date) ? job.date : "";
-  const past = date && date < today;
-  const day = useMemo(() => (fc && date && !past ? jobDay(fc, date, site.lat, site.lon, lim, job.kind) : null), [fc, date, past, site, lim, job.kind]);
-  const sun = sunTimes(new Date(`${date || today}T12:00:00Z`), site.lat, site.lon);
+  const jobDate = /^\d{4}-\d{2}-\d{2}$/.test(job.date) ? job.date : "";
+  const past = jobDate && jobDate < today;
+  // Every day the forecast covers, as buttons. Opens on their date if it's in the
+  // forecast, otherwise on the best-looking day. (Wayne, 15 Nov 2026)
+  const days = useMemo(() => {
+    if (!fc) return [];
+    const last = lastForecastDay(fc), out = [];
+    for (let t = new Date(`${today}T12:00:00Z`); t.toISOString().slice(0, 10) <= last && out.length < 8; t = new Date(t.getTime() + 864e5)) {
+      const d = t.toISOString().slice(0, 10);
+      const jd = jobDay(fc, d, site.lat, site.lon, lim, job.kind);
+      if (jd && jd.rows.length) out.push({ d, good: jd.goCount, level: jd.best ? jd.best.level : 2 });
+    }
+    return out;
+  }, [fc, today, site, lim, job.kind]);
+  const [pickDay, setPickDay] = useState("");
+  const bestDay = days.length ? [...days].sort((a, b) => a.level - b.level || b.good - a.good)[0].d : "";
+  const date = pickDay || (jobDate && days.some((x) => x.d === jobDate) ? jobDate : bestDay);
+  const day = useMemo(() => (fc && date ? jobDay(fc, date, site.lat, site.lon, lim, job.kind) : null), [fc, date, site, lim, job.kind]);
+  const sun = sunTimes(new Date(`${date || jobDate || today}T12:00:00Z`), site.lat, site.lon);
   const next = useMemo(() => {
     if (!fc || (day && day.rows.length)) return [];
     return bestWindows(timeline(fc, 96), lim, site.lat, site.lon).filter((w) => w.hours >= 1).slice(0, 4);
   }, [fc, day, lim, site]);
-  const opens = date ? new Date(new Date(`${date}T12:00:00Z`).getTime() - 6 * 864e5) : null;
+  const opens = jobDate ? new Date(new Date(`${jobDate}T12:00:00Z`).getTime() - 6 * 864e5) : null;
+  const jobOutOfRange = jobDate && !past && !days.some((x) => x.d === jobDate);
   // The whole day as bars (like the booking page), with the hours they asked for highlighted
   const chart = useMemo(() => (day ? dayChart(fc, date, site.lat, site.lon, lim) : null), [day, fc, date, site, lim]);
   const want = useMemo(() => wantedHours(job.time), [job.time]);
@@ -162,7 +178,7 @@ function JobWeather({ site, job }) {
   return (
     <section className="sm-card sm-wx" aria-labelledby="sm-wx-h">
       <header className="sm-card-head">
-        <h2 id="sm-wx-h">Weather {date ? `for ${dateLong(`${date}T12:00:00Z`)}` : "for the next few days"}</h2>
+        <h2 id="sm-wx-h">Weather {date ? `for ${dateLong(`${date}T12:00:00Z`)}` : "for the next few days"}{date && date === jobDate ? " (their date)" : ""}</h2>
         <span className="sm-sub">Checked against your {droneName} limits</span>
       </header>
 
@@ -179,8 +195,20 @@ function JobWeather({ site, job }) {
 
       {auth === "ok" && fc && (
         <>
-          {past && <p className="sm-muted">That date has passed. Here's the outlook for the next few days instead.</p>}
-          {date && !past && !day && <p className="sm-muted">The forecast only reaches about a week ahead. The job day's forecast should be here from {dayLong(opens)}. For now, here are the next few days.</p>}
+          {past && <p className="sm-muted">Their date has passed. Pick a day below.</p>}
+          {jobOutOfRange && <p className="sm-muted">Their date ({dayLong(`${jobDate}T12:00:00Z`)}) is beyond the forecast, which reaches about a week ahead. It should be here from {dayLong(opens)}. Meanwhile, pick a day below.</p>}
+          {!jobDate && <p className="sm-muted">They didn&apos;t give a date, so this opens on the best-looking day. Tap another day to check it.</p>}
+          {days.length > 0 && (
+            <div className="sm-days" role="radiogroup" aria-label="Pick a day">
+              {days.map((x) => (
+                <button key={x.d} type="button" role="radio" aria-checked={date === x.d} className={`sm-day sm-${LEVELS[x.level].cls}${date === x.d ? " is-on" : ""}${x.d === jobDate ? " is-job" : ""}`} onClick={() => { setPickDay(x.d); setPickT(""); }}>
+                  <b>{dayLong(`${x.d}T12:00:00Z`)}</b>
+                  <span>{x.level === 2 ? "No good hours" : `${x.good} good ${x.good === 1 ? "hour" : "hours"}`}</span>
+                  {x.d === jobDate && <em>their date</em>}
+                </button>
+              ))}
+            </div>
+          )}
 
           {day && day.best && (
             <div className={`sm-best sm-${LEVELS[day.best.level].cls}`}>

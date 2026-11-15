@@ -4398,3 +4398,11 @@ body:has(.sm-app) { background: #001A33; }
 .sm-chart-key i { display: inline-block; width: 12px; height: 12px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
 .sm-chart .pw-bar.is-on:not(.is-want) { box-shadow: none; }
 .sm-chart .pw-bar.is-on:not(.is-want) .pw-h { color: #fff; font-weight: 800; }
+/* Job page: day buttons */
+.sm-days { display: flex; gap: 8px; overflow-x: auto; padding: 2px 2px 8px; margin: 4px 0 6px; }
+.sm-day { all: unset; cursor: pointer; flex: 0 0 auto; display: grid; gap: 2px; min-width: 96px; padding: 10px 12px; border-radius: 10px; background: #001A33; box-shadow: inset 0 0 0 1px rgba(140,185,235,.25), inset 0 -4px 0 var(--d, #555); font-size: .82rem; }
+.sm-day b { font-size: .95rem; }
+.sm-day.sm-go { --d: #2FBF71; } .sm-day.sm-care { --d: #FFC15E; } .sm-day.sm-stop { --d: #FF5A4E; }
+.sm-day.is-on { box-shadow: inset 0 0 0 2px #fff, inset 0 -4px 0 var(--d, #555); }
+.sm-day.is-job em { font-style: normal; font-weight: 800; color: #6CB8FF; text-transform: uppercase; font-size: .7rem; letter-spacing: .04em; }
+.sm-day:focus-visible { outline: 2px solid #6CB8FF; outline-offset: 2px; }
