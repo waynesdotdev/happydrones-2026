@@ -20,6 +20,17 @@
 - [ ] **Optional: prices in a JSON file.** Every price now reads from lib/site.js and lib/cproperty.js. If Wayne wants, move them into one JSON file with nothing else in it.
 
 
+## Accounts and bookings (built 15 Nov, test mode)
+- [ ] **Switch it on in Cloudflare (Wayne, about 10 minutes).** Workers & Pages → D1 → Create database, name it `happydrones-db`. Then the Pages project → Settings → Bindings → add D1 database, variable name `DB`, pick `happydrones-db`. Then Settings → Variables and secrets → add `ADMIN_EMAIL` = wayne@happydrones.co.uk and `TEST_MODE` = 1. The tables build themselves on first use.
+- [ ] **Test it end to end.** Sign up at /account with wayne@happydrones.co.uk (that becomes the admin), then /admin → Test tools → create Lynn Fox (lynn.fox@example.com). Sign in as Lynn, book, pay (simulated), cancel, download data, delete. Do the admin side: confirm, deliver, mark paid, cancel, reopen, delete customer, wipe test data.
+- [ ] **Stripe test keys.** When the Stripe account is ready: add `STRIPE_SECRET_KEY` (sk_test_…) as a Cloudflare secret, and a webhook to https://happydrones.co.uk/api/stripe-webhook for `checkout.session.completed`, saving its signing secret as `STRIPE_WEBHOOK_SECRET`. Never paste keys into chat or code.
+- [ ] **Real emails.** Free Resend account, verify happydrones.co.uk (DNS records in Cloudflare), then secrets `RESEND_KEY` and `MAIL_FROM` (e.g. Happy Drones <bookings@happydrones.co.uk>). Until then emails only appear in the admin's Emails tab.
+- [ ] **ICO registration** (data protection fee, about £52 a year) before real customers sign up.
+- [ ] **Privacy policy update** before real customers: accounts, Stripe, Resend, Cloudflare D1, how long data is kept, and remove the old Netlify line. Claude to draft.
+- [ ] **Booking agreement clauses** for the 10-listing bundle (paid up front, 3 months) and small jobs paid in full online. Update the signed contract and /terms together.
+- [ ] **Going live with real customers:** turn `TEST_MODE` off, swap Stripe test keys for live ones. Optional: Workers Paid ($5/month) and `PW_ITER` = 100000 for stronger password hashing.
+- [ ] **Later: click, pay, Wayne turns up.** Fully automatic flow: customer picks a service and a slot from Wayne's real availability, pays in full, it lands in Google Calendar, morning-of reminder email, delivery and a review request afterwards. Needs Google Calendar and Drive connected; backups of the database too.
+
 ## Waiting on Wayne
 - [ ] **Original logo file.** The logos on /media were traced from the PNG. If whoever designed the logo has the original vector file (.ai, .eps, .svg or .pdf), send it and Claude will swap it in.
 - [ ] **Booking agreement mentions FPV.** /terms clause 8.1 gives delivery times for FPV. It has to match the signed contract, so it's unchanged. Remove FPV next time the contract is updated, then update /terms to match.
@@ -33,7 +44,7 @@
 - [ ] **Check the new service prices.** Set 14 Nov in lib/extraServices.js: roof health check £119/yr, claim pack £165, gutter check £79, solar pre-survey £95, before-and-after £195, time-lapse £149, planning photos £195, aerial 360 £95, land and plots £175.
 - [ ] **First real jobs in the gallery.** Add before-and-after photos (with the customer's permission) to lib/gallery.js and public/work/.
 - [ ] **Coming soon services.** Thermal inspections (thermal drone + thermography training), mapping and 3D (Matrice 4E), indoor fly-throughs (Avata 2 practice). Interest requests arrive by email as "Interest: ...".
-- [ ] **Needs an account first (not built yet):** online deposit payments (Stripe), morning-of-shoot text or email to customers (an SMS or email-sending service), a "can a drone fly here?" airspace map (an airspace data provider), a client progress portal and an agent dashboard (logins and file storage). Set up an account and I'll build each one.
+- [ ] **Needs an account first (not built yet):** morning-of-shoot text or email to customers (an SMS or email-sending service), a "can a drone fly here?" airspace map (an airspace data provider), a client progress portal and an agent dashboard (logins and file storage). Set up an account and I'll build each one.
 - [ ] **First agent account: set it up in QuickBooks.** Add the agency as a customer with 30-day terms, log each shoot as it happens, and send one invoice at month end with each address as a line, 10% off. Keep what they owe under the £1,000 limit (clause 3.9). Anyone who signed the booking agreement before 8 Nov needs to sign the new version (with 3.9) before their account starts.
 - [ ] **Weather check: new features.** It works (tested live, 8 Nov). Done: the passcode no longer prompts the phone or PC to save a password. Ideas for later:
   - [ ] **Tap-a-map.** An interactive map: tap anywhere to see the forecast and go/no-go for that exact spot, with saved sites shown as pins. Useful for quotes before there's a postcode.

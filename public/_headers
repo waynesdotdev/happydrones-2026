@@ -26,3 +26,10 @@
 
 /drafts*
   X-Robots-Tag: noindex, nofollow, noarchive
+
+/account*
+  X-Robots-Tag: noindex, nofollow
+
+/admin*
+  X-Robots-Tag: noindex, nofollow, noarchive
+  Cache-Control: no-store
