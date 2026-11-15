@@ -32,12 +32,14 @@ export default function QuoteBuilder() {
     setExtras((list) => list.filter((id) => PRICING.extras.find((x) => x.id === id)?.for.includes(service)));
   }, [service]);
 
-  const { items, total, summary } = useMemo(() => {
+  const { items, lines, total, summary } = useMemo(() => {
     const z = svc.sizes[size] || svc.sizes[0];
     const items = [[svc.name, svc.base], [z.name, z.add]];
-    PRICING.extras.forEach((x) => { if (extras.includes(x.id) && x.for.includes(svc.id)) items.push([x.name, x.price]); });
+    // The same items with a kind, sent with the enquiry so the admin can book it as quoted
+    const lines = [[svc.name, svc.base, "service"], ...(z.add ? [[z.name, z.add, "size"]] : [])];
+    PRICING.extras.forEach((x) => { if (extras.includes(x.id) && x.for.includes(svc.id)) { items.push([x.name, x.price]); lines.push([x.name, x.price, "extra"]); } });
     const total = items.reduce((a, [, v]) => a + v, 0);
-    return { items, total, summary: items.map(([n]) => n).join(", ") };
+    return { items, lines, total, summary: items.map(([n]) => n).join(", ") };
   }, [svc, size, extras]);
 
   useEffect(() => {
@@ -122,7 +124,7 @@ export default function QuoteBuilder() {
                 ? `Invoiced on ${PAYMENT.termsDays}-day terms.`
                 : `A ${PAYMENT.depositPct}% deposit (${money(depositFor(total))}) secures your date; the balance is due before full files are released.`}
             </p>
-            <a className="btn btn-orange btn-block" href="#contact" onClick={() => setPlan({ summary, total: money(total), amount: total, service: svc.id })}>
+            <a className="btn btn-orange btn-block" href="#contact" onClick={() => setPlan({ summary, total: money(total), amount: total, service: svc.id, lines })}>
               Send me this quote
             </a>
           </aside>

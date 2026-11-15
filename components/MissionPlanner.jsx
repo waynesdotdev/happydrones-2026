@@ -94,7 +94,10 @@ export default function MissionPlanner() {
     // If the lookup fails the plan still sends, just without these two lines.
     const [site, base] = await Promise.all([lookupPostcode(st.postcode), lookupPostcode(SITE.basePostcode)]);
     const where = site ? { area: areaLine(site, base), map: mapPageUrl(site, fullCode, { kind: st.mission, mission: q.m.name, scale: q.sc.name, freq: q.fr.name, extras: q.extras.map((x) => x.name).join(", "), date: st.date, total: money(q.total), notes: st.notes }) } : {};
-    const fields = { "form-name": "mission", "service-id": st.mission, subject: `Mission ${fullCode} · ${q.m.name} · ${money(q.total)}`, code: fullCode, plan: summary, total: money(q.total), ...Object.fromEntries(Object.entries(st).map(([k, v]) => [k, Array.isArray(v) ? v.join(", ") : v])), ...where, ...(wx ? { weather: wx } : {}), "bot-field": "" };
+    const v = q.fr.visits, times = v > 1 ? ` × ${v} visits` : "";
+    const priceLines = [[`${q.m.name}, ${q.sc.name}${times}`, q.base * v, "service"], ...q.extras.map((x) => [`${x.name}${times}`, x.price * v, "extra"]),
+      ...(q.disc ? [[`${q.fr.name} saving`, -q.disc, "discount"]] : []), ...(q.travel ? [[`Travel${times}`, q.travel * v, "travel"]] : [])];
+    const fields = { "form-name": "mission", "service-id": st.mission, "price-lines": JSON.stringify(priceLines), subject: `Mission ${fullCode} · ${q.m.name} · ${money(q.total)}`, code: fullCode, plan: summary, total: money(q.total), ...Object.fromEntries(Object.entries(st).map(([k, v]) => [k, Array.isArray(v) ? v.join(", ") : v])), ...where, ...(wx ? { weather: wx } : {}), "bot-field": "" };
     try {
       await sendEnquiry(fields);
       setStatus("sent");

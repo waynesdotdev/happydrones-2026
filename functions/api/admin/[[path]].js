@@ -5,7 +5,7 @@ import { json, fail, now, testMode, sameSite, body, db, tidy, log, currentUser, 
   MAIL, sendMail, recordPayment, deleteUser, bundleJobs, extendBundle, randomHex } from "../../../lib/acct/server.js";
 import { CONTRACT_FIELDS, changeList, signedFile, defaultsFor } from "../../../lib/acct/agreement.js";
 import { depositFor } from "../../../lib/site.js";
-import { CATALOG, priceFor, tidyPostcode, AGREEMENT_VERSION } from "../../../lib/acct/catalog.js";
+import { CATALOG, tidyPostcode, AGREEMENT_VERSION } from "../../../lib/acct/catalog.js";
 
 const clean = (s, n = 500) => String(s || "").replace(/[\u0000-\u001f]/g, " ").trim().slice(0, n);
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
@@ -224,7 +224,7 @@ export async function onRequest({ request, env, params }) {
       if (m === "GET") {
         const acct = q.email ? await D.prepare("SELECT id, name FROM users WHERE email = ?").bind(q.email).first() : null;
         const { results: history } = await D.prepare("SELECT * FROM audit WHERE target = ? ORDER BY id DESC LIMIT 50").bind(q.ref).all();
-        return json({ enquiry: { ...pub, fields: JSON.parse(q.fields) }, account: acct, history });
+        return json({ enquiry: { ...pub, fields: JSON.parse(q.fields), lines: q.lines ? JSON.parse(q.lines) : null }, account: acct, history });
       }
       const x = await body(request);
       const upd = (sql, ...v) => D.prepare(`UPDATE enquiries SET ${sql}, updated = ? WHERE id = ?`).bind(...v, now(), q.id).run();
@@ -246,10 +246,13 @@ export async function onRequest({ request, env, params }) {
         const cat = CATALOG.find((c) => c.id === x.service && !c.pay);
         const name = clean(x.serviceName, 120) || cat?.name;
         if (!name) return fail("service", "Choose a service or type one.");
-        const auto = cat ? priceFor(cat.id, postcode) : null;
-        const total = x.total !== "" && x.total != null ? Math.round(Number(x.total)) : auto && !auto.error ? auto.total : NaN;
-        const travel = x.travel !== "" && x.travel != null ? Math.round(Number(x.travel)) : auto && !auto.error ? auto.travel : 0;
-        if (!(total > 0 && travel >= 0 && travel <= total)) return fail("price", "Set the price (and travel, if any).");
+        // The price is the sum of the lines Wayne agreed: [[name, £, kind], …]
+        const lines = (Array.isArray(x.lines) ? x.lines : []).slice(0, 30).map(([n, p, k]) => [clean(n, 120), Math.round(Number(p)), String(k || "extra")]).filter(([n, p]) => n && Number.isFinite(p));
+        if (!lines.length) return fail("price", "Add at least one price line.");
+        const total = lines.reduce((a, [, p]) => a + p, 0);
+        const travel = lines.filter(([, , k]) => k === "travel").reduce((a, [, p]) => a + p, 0);
+        if (!(total > 0 && travel >= 0 && travel <= total)) return fail("price", "The total needs to be more than £0. Check the lines.");
+        const breakdown = lines.filter(([, , k]) => k !== "service" && k !== "travel").map(([n, p]) => `${n} ${p < 0 ? "−" : ""}£${Math.abs(p)}`).join("; ");
         const mode = x.mode === "invoice" ? "invoice" : "deposit";
         const date = DATE.test(x.date || "") ? x.date : "";
         const acct = await D.prepare("SELECT * FROM users WHERE email = ?").bind(q.email).first();
@@ -257,7 +260,7 @@ export async function onRequest({ request, env, params }) {
         await D.prepare(`INSERT INTO bookings (ref, user_id, invite_email, service_id, service, postcode, address, wanted_date, wanted_time, notes, booking_as, early_start, agreement,
           base, travel, total, mode, due_now, status, deliverables, delivery, licence, branding, extras, created, updated) VALUES (?,?,?,?,?,?,?,?,?,?,?,0,?,?,?,?,?,?,'awaiting_signature',?,?,?,?,?,?,?)`)
           .bind(ref, acct?.id || null, acct ? null : q.email, cat?.id || "custom", name, postcode, clean(x.address, 200), date, clean(x.time, 20), clean(x.notes, 1000), x.bookingAs, AGREEMENT_VERSION,
-            total - travel, travel, total, mode, mode === "deposit" ? depositFor(total) : 0, clean(x.deliverables, 1500) || null, clean(x.delivery, 200) || null, null, null, clean(x.extras, 500) || null, t, t).run();
+            total - travel, travel, total, mode, mode === "deposit" ? depositFor(total) : 0, clean(x.deliverables, 1500) || null, clean(x.delivery, 200) || null, null, null, breakdown || null, t, t).run();
         const nb = await D.prepare("SELECT * FROM bookings WHERE ref = ?").bind(ref).first();
         await upd("status = 'won', booking_ref = ?", ref);
         await log(env, actor, "booking-from-enquiry", q.ref, ref);

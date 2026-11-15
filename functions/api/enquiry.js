@@ -45,10 +45,17 @@ async function save(request, env) {
   const price = pounds(x.total || x["quote-total"]);
   const postcode = tidyPostcode(x.postcode) || clean(x.postcode, 10).toUpperCase() || null;
 
+  // Itemised price lines from the quote builder or mission planner: [[name, £, kind], …]
+  let lines = null;
+  try {
+    const raw = JSON.parse(x["price-lines"] || "null");
+    if (Array.isArray(raw)) lines = raw.slice(0, 20).filter((l) => Array.isArray(l) && Number.isFinite(Number(l[1])))
+      .map(([n, p, k]) => [clean(n, 120), Math.max(-100000, Math.min(100000, Math.round(Number(p)))), ["service", "size", "extra", "discount", "travel"].includes(k) ? k : "extra"]);
+  } catch { /* ignore a bad list */ }
   const ref = `Q-${randomHex(3).toUpperCase()}`, token = randomHex(16), t = now();
-  await (await db(env)).prepare(`INSERT INTO enquiries (ref, token_hash, kind, name, email, phone, company, postcode, service_id, summary, price, fields, status, created, updated)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'new', ?, ?)`)
-    .bind(ref, await sha256(token), kind, name || null, email || null, phone || null, clean(x.company || x.agency, 120) || null, postcode, svc?.id || null, summary || null, price, JSON.stringify(fields), t, t).run();
+  await (await db(env)).prepare(`INSERT INTO enquiries (ref, token_hash, kind, name, email, phone, company, postcode, service_id, summary, price, fields, lines, status, created, updated)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'new', ?, ?)`)
+    .bind(ref, await sha256(token), kind, name || null, email || null, phone || null, clean(x.company || x.agency, 120) || null, postcode, svc?.id || null, summary || null, price, JSON.stringify(fields), lines?.length ? JSON.stringify(lines) : null, t, t).run();
 
   const e = { ref, name, kindWord: KINDS[kind], summary, price, postcode };
   const link = `${SITE}/enquiry/?t=${token}`;
