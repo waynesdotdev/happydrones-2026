@@ -95,7 +95,7 @@ export default function MissionPlanner() {
     // If the lookup fails the plan still sends, just without these two lines.
     const [site, base] = await Promise.all([lookupPostcode(st.postcode), lookupPostcode(SITE.basePostcode)]);
     const where = site ? { area: areaLine(site, base), map: mapPageUrl(site, fullCode, { kind: st.mission, mission: q.m.name, scale: q.sc.name, freq: q.fr.name, extras: q.extras.map((x) => x.name).join(", "), date: st.date, total: money(q.total), notes: st.notes }) } : {};
-    const fields = { "form-name": "mission", subject: `Mission ${fullCode} · ${q.m.name} · ${money(q.total)}`, code: fullCode, plan: summary, total: money(q.total), ...Object.fromEntries(Object.entries(st).map(([k, v]) => [k, Array.isArray(v) ? v.join(", ") : v])), ...where, ...(wx ? { weather: wx } : {}), "bot-field": "" };
+    const fields = { "form-name": "mission", "service-id": st.mission, subject: `Mission ${fullCode} · ${q.m.name} · ${money(q.total)}`, code: fullCode, plan: summary, total: money(q.total), ...Object.fromEntries(Object.entries(st).map(([k, v]) => [k, Array.isArray(v) ? v.join(", ") : v])), ...where, ...(wx ? { weather: wx } : {}), "bot-field": "" };
     try {
       await sendEnquiry(fields);
       setStatus("sent");
@@ -113,7 +113,7 @@ export default function MissionPlanner() {
         <div className="t-sent">
           <span className="t-tag">Plan received</span>
           <h2 tabIndex={-1} style={{ fontSize: "var(--t-s3)", outline: "none" }}>Mission {fullCode} is logged.</h2>
-          <p className="t-lede">I&apos;ll check the airspace for {st.postcode.toUpperCase()} and reply within a day with a fixed price and a written flight plan.</p>
+          <p className="t-lede">I&apos;ll check the airspace for {st.postcode.toUpperCase()} and reply within a day with a fixed price and a written flight plan.{st.email ? " A confirmation with a link to your plan is on its way to your email." : ""}</p>
           <a className="t-btn t-btn-ghost" href={whatsappLink(`Mission ${fullCode}\n${summary}`)} target="_blank" rel="noopener">Follow up on WhatsApp <Arrow /></a>
         </div>
       ) : (

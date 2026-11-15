@@ -4315,3 +4315,10 @@ body:has(.sm-app) { background: #001A33; }
 .pk-book { display: block; margin-top: 10px; text-align: center; font-weight: 700; font-size: .92rem; color: inherit; text-decoration: underline; text-underline-offset: 3px; }
 .pk-book:hover { opacity: .8; }
 .ad-now { margin: 0 0 4px; padding: 10px 12px; border-radius: 8px; background: rgba(255,255,255,.05); }
+/* Admin enquiries (components/acct/AdminEnquiries.jsx) */
+.ad-table tr.ad-new td { font-weight: 700; }
+.ad-table tr.ad-new td:first-child { box-shadow: inset 3px 0 0 var(--t-accent); }
+.ad-contact { display: grid; gap: 8px; margin: 10px 0; }
+.ad-pre { white-space: pre-wrap; word-break: break-word; }
+.ad-pre a { color: var(--t-accent-hi); }
+.ad-panel { grid-auto-rows: max-content; }

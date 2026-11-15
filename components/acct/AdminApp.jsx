@@ -7,6 +7,7 @@ import SignIn from "./SignIn";
 import { api, STATUS, longDate, when } from "@/lib/acct/client";
 import { money } from "@/lib/site";
 import useScrollToTop from "@/components/useScrollToTop";
+import AdminEnquiries from "./AdminEnquiries";
 
 const FILTERS = [["", "All"], ["awaiting_payment", "Waiting for payment"], ["requested", "Date to confirm"], ["confirmed", "Confirmed"], ["delivered", "Delivered"], ["cancel_requested", "Cancel requests"], ["cancelled", "Cancelled"]];
 function Badge({ status }) { const [w, c] = STATUS[status] || [status, "info"]; return <span className={`ac-badge ac-${c}`}>{w}</span>; }
@@ -38,7 +39,7 @@ function BookingPanel({ refId, onClose, onChanged }) {
       <div className="ad-panel-head"><span className="t-mono">{b.ref}</span><Badge status={b.status} /><button type="button" className="ac-link" onClick={onClose}>Close ✕</button></div>
       <h3>{b.service}</h3>
       <dl className="ac-dl">
-        <div><dt>Customer</dt><dd>{b.name || "Deleted customer"}{b.company ? `, ${b.company}` : ""}<br />{b.email} {b.phone}</dd></div>
+        <div><dt>Customer</dt><dd>{b.name || (b.invite_email ? `${b.invite_email} (no account yet)` : "Deleted customer")}{b.company ? `, ${b.company}` : ""}<br />{b.email} {b.phone}</dd></div>
         <div><dt>Site</dt><dd>{b.address ? `${b.address}, ` : ""}{b.postcode} · <a href={`/map/?pc=${encodeURIComponent(b.postcode)}&c=${b.ref}&m=${encodeURIComponent(b.service)}&d=${b.wanted_date || ""}`} target="_blank">job page ↗</a></dd></div>
         <div><dt>Wanted</dt><dd>{longDate(b.wanted_date) || "Any date"} {b.wanted_time}</dd></div>
         <div><dt>Money</dt><dd>{money(b.total)} total{b.travel ? ` (incl. ${money(b.travel)} travel)` : ""} · paid {money(b.paid)} · {b.mode}</dd></div>
@@ -262,13 +263,16 @@ function TestTools({ counts, onChanged }) {
 export default function AdminApp() {
   const [st, setSt] = useState({ loading: true });
   const [tab, setTab] = useState("bookings");
+  const [startEnq, setStartEnq] = useState("");
   const topRef = useScrollToTop(tab);
+  // Links in Wayne's emails: /admin/#enquiry-Q-123ABC opens that enquiry
+  useEffect(() => { const m = location.hash.match(/^#enquiry-(Q-[A-F0-9]{6})$/); if (m) { setStartEnq(m[1]); setTab("enquiries"); history.replaceState(null, "", location.pathname); } }, []);
   const load = useCallback(async () => { const r = await api("/api/admin/overview"); setSt(r.error ? { error: r, loading: false } : r); }, []);
   useEffect(() => { load(); }, [load]);
   if (st.loading) return <p className="ac-lede">Loading…</p>;
   if (st.error?.status === 401) return <div className="ac-wrap"><SignIn adminOnly onDone={load} /></div>;
   if (st.error) return <div className="ac-wrap"><p className="ac-err">{st.error.message}</p>{st.error.status === 403 && <button type="button" className="t-btn t-btn-ghost" onClick={async () => { await api("/api/acct/logout", {}); load(); }}>Sign out</button>}</div>;
-  const tabs = [["bookings", `Bookings (${st.counts.toDo} to do)`], ["customers", `Customers (${st.counts.customers})`], ["outbox", "Emails"], ["activity", "Activity"], ...(st.config.test ? [["test", "Test tools"]] : [])];
+  const tabs = [["enquiries", `Enquiries${st.counts.newEnquiries ? ` (${st.counts.newEnquiries} new)` : ""}`], ["bookings", `Bookings (${st.counts.toDo} to do)`], ["customers", `Customers (${st.counts.customers})`], ["outbox", "Emails"], ["activity", "Activity"], ...(st.config.test ? [["test", "Test tools"]] : [])];
   return (
     <div className="ad" ref={topRef}>
       {st.config.test && <p className="ac-test ac-banner">Test mode. Payments {st.config.stripe ? "use Stripe's test checkout (no real money)" : "are simulated"}; emails {st.config.mail ? "are sent" : "go to the outbox only"}.</p>}
@@ -280,6 +284,7 @@ export default function AdminApp() {
           <button type="button" onClick={async () => { await api("/api/acct/logout", {}); load(); }}>Sign out</button>
         </nav>
       </div>
+      {tab === "enquiries" && <AdminEnquiries startRef={startEnq} onChanged={load} />}
       {tab === "bookings" && <Bookings />}
       {tab === "customers" && <Customers />}
       {tab === "outbox" && <Outbox />}

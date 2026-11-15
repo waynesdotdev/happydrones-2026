@@ -22,7 +22,7 @@ export default function PrivacyPage() {
 
           <h2>What I collect</h2>
           <ul>
-            <li><b>Enquiries and forms:</b> your name, email address, and any phone number, postcode, date, message and quote details you send.</li>
+            <li><b>Enquiries and forms:</b> your name, email address, and any phone number, postcode, date, message and quote details you send. They&apos;re saved on this website so I can reply and keep track, and you&apos;re emailed a confirmation with a private link to see what you sent.</li>
             <li><b>Your account:</b> your name, email address, and your phone number and company if you add them. Your password is stored scrambled (hashed), so nobody can read it, including me. I also keep whether you&apos;d like occasional emails about new services, and when you last signed in.</li>
             <li><b>Your bookings:</b> the service, site address and postcode, the dates you ask for and the date we agree, anything you tell me about the job, whether you&apos;re booking as a private customer or a business, the version of the booking agreement you accepted and when, what you&apos;ve paid, and the link to your files.</li>
             <li><b>Signed booking agreements:</b> the name you type to sign, the time, your IP address and browser, and an exact copy of the agreement and Job Details you signed, with a digital fingerprint so it can&apos;t be altered unnoticed.</li>
@@ -57,10 +57,10 @@ export default function PrivacyPage() {
           <h2>Services this site uses</h2>
           <p>These companies handle information for me, only to provide their service, under contracts that require them to keep it safe:</p>
           <ul>
-            <li><b>Cloudflare</b> hosts the website and stores accounts and bookings in its database. It may also set a short-lived security cookie. See the <Link href="/cookies/">cookie policy</Link>.</li>
+            <li><b>Cloudflare</b> hosts the website and stores enquiries, accounts and bookings in its database. It may also set a short-lived security cookie. See the <Link href="/cookies/">cookie policy</Link>.</li>
             <li><b>Stripe</b> takes card payments.</li>
-            <li><b>Resend</b> sends the account and booking emails, from its Ireland (EU) region.</li>
-            <li><b>Web3Forms</b> delivers enquiry form submissions to my inbox by email.</li>
+            <li><b>Resend</b> sends the enquiry, account and booking emails, from its Ireland (EU) region.</li>
+            <li><b>Web3Forms</b> sends me a backup copy of enquiry forms by email.</li>
             <li><b>Google Workspace</b> hosts my business email and the folders I deliver your files in.</li>
             <li><b>The Met Office</b> and <b>postcodes.io</b> provide forecasts and postcode lookups. They receive the postcode or area only, never your name or email.</li>
             <li><b>YouTube</b> plays videos, only after you press play, in privacy-enhanced mode.</li>

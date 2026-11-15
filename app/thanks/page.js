@@ -12,7 +12,8 @@ export default function ThanksPage() {
       <section className="simple">
         <div className="wrap simple-inner">
           <h1 className="section-title">Enquiry sent. I&apos;ll be in touch within a day.</h1>
-          <p>I&apos;ve got your details and your flight plan. If it&apos;s urgent, call or WhatsApp and I&apos;ll pick it up straight away.</p>
+          <p>I&apos;ve got your details and your flight plan. A confirmation is on its way to your email, with your reference and a link to see your request at any time (check your spam folder if it isn&apos;t there in a few minutes).</p>
+          <p>If it&apos;s urgent, call or WhatsApp and I&apos;ll pick it up straight away.</p>
           <div className="simple-actions">
             <Link className="btn btn-orange" href="/">Back to home</Link>
             <Link className="btn btn-navy" href="/journal/">Browse the Viewing Room</Link>

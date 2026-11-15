@@ -36,6 +36,7 @@
 - [ ] **Later: click, pay, Wayne turns up.** Fully automatic flow: customer picks a service and a slot from Wayne's real availability, pays in full, it lands in Google Calendar, morning-of reminder email, delivery and a review request afterwards. Needs Google Calendar and Drive connected; backups of the database too.
 
 ## Waiting on Wayne
+- [ ] **Web3Forms: point it at wayne@ or switch it off.** Enquiries now save in the admin. Web3Forms is only a backup email and probably still goes to your personal Gmail. When you trust the admin, set `formKey` to "" in lib/site.js to switch it off.
 - [ ] **bookings@ alias.** Add bookings@happydrones.co.uk as an alternate email on your Google Workspace user so anything sent to it reaches you.
 - [ ] **Stronger Google two-step.** Add Google prompts or an authenticator app, keeping the text message as a backup.
 - [ ] **Original logo file.** The logos on /media were traced from the PNG. If whoever designed the logo has the original vector file (.ai, .eps, .svg or .pdf), send it and Claude will swap it in.

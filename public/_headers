@@ -27,6 +27,11 @@
 /drafts*
   X-Robots-Tag: noindex, nofollow, noarchive
 
+/enquiry*
+  X-Robots-Tag: noindex, nofollow
+  Referrer-Policy: no-referrer
+  Cache-Control: no-store
+
 /account*
   X-Robots-Tag: noindex, nofollow
 

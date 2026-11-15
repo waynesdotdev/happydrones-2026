@@ -2,9 +2,10 @@
    the account whose email matches ADMIN_EMAIL, signed in with
    password + emailed code. Every change is written to the activity log. */
 import { json, fail, now, testMode, sameSite, body, db, tidy, log, currentUser, publicUser, hashPassword, passwordProblem,
-  MAIL, sendMail, recordPayment, deleteUser, bundleJobs, extendBundle } from "../../../lib/acct/server.js";
+  MAIL, sendMail, recordPayment, deleteUser, bundleJobs, extendBundle, randomHex } from "../../../lib/acct/server.js";
 import { CONTRACT_FIELDS, changeList, signedFile, defaultsFor } from "../../../lib/acct/agreement.js";
 import { depositFor } from "../../../lib/site.js";
+import { CATALOG, priceFor, tidyPostcode, AGREEMENT_VERSION } from "../../../lib/acct/catalog.js";
 
 const clean = (s, n = 500) => String(s || "").replace(/[\u0000-\u001f]/g, " ").trim().slice(0, n);
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
@@ -23,19 +24,20 @@ export async function onRequest({ request, env, params }) {
       await tidy(env);
       await bundleJobs(env);
       const q = (sql) => D.prepare(sql).first();
-      const [c, b, o, n, tc] = await Promise.all([
+      const [c, b, o, n, tc, nq] = await Promise.all([
         q("SELECT COUNT(*) n FROM users WHERE role = 'customer'"),
         q("SELECT COUNT(*) n FROM bookings"),
         q("SELECT COUNT(*) n FROM bookings WHERE status IN ('requested','awaiting_payment','cancel_requested')"),
         q("SELECT COUNT(*) n FROM bookings WHERE status = 'confirmed'"),
         q("SELECT COUNT(*) n FROM users WHERE test = 1"),
+        q("SELECT COUNT(*) n FROM enquiries WHERE status = 'new'"),
       ]);
-      return json({ me: publicUser(me), counts: { customers: c.n, bookings: b.n, toDo: o.n, upcoming: n.n, testCustomers: tc.n }, config: { test: testMode(env), stripe: !!env.STRIPE_SECRET_KEY, mail: !!env.RESEND_KEY } });
+      return json({ me: publicUser(me), counts: { customers: c.n, bookings: b.n, toDo: o.n, upcoming: n.n, testCustomers: tc.n, newEnquiries: nq.n }, config: { test: testMode(env), stripe: !!env.STRIPE_SECRET_KEY, mail: !!env.RESEND_KEY } });
     }
 
     if (path === "bookings" && m === "GET") {
       const status = new URL(request.url).searchParams.get("status") || "";
-      const sql = `SELECT b.*, u.name, u.email FROM bookings b LEFT JOIN users u ON u.id = b.user_id ${status ? "WHERE b.status = ?" : ""} ORDER BY b.id DESC LIMIT 300`;
+      const sql = `SELECT b.*, COALESCE(u.name, b.invite_email) name, COALESCE(u.email, b.invite_email) email FROM bookings b LEFT JOIN users u ON u.id = b.user_id ${status ? "WHERE b.status = ?" : ""} ORDER BY b.id DESC LIMIT 300`;
       const { results } = status ? await D.prepare(sql).bind(status).all() : await D.prepare(sql).all();
       return json({ bookings: results });
     }
@@ -203,6 +205,68 @@ export async function onRequest({ request, env, params }) {
       if (x.extended) return fail("extended", "This bundle has already had its extension.");
       const expires = await extendBundle(env, x, actor);
       return json({ ok: true, expires });
+    }
+
+    /* ---------- enquiries from the website forms ---------- */
+    if (path === "enquiries" && m === "GET") {
+      const f = new URL(request.url).searchParams.get("status") || "open";
+      const where = f === "open" ? "WHERE status IN ('new','contacted','quoted')" : f === "all" ? "" : "WHERE status = ?";
+      const st = D.prepare(`SELECT id, ref, kind, name, email, phone, postcode, service_id, summary, price, status, booking_ref, created FROM enquiries ${where} ORDER BY (status = 'new') DESC, id DESC LIMIT 300`);
+      const { results } = where.includes("?") ? await st.bind(f).all() : await st.all();
+      return json({ enquiries: results });
+    }
+    const eq = path.match(/^enquiry\/(Q-[A-F0-9]{6})$/);
+    if (eq) {
+      const q = await D.prepare("SELECT * FROM enquiries WHERE ref = ?").bind(eq[1]).first();
+      if (!q) return fail("missing", "Enquiry not found.", 404);
+      const { token_hash, ...pub } = q;
+      if (m === "GET") {
+        const acct = q.email ? await D.prepare("SELECT id, name FROM users WHERE email = ?").bind(q.email).first() : null;
+        const { results: history } = await D.prepare("SELECT * FROM audit WHERE target = ? ORDER BY id DESC LIMIT 50").bind(q.ref).all();
+        return json({ enquiry: { ...pub, fields: JSON.parse(q.fields) }, account: acct, history });
+      }
+      const x = await body(request);
+      const upd = (sql, ...v) => D.prepare(`UPDATE enquiries SET ${sql}, updated = ? WHERE id = ?`).bind(...v, now(), q.id).run();
+      if (x.action === "status") {
+        if (!["new", "contacted", "quoted", "lost", "scrapped"].includes(x.status)) return fail("status", "Unknown status.");
+        await upd("status = ?", x.status); await log(env, actor, `enquiry-${x.status}`, q.ref);
+      } else if (x.action === "note") {
+        await upd("note = ?", clean(x.note, 2000)); await log(env, actor, "enquiry-note", q.ref);
+      } else if (x.action === "delete") {
+        await D.prepare("DELETE FROM enquiries WHERE id = ?").bind(q.id).run(); await log(env, actor, "enquiry-deleted", q.ref);
+        return json({ ok: true, deleted: true });
+      } else if (x.action === "book") {
+        // Turn the enquiry into a booking they sign and pay online (Wayne, 15 Nov 2026)
+        if (q.booking_ref) return fail("booked", `Already booked as ${q.booking_ref}.`);
+        if (!q.email) return fail("email", "This enquiry has no email address, so they can't sign online. Ask for their email first.");
+        if (!["consumer", "business"].includes(x.bookingAs)) return fail("as", "Choose consumer or business.");
+        const postcode = tidyPostcode(x.postcode);
+        if (!postcode) return fail("postcode", "Add the full site postcode.");
+        const cat = CATALOG.find((c) => c.id === x.service && !c.pay);
+        const name = clean(x.serviceName, 120) || cat?.name;
+        if (!name) return fail("service", "Choose a service or type one.");
+        const auto = cat ? priceFor(cat.id, postcode) : null;
+        const total = x.total !== "" && x.total != null ? Math.round(Number(x.total)) : auto && !auto.error ? auto.total : NaN;
+        const travel = x.travel !== "" && x.travel != null ? Math.round(Number(x.travel)) : auto && !auto.error ? auto.travel : 0;
+        if (!(total > 0 && travel >= 0 && travel <= total)) return fail("price", "Set the price (and travel, if any).");
+        const mode = x.mode === "invoice" ? "invoice" : "deposit";
+        const date = DATE.test(x.date || "") ? x.date : "";
+        const acct = await D.prepare("SELECT * FROM users WHERE email = ?").bind(q.email).first();
+        const ref = `HD-${randomHex(3).toUpperCase()}`, t = now();
+        await D.prepare(`INSERT INTO bookings (ref, user_id, invite_email, service_id, service, postcode, address, wanted_date, wanted_time, notes, booking_as, early_start, agreement,
+          base, travel, total, mode, due_now, status, deliverables, delivery, licence, branding, extras, created, updated) VALUES (?,?,?,?,?,?,?,?,?,?,?,0,?,?,?,?,?,?,'awaiting_signature',?,?,?,?,?,?,?)`)
+          .bind(ref, acct?.id || null, acct ? null : q.email, cat?.id || "custom", name, postcode, clean(x.address, 200), date, clean(x.time, 20), clean(x.notes, 1000), x.bookingAs, AGREEMENT_VERSION,
+            total - travel, travel, total, mode, mode === "deposit" ? depositFor(total) : 0, clean(x.deliverables, 1500) || null, clean(x.delivery, 200) || null, null, null, clean(x.extras, 500) || null, t, t).run();
+        const nb = await D.prepare("SELECT * FROM bookings WHERE ref = ?").bind(ref).first();
+        await upd("status = 'won', booking_ref = ?", ref);
+        await log(env, actor, "booking-from-enquiry", q.ref, ref);
+        await log(env, actor, "created-from-enquiry", ref, q.ref);
+        await sendMail(env, q.email, MAIL.invite(acct?.name || q.name, { ...nb, invite_email: q.email }, !!acct), "invite");
+        return json({ ok: true, booking: ref });
+      } else return fail("action", "Unknown action.");
+      const fresh = await D.prepare("SELECT * FROM enquiries WHERE id = ?").bind(q.id).first();
+      const { token_hash: _t, ...out } = fresh;
+      return json({ enquiry: { ...out, fields: JSON.parse(fresh.fields) } });
     }
 
     if (path === "outbox" && m === "GET") {

@@ -317,7 +317,7 @@ export default function AccountApp() {
   if (state.error) return <p className="ac-err">{state.error}</p>;
   const test = state.config?.test && <p className="ac-test ac-banner">{state.config?.stripe ? "Test mode: sign-in codes appear on screen and emails go to the admin outbox. Payments use Stripe\u2019s test checkout (card 4242 4242 4242 4242), so no real money moves." : "Test mode: sign-in codes appear on screen, emails go to the admin outbox, and payments are simulated. Nothing is charged."}</p>;
   const wanted = CATALOG.find((c) => c.id === initialService);
-  if (!state.user) return <div className="ac-wrap" ref={topRef}>{test}{wanted && <p className="ac-note ac-want">To book <b>{wanted.name}</b>, sign in or create a free account. It takes a minute, and your bookings, signed agreements and files stay in one place.</p>}<SignIn onDone={(user) => setState((s) => ({ ...s, user }))} /></div>;
+  if (!state.user) return <div className="ac-wrap" ref={topRef}>{test}{signing && !wanted && <p className="ac-note ac-want">Your booking is waiting. Sign in, or create a free account <b>with the email address the booking was sent to</b>, and it&apos;ll open for you to sign.</p>}{wanted && <p className="ac-note ac-want">To book <b>{wanted.name}</b>, sign in or create a free account. It takes a minute, and your bookings, signed agreements and files stay in one place.</p>}<SignIn onDone={(user) => setState((s) => ({ ...s, user }))} /></div>;
   const u = state.user;
   return (
     <div className="ac-wrap ac-in" ref={topRef}>

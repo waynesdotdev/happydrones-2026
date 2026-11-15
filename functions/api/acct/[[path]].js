@@ -126,6 +126,8 @@ export async function onRequest(ctx) {
     /* ---------- signed in only ---------- */
     const u = await currentUser(env, request);
     if (!u) return fail("auth", "Please sign in.", 401);
+    // Bookings Wayne set up from an enquiry wait under the email address until that person signs in
+    await D.prepare("UPDATE bookings SET user_id = ?, invite_email = NULL WHERE user_id IS NULL AND invite_email = ?").bind(u.id, u.email).run();
 
     if (path === "bookings" && m === "GET") {
       await bundleJobs(env);
