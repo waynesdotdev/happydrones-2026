@@ -6,6 +6,7 @@
       approved (in the Content Security Policy, or listed below as a
       plain link people click)
    3. a server route returns a web page without its own protection
+   4. public/.well-known/security.txt is missing or out of date
 
    Wayne's rule (15 Nov 2026): every page, now and in future, gets the
    security headers, no matter what. Don't loosen this file to make a
@@ -152,9 +153,25 @@ function checkOutput(csp) {
   return pages.length;
 }
 
+/* ---------- 4. security.txt: how to report a problem (RFC 9116) ---------- */
+function checkSecurityTxt() {
+  const file = path.join(ROOT, "public/.well-known/security.txt");
+  if (!fs.existsSync(file)) return fail("public/.well-known/security.txt is missing. It tells people how to report a security problem.");
+  const t = fs.readFileSync(file, "utf8");
+  if (!/^Contact:\s*\S+/m.test(t)) fail("security.txt needs a Contact: line.");
+  const m = /^Expires:\s*(\S+)/m.exec(t);
+  const exp = m ? Date.parse(m[1]) : NaN;
+  if (!exp) return fail("security.txt needs an Expires: date.");
+  const days = Math.floor((exp - Date.now()) / 864e5);
+  if (days < 0) fail("security.txt has expired. Set Expires: to a date up to a year ahead.");
+  else if (days > 366) fail("security.txt Expires: must be no more than a year ahead.");
+  else if (days < 60) console.warn(`Warning: security.txt expires in ${days} days. Set Expires: to a year from now.`);
+}
+
 /* ---------- run ---------- */
 const mode = process.argv[2] || "all";
 const csp = readHeaders();
+checkSecurityTxt();
 if (csp) {
   checkSource(csp);
   const n = mode === "source" ? 0 : checkOutput(csp);

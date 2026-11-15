@@ -1,0 +1,8 @@
+# Found a security problem on happydrones.co.uk? Thank you. Please email
+# Wayne with what you found and how to see it. Please don't access, change
+# or delete anyone else's data, and give me a reasonable time to fix it
+# before telling anyone else.
+Contact: mailto:wayne@happydrones.co.uk
+Expires: 2027-11-15T00:00:00.000Z
+Preferred-Languages: en
+Canonical: https://happydrones.co.uk/.well-known/security.txt
