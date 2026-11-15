@@ -5,6 +5,7 @@ import Link from "next/link";
 import KitIcon from "./KitIcon";
 import { PACKAGES, SINGLES, SITE, PAYMENT, priceFrom, kitById } from "@/lib/site";
 import { useQuote } from "./QuoteContext";
+import BookOnline from "@/components/BookOnline";
 
 export default function Packages() {
   const { setService } = useQuote();
@@ -33,6 +34,7 @@ export default function Packages() {
               <a className={`btn ${p.featured ? "btn-orange" : "btn-navy"} btn-block`} href="#quote" onClick={() => setService(p.id)}>
                 Choose {p.title}
               </a>
+              <BookOnline id={p.id} className="pk-book">or book {p.title} online →</BookOnline>
             </article>
           ))}
         </div>

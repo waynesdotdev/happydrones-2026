@@ -25,6 +25,7 @@ export default function PrivacyPage() {
             <li><b>Enquiries and forms:</b> your name, email address, and any phone number, postcode, date, message and quote details you send.</li>
             <li><b>Your account:</b> your name, email address, and your phone number and company if you add them. Your password is stored scrambled (hashed), so nobody can read it, including me. I also keep whether you&apos;d like occasional emails about new services, and when you last signed in.</li>
             <li><b>Your bookings:</b> the service, site address and postcode, the dates you ask for and the date we agree, anything you tell me about the job, whether you&apos;re booking as a private customer or a business, the version of the booking agreement you accepted and when, what you&apos;ve paid, and the link to your files.</li>
+            <li><b>Signed booking agreements:</b> the name you type to sign, the time, your IP address and browser, and an exact copy of the agreement and Job Details you signed, with a digital fingerprint so it can&apos;t be altered unnoticed.</li>
             <li><b>Payments:</b> card payments are taken by Stripe on its own secure page. I never see or store your full card number. I see the amount, the date and whether it went through.</li>
             <li><b>Security records:</b> your IP address, used for a short time to stop too many sign-in or form attempts, and a log of changes made to bookings and accounts (what was changed, when, and by which account).</li>
             <li><b>The weather check:</b> it asks for your name and email, but these aren&apos;t stored. To enforce the daily limit, your IP address and the postcode areas you checked are kept for 2 days.</li>
@@ -32,6 +33,7 @@ export default function PrivacyPage() {
 
           <h2>Why I use it, and the lawful basis</h2>
           <ul>
+            <li><b>To record and keep the booking agreement you sign,</b> so we can both show what was agreed. This is needed for our contract, and in our legitimate interest in being able to deal with any dispute.</li>
             <li><b>To reply to enquiries, give prices, and book, carry out, deliver and get paid for your job.</b> This is needed for our contract, or to take steps you&apos;ve asked for before one.</li>
             <li><b>To run your account and send the emails it needs:</b> sign-in codes, booking confirmations, dates, payment receipts and delivery notices. These are part of the service you asked for, not marketing.</li>
             <li><b>To keep the site and your account secure</b> and prevent fraud and misuse. This is in our legitimate interests, and yours.</li>
@@ -48,8 +50,9 @@ export default function PrivacyPage() {
             <li>Copies of emails the site sends you: 30 days.</li>
             <li>The activity log: 2 years.</li>
             <li>Records for booked jobs: 6 years, for tax.</li>
+            <li>Signed booking agreements: 7 years from signing (about 6 years after the job), in case there&apos;s ever a dispute about what was agreed. These are kept even if you delete your account.</li>
           </ul>
-          <p>When you delete your account, your name, contact details, site addresses, notes and file links are removed straight away. What&apos;s left is an anonymous record of each job (the service, dates, price and payments) for the tax records. Stripe keeps its own payment records for as long as the law requires.</p>
+          <p>When you delete your account, your name, contact details, site addresses, notes and file links are removed straight away. What&apos;s left is an anonymous record of each job (the service, dates, price and payments) for the tax records, and any signed booking agreements, kept as above in case of a dispute. Stripe keeps its own payment records for as long as the law requires.</p>
 
           <h2>Services this site uses</h2>
           <p>These companies handle information for me, only to provide their service, under contracts that require them to keep it safe:</p>

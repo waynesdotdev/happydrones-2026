@@ -16,7 +16,7 @@ const minDate = () => new Date(Date.now() + 2 * 864e5).toISOString().slice(0, 10
 
 function Badge({ status }) { const [w, c] = STATUS[status] || [status, "info"]; return <span className={`ac-badge ac-${c}`}>{w}</span>; }
 
-function Bookings({ data, reload, onBook, confirming }) {
+function Bookings({ data, reload, onBook, onSign, confirming }) {
   const [busy, setBusy] = useState("");
   const [msg, setMsg] = useState("");
   async function pay(ref) {
@@ -46,7 +46,8 @@ function Bookings({ data, reload, onBook, confirming }) {
       {msg && <p className="ac-ok" role="status">{msg}</p>}
       {data.bookings.length === 0 && <div className="ac-empty"><p>No bookings yet.</p><button type="button" className="t-btn t-btn-primary" onClick={() => onBook(false)}>Book a job</button></div>}
       {data.bookings.map((b) => (
-        <article className="ac-card" key={b.ref} id={`booking-${b.ref}`}>
+        <article className={`ac-card${b.go && b.status === "confirmed" ? " ac-go" : ""}${b.status === "awaiting_signature" || b.changes ? " ac-todo" : ""}`} key={b.ref} id={`booking-${b.ref}`}>
+          {b.go && b.status === "confirmed" && <p className="ac-go-banner">✓ Confirmed: it&apos;s a go{b.confirmedDate ? ` · ${longDate(b.confirmedDate)}${b.confirmedTime ? `, ${b.confirmedTime}` : ""}` : ""}</p>}
           <header><span className="t-mono">{b.ref}</span>{confirming === b.ref ? <span className="ac-badge ac-confirming">Confirming payment…</span> : <Badge status={b.status} />}</header>
           <h3>{b.service}</h3>
           <p className="ac-meta">{b.postcode}{b.address ? ` · ${b.address}` : ""}</p>
@@ -55,28 +56,111 @@ function Bookings({ data, reload, onBook, confirming }) {
             <div><dt>Price</dt><dd>{money(b.total)}{b.travel ? ` (incl. ${money(b.travel)} travel)` : ""}</dd></div>
             <div><dt>Paid</dt><dd>{money(b.paid)} · {MODE_WORDS[b.mode]}</dd></div>
           </dl>
+          {b.status === "awaiting_signature" && <div className="ac-next"><p><b>Next step:</b> read and sign your booking agreement{b.dueNow ? `, then pay ${money(b.dueNow)}` : ""}.</p><button type="button" className="t-btn t-btn-primary" onClick={() => onSign(b.ref)}>Sign the agreement</button></div>}
+          {b.changes && (
+            <div className="ac-next ac-changes"><p><b>Wayne has updated your booking.</b> Please check and approve:</p>
+              <ul>{b.changes.map((c) => <li key={c.key}>{c.label}: <s>{c.from || "–"}</s> → <b>{c.to || "–"}</b></li>)}</ul>
+              <button type="button" className="t-btn t-btn-primary" onClick={() => onSign(b.ref)}>Review and approve</button></div>
+          )}
           {b.files && <a className="t-btn t-btn-primary" href={b.files} target="_blank" rel="noopener">Open your files ↗</a>}
           {b.filesWaiting && <p className="ac-note">Your files are ready. Pay the balance to unlock them.</p>}
           <div className="ac-actions">
             {confirming === b.ref && <p className="ac-note" role="status">Thanks, Stripe has taken your payment. Just confirming it now; you don&apos;t need to pay again.</p>}
-            {b.owed > 0 && confirming !== b.ref && <button type="button" className="t-btn t-btn-primary" disabled={busy === b.ref} onClick={() => pay(b.ref)}>Pay {money(b.owed)}</button>}
+            {b.owed > 0 && b.signed && !b.changes && confirming !== b.ref && <button type="button" className="t-btn t-btn-primary" disabled={busy === b.ref} onClick={() => pay(b.ref)}>Pay {money(b.owed)}</button>}
             {!["cancelled", "delivered", "cancel_requested"].includes(b.status) && <button type="button" className="t-btn t-btn-ghost" disabled={busy === b.ref} onClick={() => cancel(b.ref)}>{b.status === "confirmed" ? "Ask to cancel" : "Cancel"}</button>}
           </div>
-          <p className="ac-small">Booked {when(b.created)} under booking agreement version {b.agreement}.</p>
+          <p className="ac-small">Booked {when(b.created)}.{b.signed ? <> Signed {when(b.signedAt)}, agreement version {b.agreement} · <a href={`/api/acct/booking/${b.ref}/agreement/${b.signatureId}`} target="_blank" rel="noopener">Your signed agreement ↗</a></> : " Not signed yet."}{b.refunded ? ` Refunded ${money(b.refunded)}.` : ""}</p>
         </article>
       ))}
     </div>
   );
 }
 
-function Book({ hasBundle, startWithBundle, onBooked, config }) {
-  const [f, setF] = useState({ service: "", useBundle: startWithBundle, postcode: "", address: "", date: "", time: "", notes: "", bookingAs: "", earlyStart: false, agree: false });
+/* Read and sign the booking agreement (or approve Wayne's changes) */
+function SignView({ refId, onDone, onBack, config }) {
+  const [d, setD] = useState(null);
+  const [f, setF] = useState({ name: "", agree: false, earlyStart: false });
+  const [msg, setMsg] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [done, setDone] = useState(null);
+  useEffect(() => { api(`/api/acct/booking/${refId}/agreement`).then((r) => { if (r.error) setMsg(r.message); else { setD(r); setF((x) => ({ ...x, earlyStart: r.early })); } }); }, [refId]);
+  async function sign(e) {
+    e.preventDefault(); setMsg(""); setBusy(true);
+    const r = await api(`/api/acct/booking/${refId}/sign`, f); setBusy(false);
+    if (r.error) return setMsg(r.message);
+    setDone(r);
+  }
+  async function decline() {
+    if (!confirm("Decline these changes? Your booking stays as it was, and Wayne will be in touch.")) return;
+    const r = await api(`/api/acct/booking/${refId}/decline`, {}); if (r.error) return setMsg(r.message); onDone("Changes declined. Your booking stays as it was; Wayne will be in touch.");
+  }
+  async function pay() {
+    setBusy(true); const r = await api(`/api/acct/booking/${refId}/pay`, {}); setBusy(false);
+    if (r.url) { location.href = r.url; return; }
+    if (r.error) return setMsg(r.message);
+    onDone("Payment recorded (test mode, no money taken). Wayne will confirm your date.");
+  }
+  if (!d) return <div className="ac-form"><p className="ac-lede">{msg || "Loading your agreement…"}</p><button type="button" className="ac-link" onClick={onBack}>← Back to my bookings</button></div>;
+  if (done) {
+    const owed = done.booking.owed;
+    return (
+      <div className="ac-form ac-signed" role="status">
+        <h2>Signed. Thank you.</h2>
+        <p>A copy of your signed agreement is on its way to your email. It&apos;s also in your account whenever you need it.</p>
+        <p className="ac-small">Fingerprint: <span className="t-mono ac-fp">{done.fingerprint}</span></p>
+        {owed > 0 ? (<>
+          <p><b>Last step:</b> pay {done.booking.paid ? "the extra" : done.booking.mode === "deposit" ? "the deposit" : "for your booking"} of {money(owed)} to secure your date.</p>
+          {msg && <p className="ac-err" role="alert">{msg}</p>}
+          <button type="button" className="t-btn t-btn-primary" disabled={busy} onClick={pay}>{busy ? "Opening payment…" : `Pay ${money(owed)}`}</button>
+          {config.test && <p className="ac-test">Test mode: {config.stripe ? "use card 4242 4242 4242 4242 on Stripe\u2019s test page." : "payment is simulated."} No real money moves.</p>}
+        </>) : <p><b>Next:</b> Wayne checks the weather and airspace and confirms your date, usually within a day.</p>}
+        <button type="button" className="ac-link" onClick={() => onDone("")}>Back to my bookings</button>
+      </div>
+    );
+  }
+  if (!d.toSign) return <div className="ac-form"><p>There&apos;s nothing to sign on this booking.</p><button type="button" className="ac-link" onClick={onBack}>← Back to my bookings</button></div>;
+  const change = d.toSign === "change";
+  return (
+    <form className="ac-form ac-sign" onSubmit={sign} noValidate>
+      <ol className="ac-progress" aria-label="Booking steps">
+        {["Book", change ? "Approve changes" : "Sign", "Pay", "Wayne confirms"].map((t, i) => <li key={t} className={i === 0 || (change && i > 1) ? "is-done" : i === 1 ? "is-on" : undefined}>{t}</li>)}
+      </ol>
+      <h2>{change ? "Approve the changes to your booking" : "Your booking agreement"}</h2>
+      <p className="ac-lede">{change ? "Wayne has updated your booking as you discussed. Check the changes, then sign to approve them, or decline to keep it as it was." : <>Please read it all. It&apos;s the agreement every customer signs, with your Job Details filled in. Booking <b>{d.ref}</b>.</>}</p>
+      {change && d.changes && (
+        <div className="ac-changes"><h3>What&apos;s changing</h3>
+          <ul>{d.changes.map((c) => <li key={c.key}><b>{c.label}:</b> <s>{c.from || "–"}</s> → <b>{c.to || "–"}</b></li>)}</ul>
+          {d.dueAfter > 0 && <p className="ac-small">After you approve, there&apos;s {money(d.dueAfter)} more to pay before your date.</p>}
+        </div>
+      )}
+      <h3>Job Details</h3>
+      <div className="ac-jobd"><table><tbody>{d.rows.map(([k, v]) => <tr key={k}><th scope="row">{k}</th><td>{v}</td></tr>)}</tbody></table></div>
+      <h3>The terms <span className="ac-small">(version {d.version})</span></h3>
+      <div className="ac-terms" tabIndex={0} aria-label="Booking agreement terms" dangerouslySetInnerHTML={{ __html: d.terms + d.cancel }} />
+      <p className="ac-small"><a href="/terms/" target="_blank" rel="noopener">Open the agreement full screen ↗</a></p>
+      {d.consumer && d.askEarly && (
+        <div className="ac-note">
+          <label className="acc-agree"><input type="checkbox" checked={f.earlyStart} onChange={(e) => setF({ ...f, earlyStart: e.target.checked })} /><span><b>Please start within the 14-day cancellation period.</b> I understand that if I cancel after work has started, I&apos;ll pay for the work done. Once the work is complete, I lose my right to cancel.</span></label>
+          {!f.earlyStart && <p className="ac-small">Leave this unticked and the shoot can&apos;t take place until the 14 days are up.</p>}
+        </div>
+      )}
+      <div className="t-field"><label htmlFor="sg-name">Type your full name to sign</label><input id="sg-name" className="ac-signame" autoComplete="name" value={f.name} onChange={(e) => setF({ ...f, name: e.target.value })} placeholder={d.name} /><span className="t-hint">As it is on your account: {d.name}</span></div>
+      <label className="acc-agree"><input type="checkbox" checked={f.agree} onChange={(e) => setF({ ...f, agree: e.target.checked })} /><span>I&apos;ve read and agree to the Happy Drones Booking Agreement (version {d.version}) and the Job Details above. Typing my name is my signature.</span></label>
+      {msg && <p className="ac-err" role="alert">{msg}</p>}
+      <button className="t-btn t-btn-primary" disabled={busy}>{busy ? "Signing…" : change ? "Sign to approve the changes" : "Sign the agreement"}</button>
+      {change ? <button type="button" className="t-btn t-btn-ghost" onClick={decline}>Decline the changes</button> : <button type="button" className="ac-link" onClick={onBack}>Not now, back to my bookings</button>}
+      <p className="ac-small">When you sign, we record your name, the time, your IP address and an exact copy of what you signed, and email you a copy.</p>
+    </form>
+  );
+}
+
+function Book({ hasBundle, startWithBundle, onBooked, config, initialService = "" }) {
+  const [f, setF] = useState({ service: CATALOG.some((c) => c.id === initialService) ? initialService : "", useBundle: startWithBundle, postcode: "", address: "", date: "", time: "", notes: "", bookingAs: "" });
   const [msg, setMsg] = useState("");
   const [busy, setBusy] = useState(false);
   const set = (k, v) => setF((s) => ({ ...s, [k]: v }));
   const zone = zoneFor(f.postcode);
   const p = useMemo(() => ((f.service || f.useBundle) && f.postcode ? priceFor(f.service, f.postcode, { bundleListing: f.useBundle }) : null), [f.service, f.useBundle, f.postcode]);
-  const within14 = f.date && f.date < new Date(Date.now() + 14 * 864e5).toISOString().slice(0, 10);
   async function submit(e) {
     e.preventDefault(); setBusy(true); setMsg("");
     const r = await api("/api/acct/book", f);
@@ -112,7 +196,6 @@ function Book({ hasBundle, startWithBundle, onBooked, config }) {
       {f.bookingAs === "consumer" && (
         <div className="ac-note">
           <p>As a private customer you can cancel within 14 days of booking for a full refund (section 7 of the booking agreement).</p>
-          {within14 && <label className="acc-agree"><input type="checkbox" checked={f.earlyStart} onChange={(e) => set("earlyStart", e.target.checked)} /><span>Please start within the 14 days. I understand that if I cancel after work has started I pay for the work done, and once it&apos;s complete I lose the right to cancel.</span></label>}
         </div>
       )}
       {p && !p.error && (
@@ -124,9 +207,9 @@ function Book({ hasBundle, startWithBundle, onBooked, config }) {
         </div>
       )}
       {p?.error && <p className="ac-err">{p.message}</p>}
-      <label className="acc-agree"><input type="checkbox" checked={f.agree} onChange={(e) => set("agree", e.target.checked)} /><span>I accept the <Link href="/terms/" target="_blank">booking agreement</Link> (version {config.agreement}).</span></label>
+      <p className="ac-steps"><b>Next:</b> read and sign the <Link href="/terms/" target="_blank">booking agreement</Link> with your details filled in{p?.dueNow ? ", then pay" : ""}. Wayne then confirms your date.</p>
       {msg && <p className="ac-err" role="alert">{msg}</p>}
-      <button className="t-btn t-btn-primary" disabled={busy}>{busy ? "Booking…" : p?.dueNow ? `Book and continue to payment` : "Book"}</button>
+      <button className="t-btn t-btn-primary" disabled={busy}>{busy ? "Saving…" : "Continue to the agreement"}</button>
       {config.test && <p className="ac-test">{config.stripe ? "Test mode: pay on Stripe\u2019s test page with card 4242 4242 4242 4242. No real money moves." : "Test mode: payments are simulated and no money is taken."}</p>}
     </form>
   );
@@ -198,10 +281,15 @@ export default function AccountApp() {
   const load = useCallback(async () => { const r = await api("/api/acct/me"); setState(r.error ? { error: r.message } : { user: r.user, config: r.config }); }, []);
   const reload = useCallback(async () => { const r = await api("/api/acct/bookings"); if (!r.error) setData(r); }, []);
   const [confirming, setConfirming] = useState("");
+  const [signing, setSigning] = useState("");
+  const [initialService, setInitialService] = useState("");
   useEffect(() => {
     load();
     const h = location.hash;
     if (h.startsWith("#paid-")) setConfirming(h.slice(6));
+    if (h.startsWith("#sign-")) setSigning(h.slice(6));
+    const want = new URLSearchParams(location.search).get("book");
+    if (want) { setInitialService(want); setTab("book"); history.replaceState(null, "", location.pathname); }
     if (h.startsWith("#booking-")) setFlash("Payment not finished, so nothing was taken. You can pay whenever you're ready.");
     if (h) history.replaceState(null, "", location.pathname);
   }, [load]);
@@ -224,11 +312,12 @@ export default function AccountApp() {
   }, [confirming, state.user, reload]);
   useEffect(() => { if (state.user) reload(); }, [state.user, reload]);
 
-  const topRef = useScrollToTop(`${tab}|${!!state.user}`);
+  const topRef = useScrollToTop(`${tab}|${!!state.user}|${signing}`);
   if (state.loading) return <p className="ac-lede">Loading…</p>;
   if (state.error) return <p className="ac-err">{state.error}</p>;
   const test = state.config?.test && <p className="ac-test ac-banner">{state.config?.stripe ? "Test mode: sign-in codes appear on screen and emails go to the admin outbox. Payments use Stripe\u2019s test checkout (card 4242 4242 4242 4242), so no real money moves." : "Test mode: sign-in codes appear on screen, emails go to the admin outbox, and payments are simulated. Nothing is charged."}</p>;
-  if (!state.user) return <div className="ac-wrap" ref={topRef}>{test}<SignIn onDone={(user) => setState((s) => ({ ...s, user }))} /></div>;
+  const wanted = CATALOG.find((c) => c.id === initialService);
+  if (!state.user) return <div className="ac-wrap" ref={topRef}>{test}{wanted && <p className="ac-note ac-want">To book <b>{wanted.name}</b>, sign in or create a free account. It takes a minute, and your bookings, signed agreements and files stay in one place.</p>}<SignIn onDone={(user) => setState((s) => ({ ...s, user }))} /></div>;
   const u = state.user;
   return (
     <div className="ac-wrap ac-in" ref={topRef}>
@@ -236,15 +325,16 @@ export default function AccountApp() {
       <div className="ac-top">
         <h2>{greeting(u.name)}</h2>
         <nav className="ac-tabs">
-          {[["bookings", "My bookings"], ["book", "Book a job"], ["details", "My details"]].map(([k, w]) => <button key={k} type="button" className={tab === k ? "is-on" : undefined} onClick={() => { setTab(k); setBundleStart(false); }}>{w}</button>)}
+          {[["bookings", "My bookings"], ["book", "Book a job"], ["details", "My details"]].map(([k, w]) => <button key={k} type="button" className={tab === k ? "is-on" : undefined} onClick={() => { setTab(k); setBundleStart(false); setSigning(""); }}>{w}</button>)}
           {u.role === "admin" && <a href="/admin/">Admin</a>}
           <button type="button" onClick={async () => { await api("/api/acct/logout", {}); setState((s) => ({ ...s, user: null })); setData(null); }}>Sign out</button>
         </nav>
       </div>
       {flash && <p className="ac-ok">{flash}</p>}
-      {tab === "bookings" && <Bookings data={data} confirming={confirming} reload={reload} onBook={(b) => { setBundleStart(b); setTab("book"); }} />}
-      {tab === "book" && <Book config={state.config} hasBundle={!!data?.bundles?.some((b) => b.used < b.size)} startWithBundle={bundleStart} onBooked={() => { setFlash("Booked. Check your bookings for what happens next."); setTab("bookings"); reload(); }} />}
-      {tab === "details" && <Details user={u} onUser={(user) => setState((s) => ({ ...s, user }))} onGone={() => { setState((s) => ({ ...s, user: null })); setFlash(""); alert("Your account has been deleted."); }} />}
+      {signing && <SignView refId={signing} config={state.config} onBack={() => { setSigning(""); setTab("bookings"); reload(); }} onDone={(m) => { setSigning(""); setTab("bookings"); if (m) setFlash(m); reload(); }} />}
+      {!signing && tab === "bookings" && <Bookings data={data} onSign={(ref) => { setFlash(""); setSigning(ref); }} confirming={confirming} reload={reload} onBook={(b) => { setBundleStart(b); setTab("book"); }} />}
+      {!signing && tab === "book" && <Book config={state.config} initialService={initialService} hasBundle={!!data?.bundles?.some((b) => b.used < b.size)} startWithBundle={bundleStart} onBooked={(b) => { setFlash(""); setInitialService(""); setSigning(b.ref); reload(); }} />}
+      {!signing && tab === "details" && <Details user={u} onUser={(user) => setState((s) => ({ ...s, user }))} onGone={() => { setState((s) => ({ ...s, user: null })); setFlash(""); alert("Your account has been deleted."); }} />}
     </div>
   );
 }

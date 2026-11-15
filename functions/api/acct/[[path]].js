@@ -3,7 +3,8 @@
    Helpers and settings: lib/acct/server.js. Prices: lib/acct/catalog.js. */
 import { json, fail, now, ipOf, testMode, sameSite, body, db, tidy, log, limited, hashPassword, checkPassword, passwordProblem,
   newCode, useCode, startSession, endSession, endCookie, currentUser, publicUser, MAIL, sendMail, stripeCheckout, recordPayment, randomHex, deleteUser, bundleJobs, extendBundle, stripeSession, settleSession } from "../../../lib/acct/server.js";
-import { priceFor, tidyPostcode, AGREEMENT_VERSION, bundleSize, BUNDLE_WARN_DAYS } from "../../../lib/acct/catalog.js";
+import { priceFor, tidyPostcode, AGREEMENT_VERSION, bundleSize, BUNDLE_WARN_DAYS, sameName, plainName } from "../../../lib/acct/catalog.js";
+import { jobRows, currentTerms, fingerprint, toBase64, ukTime, CONTRACT_FIELDS, withPending, changeList, signedHtml, signedFile } from "../../../lib/acct/agreement.js";
 
 const EMAIL = /^[^\s@]{1,64}@[^\s@]{1,190}\.[a-z]{2,}$/i;
 const cleanEmail = (e) => String(e || "").trim().toLowerCase();
@@ -157,7 +158,6 @@ export async function onRequest(ctx) {
       const b = await body(request);
       const postcode = tidyPostcode(b.postcode);
       if (!postcode) return fail("postcode", "Add the full postcode of the site, e.g. TS17 6AB.");
-      if (!b.agree) return fail("agree", "Tick to accept the booking agreement.");
       if (!["consumer", "business"].includes(b.bookingAs)) return fail("as", "Say whether you're booking as a private customer or a business.");
       const date = /^\d{4}-\d{2}-\d{2}$/.test(b.date || "") ? b.date : "";
       if (date && date < new Date(Date.now() + 2 * 864e5).toISOString().slice(0, 10)) return fail("date", "Pick a date at least 2 days from now.");
@@ -169,26 +169,27 @@ export async function onRequest(ctx) {
       const p = priceFor(b.service, postcode, { bundleListing: !!bundle });
       if (p.error) return fail(p.error, p.message);
       const ref = `HD-${randomHex(3).toUpperCase()}`;
-      const status = p.dueNow > 0 ? "awaiting_payment" : "requested";
+      const status = "awaiting_signature"; // sign first, then pay (Wayne, 15 Nov 2026)
       await D.prepare(`INSERT INTO bookings (ref, user_id, service_id, service, postcode, address, wanted_date, wanted_time, notes, booking_as, early_start, agreement, agreed_at,
         base, travel, total, mode, due_now, status, bundle_id, created, updated) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`)
-        .bind(ref, u.id, bundle ? "bundle-listing" : b.service, p.name, postcode, clean(b.address, 200), date, clean(b.time, 20), clean(b.notes, 1000), b.bookingAs, b.earlyStart ? 1 : 0,
-          AGREEMENT_VERSION, now(), p.base, p.travel, p.total, p.mode, p.dueNow, status, bundle ? bundle.id : null, now(), now()).run();
+        .bind(ref, u.id, bundle ? "bundle-listing" : b.service, p.name, postcode, clean(b.address, 200), date, clean(b.time, 20), clean(b.notes, 1000), b.bookingAs, 0,
+          AGREEMENT_VERSION, null, p.base, p.travel, p.total, p.mode, p.dueNow, status, bundle ? bundle.id : null, now(), now()).run();
       const row = await D.prepare("SELECT * FROM bookings WHERE ref = ?").bind(ref).first();
       if (bundle) await D.prepare("UPDATE bundles SET used = used + 1 WHERE id = ?").bind(bundle.id).run();
       if (b.service === "bundle" && !bundle) await D.prepare("INSERT INTO bundles (user_id, booking_id, size, created) VALUES (?, ?, ?, ?)").bind(u.id, row.id, bundleSize, now()).run();
       await log(env, u.email, "booked", ref, `${p.name} £${p.total}`);
-      await sendMail(env, u.email, MAIL.booked(u, row), "booked");
-      if (env.ADMIN_EMAIL) await sendMail(env, env.ADMIN_EMAIL, MAIL.adminNew(u, row), "admin");
+      await sendMail(env, u.email, MAIL.started(u, row), "started");
       return json({ booking: view(row) });
     }
 
-    const one = path.match(/^booking\/(HD-[A-F0-9]{6})(?:\/(pay|cancel|check))?$/);
+    const one = path.match(/^booking\/(HD-[A-F0-9]{6})(?:\/(pay|cancel|check|sign|agreement|decline))?(?:\/(\d+))?$/);
     if (one) {
       const b = await D.prepare("SELECT * FROM bookings WHERE ref = ? AND user_id = ?").bind(one[1], u.id).first();
       if (!b) return fail("missing", "Booking not found.", 404);
       if (!one[2] && m === "GET") return json({ booking: view(b) });
       if (one[2] === "pay" && m === "POST") {
+        if (!b.signed_at) return fail("sign", "Please sign the booking agreement first.");
+        if (b.pending) return fail("changes", "Please approve or decline the changes to this booking first.");
         const due = owed(b);
         if (due <= 0) return fail("nothing", "Nothing to pay on this booking.");
         const purpose = b.paid === 0 && b.mode === "deposit" ? "deposit" : b.paid === 0 ? "payment" : "balance";
@@ -210,6 +211,64 @@ export async function onRequest(ctx) {
         const fresh = await D.prepare("SELECT * FROM bookings WHERE id = ?").bind(b.id).first();
         return json({ booking: view(fresh), paid: owed(fresh) === 0 });
       }
+      /* ---------- the booking agreement: read, sign, approve changes ---------- */
+      if (one[2] === "agreement" && m === "GET" && !one[3]) {
+        const next = withPending(b);
+        const { terms, cancel } = await currentTerms(env, request);
+        const { results: sigs } = await D.prepare("SELECT id, kind, name, at FROM signatures WHERE booking_id = ? ORDER BY id DESC").bind(b.id).all();
+        const date = next.confirmed_date || next.wanted_date;
+        const soon = next.booking_as === "consumer" && (!date || date <= new Date(Date.now() + 14 * 864e5).toISOString().slice(0, 10));
+        return json({ ref: b.ref, toSign: b.pending ? "change" : b.status === "awaiting_signature" ? "original" : null, rows: jobRows(next, u), changes: changeList(b),
+          terms, cancel, version: AGREEMENT_VERSION, consumer: next.booking_as === "consumer", askEarly: soon, early: !!b.early_start, name: plainName(u.name), signatures: sigs,
+          dueAfter: next.due_now > b.paid ? next.due_now - b.paid : 0 });
+      }
+      if (one[2] === "agreement" && m === "GET" && one[3]) {
+        const sig = await D.prepare("SELECT * FROM signatures WHERE id = ? AND booking_id = ?").bind(Number(one[3]), b.id).first();
+        if (!sig) return fail("missing", "Signed agreement not found.", 404);
+        return signedFile(D, sig, b);
+      }
+      if (one[2] === "sign" && m === "POST") {
+        const kind = b.pending ? "change" : b.status === "awaiting_signature" ? "original" : null;
+        if (!kind) return fail("state", "There's nothing to sign on this booking.");
+        if (await limited(env, `sign:${u.id}`, 20, 3600)) return fail("slow", "Too many tries. Wait a while and try again.", 429);
+        const x = await body(request);
+        if (!x.agree) return fail("agree", "Tick to say you've read and agree to the booking agreement and Job Details.");
+        const typed = String(x.name || "").trim().replace(/\s+/g, " ");
+        if (!sameName(typed, u.name)) return fail("name", `Type your full name as it is on your account: ${plainName(u.name)}. If that's not right, change it under My details first.`);
+        const next = withPending(b);
+        const early = next.booking_as === "consumer" && x.earlyStart ? 1 : 0;
+        const { terms, cancel } = await currentTerms(env, request);
+        const termsHash = await fingerprint([AGREEMENT_VERSION, terms, cancel]);
+        await D.prepare("INSERT OR IGNORE INTO agreement_texts (hash, version, terms, cancel, created) VALUES (?, ?, ?, ?, ?)").bind(termsHash, AGREEMENT_VERSION, terms, cancel, now()).run();
+        const rows = jobRows(next, u), at = now(), ip = ipOf(request), ua = (request.headers.get("user-agent") || "").slice(0, 300);
+        const fp = await fingerprint({ ref: b.ref, version: AGREEMENT_VERSION, termsHash, rows, name: typed, email: u.email, at, early, kind });
+        const ins = await D.prepare(`INSERT INTO signatures (booking_id, user_id, kind, name, email, at, ip, ua, version, terms_hash, job, early, fingerprint)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`).bind(b.id, u.id, kind, typed, u.email, at, ip, ua, AGREEMENT_VERSION, termsHash, JSON.stringify(rows), early, fp).run();
+        const sigId = ins.meta.last_row_id;
+        const fields = b.pending ? JSON.parse(b.pending) : {};
+        const keys = Object.keys(fields).filter((k) => CONTRACT_FIELDS.includes(k) || k === "notes");
+        let status = b.status;
+        if (["awaiting_signature", "awaiting_payment", "requested"].includes(b.status)) status = next.due_now > next.paid ? "awaiting_payment" : "requested";
+        await D.prepare(`UPDATE bookings SET ${keys.map((k) => `${k} = ?, `).join("")}status = ?, signed_at = ?, signature_id = ?, agreement = ?, agreed_at = ?, early_start = ?, pending = NULL, pending_at = NULL, updated = ? WHERE id = ?`)
+          .bind(...keys.map((k) => fields[k]), status, at, sigId, AGREEMENT_VERSION, at, early, at, b.id).run();
+        await log(env, u.email, kind === "change" ? "changes-signed" : "signed", b.ref, `fingerprint ${fp.slice(0, 12)}`);
+        const fresh = await D.prepare("SELECT * FROM bookings WHERE id = ?").bind(b.id).first();
+        const sig = await D.prepare("SELECT * FROM signatures WHERE id = ?").bind(sigId).first();
+        const file = await signedHtml(D, sig, fresh);
+        const attach = [{ filename: `Happy-Drones-Booking-Agreement-${b.ref}.html`, content: toBase64(file) }];
+        await sendMail(env, u.email, MAIL.signed(u, fresh, { name: typed, when: ukTime(at), version: AGREEMENT_VERSION, fingerprint: fp }), "signed", attach);
+        if (env.ADMIN_EMAIL) await sendMail(env, env.ADMIN_EMAIL, kind === "change" ? MAIL.approved(u, fresh) : MAIL.adminNew(u, fresh), "admin", attach);
+        return json({ booking: view(fresh), signatureId: sigId, fingerprint: fp });
+      }
+      if (one[2] === "decline" && m === "POST") {
+        if (!b.pending) return fail("state", "There are no changes waiting on this booking.");
+        await D.prepare("UPDATE bookings SET pending = NULL, pending_at = NULL, updated = ? WHERE id = ?").bind(now(), b.id).run();
+        await log(env, u.email, "changes-declined", b.ref);
+        if (env.ADMIN_EMAIL) await sendMail(env, env.ADMIN_EMAIL, MAIL.declined(u, b), "admin");
+        const fresh = await D.prepare("SELECT * FROM bookings WHERE id = ?").bind(b.id).first();
+        return json({ booking: view(fresh) });
+      }
+
       if (one[2] === "cancel" && m === "POST") {
         if (["cancelled", "delivered", "cancel_requested"].includes(b.status)) return fail("state", "This booking can't be cancelled online.");
         const status = b.status === "confirmed" ? "cancel_requested" : "cancelled";
@@ -281,6 +340,6 @@ function view(b) {
   return { ref: b.ref, service: b.service, serviceId: b.service_id, postcode: b.postcode, address: b.address, wantedDate: b.wanted_date, wantedTime: b.wanted_time,
     confirmedDate: b.confirmed_date, confirmedTime: b.confirmed_time, notes: b.notes, bookingAs: b.booking_as, total: b.total, travel: b.travel, mode: b.mode,
     dueNow: b.due_now, paid: b.paid, owed: owed(b), status: b.status, files: unlocked ? b.files : null, filesWaiting: b.status === "delivered" && !unlocked,
-    agreement: b.agreement, created: b.created };
+    agreement: b.agreement, created: b.created, signed: !!b.signed_at, signedAt: b.signed_at, signatureId: b.signature_id, changes: changeList(b), go: !!b.go_at, refunded: b.refunded || 0 };
 }
 

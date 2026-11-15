@@ -1,5 +1,6 @@
 /* ROOF INSPECTIONS — in-depth page for homeowners, landlords, roofers and property managers.
    happydrones.co.uk/roof-inspections · Words and prices: lib/roofs.js */
+import BookOnline from "@/components/BookOnline";
 import Link from "next/link";
 import CtaBand from "@/components/CtaBand";
 import TFaq from "@/components/TFaq";
@@ -55,6 +56,7 @@ export default function RoofInspectionsPage() {
             <p className="t-lede">Close, numbered drone photos of every slope, the chimney, the gutters and any flat roofs, in under an hour on site. Send them straight to your roofer, surveyor or insurer.</p>
             <div className="t-hero-ctas">
               <Link className="t-btn t-btn-primary" href="/plan/?mission=roofs">Price your roof <Arrow /></Link>
+              <BookOnline id="roofs" />
               {wa && <a className="t-btn t-btn-ghost" href={wa} target="_blank" rel="noopener">WhatsApp {SITE.phoneDisplay}</a>}
             </div>
           </div>

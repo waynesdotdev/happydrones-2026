@@ -68,6 +68,8 @@ export default function TermsPage() {
 
           <hr />
 
+          {/* Signing copies the text between these markers (functions/api/acct, lib/acct/agreement.js) */}
+          <span hidden data-agreement="terms-start" />
           <p>
             This agreement is between you (the client) and me, Wayne Fox, trading as {SITE.name}. It&apos;s written in plain
             English so we both know where we stand. Please read it before you sign; it becomes a binding contract once you do.
@@ -223,6 +225,7 @@ export default function TermsPage() {
           <C n="12.4" t="Law:">this agreement is governed by the law of England and Wales, and the courts of England and Wales deal with any dispute. If you&apos;re a consumer living in Scotland or Northern Ireland, you can also bring a claim in your local courts.</C>
           <C n="12.5" t="Your online account:">if you book through an online account, keep your password private and don&apos;t let anyone else use it. Bookings made from your account are treated as yours. Tell me straight away if you think someone else has used it. You can delete your account at any time; the <Link href="/privacy/">privacy policy</Link> explains what&apos;s kept for the tax records.</C>
 
+          <span hidden data-agreement="terms-end" />
           <h2>Job Details</h2>
           <p>Filled in for each booking. If anything here differs from the terms above, this wins.</p>
           <div className="tm-table-wrap">
@@ -250,6 +253,7 @@ export default function TermsPage() {
             </table>
           </div>
 
+          <span hidden data-agreement="cancel-start" />
           <h2>Cancellation form (consumers only)</h2>
           <p>Only fill in and send this if you want to cancel within the 14 days in section 7. An email saying you want to cancel works just as well.</p>
           <p>To: Wayne Fox, {SITE.name}, {address}{SITE.email ? `, ${SITE.email}` : ""}</p>
@@ -264,6 +268,7 @@ export default function TermsPage() {
             </table>
           </div>
 
+          <span hidden data-agreement="cancel-end" />
           <p><em>End of agreement.</em></p>
 
           <div className="simple-actions">

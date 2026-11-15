@@ -10,6 +10,7 @@ import { Arrow } from "@/components/TIcons";
 import { HeroVacant, MonthSlider, CheckExplorer, SampleReport } from "@/components/vacant/VacantBits";
 import { SITE, PAYMENT, VACANT, money, kitById, whatsappLink, TRAVEL_TEXT } from "@/lib/site";
 import { VP_SPLIT, VP_WHO, VP_PROCESS, VP_LIMITS, VP_FAQ } from "@/lib/vacant";
+import BookOnline from "@/components/BookOnline";
 
 export const metadata = {
   title: "Vacant property drone monitoring",
@@ -46,6 +47,7 @@ export default function VacantPage() {
             <p className="t-lede">A drone check every month from the same positions: the roof, the lead, the gutters, the windows, the fences and the yard. Then a dated report with anything new at the top.</p>
             <div className="t-hero-ctas">
               <Link className="t-btn t-btn-primary" href="/#contact">Ask about monthly checks <Arrow /></Link>
+              <BookOnline id="vacant">Book a visit online</BookOnline>
               {wa && <a className="t-btn t-btn-ghost" href={wa} target="_blank" rel="noopener">WhatsApp {SITE.phoneDisplay}</a>}
             </div>
           </div>

@@ -31,6 +31,8 @@
 - [x] **Booking agreement clauses** for online booking and the 10-listing bundle (3.10), in /terms and the signed document (15 Nov).
 - [ ] **Bundle reminders run when someone opens the site.** They check at most once an hour, when you open the admin or a customer opens their account. On a quiet week a reminder could go out a little late. Later: a scheduled daily check.
 - [ ] **Going live with real customers:** turn `TEST_MODE` off, swap Stripe test keys for live ones. Optional: Workers Paid ($5/month) and `PW_ITER` = 100000 for stronger password hashing.
+- [x] **E-signing, customer approval of changes, and It's a go confirmation** (15 Nov).
+- [ ] **Old bookings before e-signing.** Bookings made before 15 Nov under test mode have no signature. Wipe test data before going live.
 - [ ] **Later: click, pay, Wayne turns up.** Fully automatic flow: customer picks a service and a slot from Wayne's real availability, pays in full, it lands in Google Calendar, morning-of reminder email, delivery and a review request afterwards. Needs Google Calendar and Drive connected; backups of the database too.
 
 ## Waiting on Wayne

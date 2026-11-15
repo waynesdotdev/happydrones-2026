@@ -1,6 +1,7 @@
 /* CONSTRUCTION — the in-depth sales page for construction progress work.
    Send developers, contractors and funders here: happydrones.co.uk/construction
    Words and lists: lib/construction.js. Prices come from the mission planner. */
+import BookOnline from "@/components/BookOnline";
 import Link from "next/link";
 import CtaBand from "@/components/CtaBand";
 import TFaq from "@/components/TFaq";
@@ -54,6 +55,7 @@ export default function ConstructionPage() {
             <p className="t-lede">Fixed-position aerial photos and film of your site, flown on a regular schedule and delivered within 72 hours. A dated record your team, funders and buyers can actually see.</p>
             <div className="t-hero-ctas">
               <Link className="t-btn t-btn-primary" href="/plan/?mission=construction">Price your site <Arrow /></Link>
+              <BookOnline id="construction">Book a visit online</BookOnline>
               {wa && <a className="t-btn t-btn-ghost" href={wa} target="_blank" rel="noopener">WhatsApp {SITE.phoneDisplay}</a>}
             </div>
           </div>

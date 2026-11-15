@@ -20,13 +20,15 @@ const calLink = (b) => {
 
 function BookingPanel({ refId, onClose, onChanged }) {
   const [d, setD] = useState(null);
-  const [f, setF] = useState({ date: "", time: "", files: "", amount: "", how: "", note: "", reason: "" });
+  const [f, setF] = useState({ date: "", time: "", files: "", amount: "", how: "", note: "", reason: "", refund: "", refundHow: "", anyway: false });
+  const [ed, setEd] = useState(null);
   const [msg, setMsg] = useState("");
-  const load = useCallback(async () => { const r = await api(`/api/admin/booking/${refId}`); if (!r.error) { setD(r); setF((x) => ({ ...x, date: r.booking.confirmed_date || r.booking.wanted_date || "", time: r.booking.confirmed_time || r.booking.wanted_time || "", files: r.booking.files || "", note: r.booking.admin_note || "" })); } }, [refId]);
+  const load = useCallback(async () => { const r = await api(`/api/admin/booking/${refId}`); if (!r.error) { setD(r); setF((x) => ({ ...x, date: r.booking.confirmed_date || r.booking.wanted_date || "", time: r.booking.confirmed_time || r.booking.wanted_time || "", files: r.booking.files || "", note: r.booking.admin_note || "", anyway: false }));
+    const k = r.booking; setEd({ service: k.service, address: k.address || "", postcode: k.postcode, deliverables: k.deliverables || "", delivery: k.delivery || "", licence: k.licence || "", branding: k.branding || "", extras: k.extras || "", notes: k.notes || "", total: k.total, travel: k.travel, mode: k.mode, wanted_date: k.wanted_date || "", wanted_time: k.wanted_time || "" }); } }, [refId]);
   useEffect(() => { load(); }, [load]);
   async function act(action, extra = {}) {
     if (action === "cancel" && !confirm("Cancel this booking? The customer is emailed. Refund any payment in Stripe yourself.")) return;
-    const r = await api(`/api/admin/booking/${refId}`, { action, ...f, ...extra });
+    const r = await api(`/api/admin/booking/${refId}`, action === "refund" ? { action, amount: f.refund, how: f.refundHow } : { action, ...f, ...extra });
     setMsg(r.error ? r.message : "Done."); if (!r.error) { load(); onChanged(); }
   }
   if (!d) return <div className="ad-panel"><p>Loading…</p></div>;
@@ -40,13 +42,22 @@ function BookingPanel({ refId, onClose, onChanged }) {
         <div><dt>Site</dt><dd>{b.address ? `${b.address}, ` : ""}{b.postcode} · <a href={`/map/?pc=${encodeURIComponent(b.postcode)}&c=${b.ref}&m=${encodeURIComponent(b.service)}&d=${b.wanted_date || ""}`} target="_blank">job page ↗</a></dd></div>
         <div><dt>Wanted</dt><dd>{longDate(b.wanted_date) || "Any date"} {b.wanted_time}</dd></div>
         <div><dt>Money</dt><dd>{money(b.total)} total{b.travel ? ` (incl. ${money(b.travel)} travel)` : ""} · paid {money(b.paid)} · {b.mode}</dd></div>
-        <div><dt>Booked as</dt><dd>{b.booking_as}{b.early_start ? ", asked to start within 14 days" : ""} · agreement {b.agreement} accepted {when(b.agreed_at)}</dd></div>
+        <div><dt>Booked as</dt><dd>{b.booking_as}{b.early_start ? ", asked to start within 14 days" : ""}</dd></div>
+        <div><dt>Agreement</dt><dd>{d.signatures.length ? d.signatures.map((g) => <span key={g.id} className="ad-sig">{g.kind === "change" ? "Changes approved" : "Signed"} by {g.name}, {when(g.at)} · <a href={`/api/admin/booking/${b.ref}/agreement/${g.id}`} target="_blank" rel="noopener">view ↗</a><br /></span>) : <b className="ad-warn">Not signed yet</b>}</dd></div>
+        {b.refunded > 0 && <div><dt>Refunded</dt><dd>{money(b.refunded)}</dd></div>}
         {b.notes && <div><dt>Their notes</dt><dd>{b.notes}</dd></div>}
       </dl>
+      {d.changes && (
+        <div className="ac-next ac-changes"><p><b>Waiting for them to approve your changes:</b></p>
+          <ul>{d.changes.map((c) => <li key={c.key}>{c.label}: <s>{c.from || "–"}</s> → <b>{c.to || "–"}</b></li>)}</ul>
+          <button type="button" className="t-btn t-btn-ghost" onClick={() => act("undo-changes")}>Withdraw the changes</button></div>
+      )}
       <div className="ad-acts">
-        <fieldset><legend>Confirm the flying date</legend>
+        <fieldset className="ad-go"><legend>{b.go_at ? "Change the confirmed date" : "It\u2019s a go: confirm the date"}</legend>
           <div className="t-c2"><input type="date" value={f.date} onChange={(e) => setF({ ...f, date: e.target.value })} aria-label="Date" /><input value={f.time} onChange={(e) => setF({ ...f, time: e.target.value })} placeholder="10:00" aria-label="Time" /></div>
-          <button type="button" className="t-btn t-btn-primary" onClick={() => act("confirm")}>Confirm date and email them</button>
+          {b.mode !== "invoice" && b.paid < b.due_now && <label className="acc-agree"><input type="checkbox" checked={f.anyway} onChange={(e) => setF({ ...f, anyway: e.target.checked })} /><span>Confirm before the {money(b.due_now - b.paid)} is paid</span></label>}
+          <button type="button" className="t-btn t-btn-primary" disabled={!d.signatures.length || !!d.changes} onClick={() => act("confirm")}>{b.go_at ? "Save new date and email them" : "It\u2019s a go: confirm and email them"}</button>
+          {(!d.signatures.length || d.changes) && <p className="ac-small">{!d.signatures.length ? "Waiting for them to sign the agreement." : "Waiting for them to approve your changes."}</p>}
           {b.confirmed_date && <a className="t-btn t-btn-ghost" href={calLink(b)} target="_blank" rel="noopener">Add to Google Calendar ↗</a>}
         </fieldset>
         <fieldset><legend>Deliver</legend>
@@ -57,6 +68,42 @@ function BookingPanel({ refId, onClose, onChanged }) {
         <fieldset><legend>Record a payment (bank transfer, invoice)</legend>
           <div className="t-c2"><input inputMode="numeric" value={f.amount} onChange={(e) => setF({ ...f, amount: e.target.value })} placeholder={`£ up to ${b.total - b.paid}`} aria-label="Amount" /><input value={f.how} onChange={(e) => setF({ ...f, how: e.target.value })} placeholder="How: bank transfer, invoice 123" aria-label="How" /></div>
           <button type="button" className="t-btn t-btn-ghost" onClick={() => act("paid")}>Record payment</button>
+        </fieldset>
+        {ed && (
+          <details className="ad-edit"><summary>Edit the booking (agreed by phone, WhatsApp or email)</summary>
+            <p className="ac-small">{d.signatures.length ? "They've signed, so changes to the service, address, what's included, price or terms are sent to them to approve. Date and time wanted change straight away." : "Not signed yet, so changes apply straight away and they sign the updated version."}</p>
+            <div className="t-c2">
+              <div className="t-field"><label htmlFor="ed-svc">Service and package</label><input id="ed-svc" value={ed.service} onChange={(e) => setEd({ ...ed, service: e.target.value })} /></div>
+              <div className="t-field"><label htmlFor="ed-ext">Extras agreed</label><input id="ed-ext" value={ed.extras} onChange={(e) => setEd({ ...ed, extras: e.target.value })} placeholder="e.g. 5 extra photos, £30" /></div>
+            </div>
+            <div className="t-c2">
+              <div className="t-field"><label htmlFor="ed-addr">Site address</label><input id="ed-addr" value={ed.address} onChange={(e) => setEd({ ...ed, address: e.target.value })} /></div>
+              <div className="t-field"><label htmlFor="ed-pc">Postcode</label><input id="ed-pc" value={ed.postcode} onChange={(e) => setEd({ ...ed, postcode: e.target.value })} /></div>
+            </div>
+            <div className="t-field"><label htmlFor="ed-del">What they&apos;ll receive</label><textarea id="ed-del" rows={3} value={ed.deliverables} onChange={(e) => setEd({ ...ed, deliverables: e.target.value })} /></div>
+            <div className="t-c2">
+              <div className="t-field"><label htmlFor="ed-dt">Delivery time</label><input id="ed-dt" value={ed.delivery} onChange={(e) => setEd({ ...ed, delivery: e.target.value })} /></div>
+              <div className="t-field"><label htmlFor="ed-lic">Licence (section 9)</label><select id="ed-lic" value={ed.licence} onChange={(e) => setEd({ ...ed, licence: e.target.value })}>{["Personal", "Property marketing", "Business"].map((x) => <option key={x}>{x}</option>)}</select></div>
+            </div>
+            <div className="t-c2">
+              <div className="t-field"><label htmlFor="ed-br">Branding (9.6)</label><select id="ed-br" value={ed.branding} onChange={(e) => setEd({ ...ed, branding: e.target.value })}>{["Not applicable", "Standard", "Agency-branded (included)", "White label"].map((x) => <option key={x}>{x}</option>)}</select></div>
+              <div className="t-field"><label htmlFor="ed-mode">Payment terms</label><select id="ed-mode" value={ed.mode} onChange={(e) => setEd({ ...ed, mode: e.target.value })}>{[["deposit", "25% deposit, balance before files"], ["invoice", "Invoice after the visit (3.8)"], ...(["bundle", "full", "none"].includes(b.mode) ? [[b.mode, "Bundle terms (3.10)"]] : [])].map(([v, w]) => <option key={v} value={v}>{w}</option>)}</select></div>
+            </div>
+            <div className="t-c2">
+              <div className="t-field"><label htmlFor="ed-tot">Total price (£)</label><input id="ed-tot" inputMode="numeric" value={ed.total} onChange={(e) => setEd({ ...ed, total: e.target.value })} /></div>
+              <div className="t-field"><label htmlFor="ed-tr">Of which travel (£)</label><input id="ed-tr" inputMode="numeric" value={ed.travel} onChange={(e) => setEd({ ...ed, travel: e.target.value })} /></div>
+            </div>
+            <div className="t-c2">
+              <div className="t-field"><label htmlFor="ed-wd">Date wanted</label><input id="ed-wd" type="date" value={ed.wanted_date} onChange={(e) => setEd({ ...ed, wanted_date: e.target.value })} /></div>
+              <div className="t-field"><label htmlFor="ed-wt">Time wanted</label><input id="ed-wt" value={ed.wanted_time} onChange={(e) => setEd({ ...ed, wanted_time: e.target.value })} /></div>
+            </div>
+            <div className="t-field"><label htmlFor="ed-notes">Special notes (in the agreement)</label><textarea id="ed-notes" rows={2} value={ed.notes} onChange={(e) => setEd({ ...ed, notes: e.target.value })} /></div>
+            <button type="button" className="t-btn t-btn-primary" onClick={() => act("edit", { changes: ed })}>{d.signatures.length ? "Save and send to them to approve" : "Save changes"}</button>
+          </details>
+        )}
+        <fieldset><legend>Record a refund (after refunding in Stripe or by bank)</legend>
+          <div className="t-c2"><input inputMode="numeric" value={f.refund} onChange={(e) => setF({ ...f, refund: e.target.value })} placeholder={`£ up to ${b.paid - (b.refunded || 0)}`} aria-label="Refund amount" /><input value={f.refundHow} onChange={(e) => setF({ ...f, refundHow: e.target.value })} placeholder="How: Stripe, bank transfer" aria-label="Refund how" /></div>
+          <button type="button" className="t-btn t-btn-ghost" onClick={() => { if (confirm("Record this refund and email them? Do the actual refund in Stripe or your bank first.")) act("refund"); }}>Record refund</button>
         </fieldset>
         <fieldset><legend>Private note</legend>
           <textarea rows={3} value={f.note} onChange={(e) => setF({ ...f, note: e.target.value })} aria-label="Note" />

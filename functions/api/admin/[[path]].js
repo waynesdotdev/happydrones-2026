@@ -3,6 +3,8 @@
    password + emailed code. Every change is written to the activity log. */
 import { json, fail, now, testMode, sameSite, body, db, tidy, log, currentUser, publicUser, hashPassword, passwordProblem,
   MAIL, sendMail, recordPayment, deleteUser, bundleJobs, extendBundle } from "../../../lib/acct/server.js";
+import { CONTRACT_FIELDS, changeList, signedFile, defaultsFor } from "../../../lib/acct/agreement.js";
+import { depositFor } from "../../../lib/site.js";
 
 const clean = (s, n = 500) => String(s || "").replace(/[\u0000-\u001f]/g, " ").trim().slice(0, n);
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
@@ -37,28 +39,94 @@ export async function onRequest({ request, env, params }) {
       return json({ bookings: results });
     }
 
+    const sf = path.match(/^booking\/(HD-[A-F0-9]{6})\/agreement\/(\d+)$/);
+    if (sf && m === "GET") {
+      const b = await D.prepare("SELECT * FROM bookings WHERE ref = ?").bind(sf[1]).first();
+      const sig = b && await D.prepare("SELECT * FROM signatures WHERE id = ? AND booking_id = ?").bind(Number(sf[2]), b.id).first();
+      if (!sig) return fail("missing", "Signed agreement not found.", 404);
+      return signedFile(D, sig, b);
+    }
+
     const one = path.match(/^booking\/(HD-[A-F0-9]{6})$/);
     if (one) {
       const b = await D.prepare("SELECT b.*, u.name, u.email, u.phone, u.company FROM bookings b LEFT JOIN users u ON u.id = b.user_id WHERE b.ref = ?").bind(one[1]).first();
       if (!b) return fail("missing", "Booking not found.", 404);
       if (m === "GET") {
         const { results: history } = await D.prepare("SELECT * FROM audit WHERE target = ? ORDER BY id DESC LIMIT 50").bind(b.ref).all();
-        return json({ booking: b, history });
+        const { results: signatures } = await D.prepare("SELECT id, kind, name, at, ip, version, fingerprint, early FROM signatures WHERE booking_id = ? ORDER BY id DESC").bind(b.id).all();
+        return json({ booking: { ...b, ...Object.fromEntries(Object.entries(defaultsFor(b)).map(([k, v]) => [k, b[k] ?? v])) }, history, signatures, changes: changeList(b) });
       }
       const x = await body(request);
       const u = b.user_id ? await D.prepare("SELECT * FROM users WHERE id = ?").bind(b.user_id).first() : null;
       const set = async (sql, ...v) => D.prepare(`UPDATE bookings SET ${sql}, updated = ? WHERE id = ?`).bind(...v, now(), b.id).run();
       switch (x.action) {
-        case "confirm": {
+        case "confirm": { // "It's a go": Wayne accepts the signed agreement and fixes the date
           if (!DATE.test(x.date || "")) return fail("date", "Pick the flying date.");
-          await set("confirmed_date = ?, confirmed_time = ?, status = 'confirmed'", x.date, clean(x.time, 20));
-          await log(env, actor, "confirmed", b.ref, `${x.date} ${clean(x.time, 20)}`);
-          if (u) await sendMail(env, u.email, MAIL.confirmed(u, { ...b, confirmed_date: x.date, confirmed_time: clean(x.time, 20) }), "confirmed");
+          if (!b.signed_at) return fail("unsigned", "They haven't signed the booking agreement yet.");
+          if (b.pending) return fail("pending", "They haven't approved your changes yet. Wait for that, or undo the changes.");
+          if (b.mode !== "invoice" && b.paid < b.due_now && !x.anyway) return fail("unpaid", `The ${b.mode === "deposit" ? "deposit" : "payment"} of £${b.due_now - b.paid} isn't paid yet. Record it first if they paid another way.`);
+          const again = !!b.go_at;
+          await set("confirmed_date = ?, confirmed_time = ?, status = 'confirmed', go_at = COALESCE(go_at, ?)", x.date, clean(x.time, 20), now());
+          await log(env, actor, again ? "date-changed" : "its-a-go", b.ref, `${x.date} ${clean(x.time, 20)}`);
+          if (u) await sendMail(env, u.email, MAIL.confirmed(u, { ...b, confirmed_date: x.date, confirmed_time: clean(x.time, 20) }, again), "confirmed");
+          break;
+        }
+        case "edit": { // changes agreed by phone, WhatsApp or email
+          const p = x.changes || {};
+          const ch = {};
+          const txt = { service: 120, address: 200, postcode: 10, deliverables: 1500, delivery: 200, licence: 200, branding: 200, extras: 500, notes: 1000 };
+          for (const [k, n] of Object.entries(txt)) if (k in p && clean(p[k], n) !== (b[k] ?? defaultsFor(b)[k] ?? "")) ch[k] = clean(p[k], n);
+          if (ch.postcode) { ch.postcode = ch.postcode.toUpperCase(); if (!/^[A-Z]{1,2}\d[A-Z\d]? ?\d[A-Z]{2}$/.test(ch.postcode)) return fail("postcode", "That postcode doesn't look right."); }
+          if ("total" in p || "travel" in p || "mode" in p) {
+            const total = "total" in p ? Math.round(Number(p.total)) : b.total, travel = "travel" in p ? Math.round(Number(p.travel)) : b.travel;
+            const mode = ["deposit", "invoice"].includes(p.mode) ? p.mode : b.mode;
+            if (!(total >= 0 && travel >= 0 && travel <= total)) return fail("price", "Check the price and travel amounts.");
+            if (total < b.paid) return fail("price", `They've already paid £${b.paid}. Record a refund first if the price is going down below that.`);
+            const due = mode === "deposit" ? depositFor(total) : mode === "invoice" ? 0 : b.due_now;
+            if (total !== b.total) ch.total = total;
+            if (travel !== b.travel) ch.travel = travel;
+            if (total - travel !== b.base) ch.base = total - travel;
+            if (mode !== b.mode) ch.mode = mode;
+            if (due !== b.due_now) ch.due_now = due;
+          }
+          const direct = {};
+          if ("wanted_date" in p && (p.wanted_date === "" || DATE.test(p.wanted_date)) && p.wanted_date !== (b.wanted_date || "")) direct.wanted_date = p.wanted_date;
+          if ("wanted_time" in p && clean(p.wanted_time, 20) !== (b.wanted_time || "")) direct.wanted_time = clean(p.wanted_time, 20);
+          if (!Object.keys(ch).length && !Object.keys(direct).length) return fail("same", "Nothing has changed.");
+          if (Object.keys(direct).length) await set(Object.keys(direct).map((k) => `${k} = ?`).join(", "), ...Object.values(direct));
+          if (Object.keys(ch).length) {
+            if (!b.signed_at) {
+              // Not signed yet: change it straight away; they'll sign the updated version
+              await set(Object.keys(ch).map((k) => `${k} = ?`).join(", "), ...Object.values(ch));
+            } else {
+              const merged = { ...(b.pending ? JSON.parse(b.pending) : {}), ...ch };
+              await set("pending = ?, pending_at = ?", JSON.stringify(merged), now());
+              const after = await D.prepare("SELECT * FROM bookings WHERE id = ?").bind(b.id).first();
+              if (u) await sendMail(env, u.email, MAIL.changes(u, after, changeList(after)), "changes");
+            }
+          }
+          await log(env, actor, b.signed_at && Object.keys(ch).length ? "changes-proposed" : "edited", b.ref, Object.keys({ ...ch, ...direct }).join(", "));
+          break;
+        }
+        case "undo-changes": {
+          if (!b.pending) return fail("state", "No changes are waiting.");
+          await set("pending = NULL, pending_at = NULL");
+          await log(env, actor, "changes-withdrawn", b.ref);
+          break;
+        }
+        case "refund": {
+          const amount = Math.round(Number(x.amount));
+          const left = b.paid - (b.refunded || 0);
+          if (!(amount > 0 && amount <= left)) return fail("amount", `Enter an amount up to £${left}.`);
+          await set("refunded = refunded + ?", amount);
+          await log(env, actor, "refund", b.ref, `£${amount} ${clean(x.how, 60)}`);
+          if (u) await sendMail(env, u.email, MAIL.refund(u, b, amount), "refund");
           break;
         }
         case "deliver": {
           const link = clean(x.files, 500);
           if (!/^https:\/\/\S+$/.test(link)) return fail("files", "Paste the Drive folder link (starting https://).");
+          if (!b.signed_at) return fail("unsigned", "They haven't signed the booking agreement yet.");
           await set("files = ?, status = 'delivered'", link);
           await log(env, actor, "delivered", b.ref);
           const balance = b.mode === "deposit" ? b.total - b.paid : 0;
@@ -85,7 +153,8 @@ export async function onRequest({ request, env, params }) {
           break;
         }
         case "reopen": {
-          await set("status = 'requested', confirmed_date = NULL, confirmed_time = NULL");
+          const back = !b.signed_at ? "awaiting_signature" : b.mode !== "invoice" && b.paid < b.due_now ? "awaiting_payment" : "requested";
+          await set("status = ?, confirmed_date = NULL, confirmed_time = NULL", back);
           if (b.service_id === "bundle") await D.prepare("UPDATE bundles SET closed = 0, refund = 0 WHERE booking_id = ? AND (expires IS NULL OR expires > ?)").bind(b.id, now()).run();
           await log(env, actor, "reopened", b.ref);
           break;

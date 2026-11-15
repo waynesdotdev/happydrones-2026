@@ -11,6 +11,7 @@ import { Arrow } from "@/components/TIcons";
 import { SERVICE_PAGES, SITE, serviceById, money, fromPrice, kitById, whatsappLink } from "@/lib/site";
 import { EXTRA_SERVICES } from "@/lib/extraServices";
 import InterestForm from "@/components/InterestForm";
+import BookOnline from "@/components/BookOnline";
 
 export const dynamicParams = false;
 export function generateStaticParams() { return [...SERVICE_PAGES, ...EXTRA_SERVICES].map((s) => ({ slug: s.id })); }
@@ -72,6 +73,7 @@ export default async function ServiceDetail({ params }) {
               ? <InterestForm service={s.title} />
               : <>
                   <Link className="t-btn t-btn-primary t-btn-block" href={priceHref}>{homes ? "Get my price" : "Price this mission"} <Arrow /></Link>
+                  <BookOnline id={s.id} block />
                   {SITE.whatsapp && <a className="t-btn t-btn-ghost t-btn-block" href={whatsappLink(`Hi Happy Drones, I'd like to ask about ${s.title.toLowerCase()}.`)} target="_blank" rel="noopener">Ask on WhatsApp</a>}
                 </>}
             {s.know && <p className="t-pc-note">{s.know}</p>}
