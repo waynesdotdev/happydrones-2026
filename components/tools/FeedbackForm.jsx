@@ -1,6 +1,6 @@
 "use client";
 /* Private feedback after a job (/review). Sent by lib/sendForm.js as form
-   "feedback" (hidden copy in public/__forms.html). Only Wayne sees it. */
+   "feedback" (saved in the admin's Enquiries tab). Only Wayne sees it. */
 import { useState } from "react";
 import { sendEnquiry } from "@/lib/sendForm";
 

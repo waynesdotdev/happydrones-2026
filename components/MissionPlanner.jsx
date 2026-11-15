@@ -1,9 +1,8 @@
 "use client";
 /* Plan a mission: pick the job, its scale, how often, extras and where.
    A live flight-plan card shows the guide price and a mission code.
-   Sent by lib/sendForm.js (email via Web3Forms, backup in Netlify Forms,
-   form name "mission"). The hidden copy of this form lives in
-   public/__forms.html: keep the field names the same. */
+   Sent by lib/sendForm.js as form "mission": saved in the admin's Enquiries
+   tab, with a backup email via Web3Forms. */
 import { useEffect, useMemo, useRef, useState } from "react";
 import PlanWeather from "./PlanWeather";
 import { PLANNER, PAYMENT, SITE, TRAVEL, travelFor, money, depositFor, whatsappLink, missionBase } from "@/lib/site";

@@ -1,4 +1,4 @@
-/* Shown for any address that doesn't exist (saved as 404.html, which Netlify uses automatically). */
+/* Shown for any address that doesn't exist (saved as 404.html, which Cloudflare Pages uses automatically). */
 import Link from "next/link";
 
 export const metadata = { title: "Page not found", robots: { index: false } };

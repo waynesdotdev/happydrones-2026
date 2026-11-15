@@ -36,24 +36,19 @@ THE SAFE WAY TO MAKE ANY CHANGE
 1. Run "npm run dev" and make your change.
 2. Check the page in the browser at phone and desktop widths.
 3. Run "npm run build". If it finishes with no red errors, it's safe.
-4. Publish:
-     git add .
-     git commit -m "Describe what you changed"
-     git push
-   Netlify rebuilds and publishes automatically.
+4. Commit to main, then publish by pushing main to the "live" branch
+   (see CLAUDE.md). Cloudflare Pages rebuilds and publishes automatically.
 
 If something breaks and you can't see why, undo your last change with
 Ctrl + Z in the file, or in the terminal run:  git checkout -- path/to/file
 
 
-NETLIFY SETUP (once)
---------------------
-netlify.toml already tells Netlify to run "npm run build" and publish "out".
-- In Netlify: Project configuration > Build & deploy: the publish directory
-  should say "out". If it says ".next", change it to "out".
-- Forms: Netlify > Forms > Enable form detection. Submissions from the
-  contact form then appear there. Turn on email alerts in
-  Project configuration > Notifications.
+HOSTING (Cloudflare Pages)
+--------------------------
+Cloudflare builds the "live" branch with "npm run build" and publishes "out".
+Accounts, bookings and enquiries use the Pages Functions in functions/ and a
+D1 database bound as DB. Settings and secrets are in Cloudflare > the project >
+Settings > Variables and Secrets. Netlify is no longer used.
 - Change SITE.url in lib/site.js to your real domain. Google, the sitemap
   and social sharing all use it.
 
@@ -90,8 +85,9 @@ THE CONTACT FORM AND NETLIFY
 There are two forms: "quote" (homepage contact form) and "mission"
 (the commercial planner on /plan/). The homepage form sends: subject, role, name, company, email,
 phone, postcode, date, message, quote-summary and quote-total.
-public/__forms.html MUST list exactly the same fields, or Netlify
-quietly drops the missing ones. Change both files together.
+Every form is saved in the admin's Enquiries tab (functions/api/enquiry.js)
+and Web3Forms emails a backup copy. Field labels for emails and the admin
+are in LABELS in lib/sendForm.js.
 The email subject is set for you, e.g.
   "New enquiry from estate agent · £379"
 

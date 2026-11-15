@@ -27,8 +27,8 @@ HOMEPAGE
   QuoteBuilder.jsx   quote builder + ticket   -> PRICING in lib/site.js
   ContactSection.jsx enquiry form with "I am a..." buttons (ROLES at the
                      top). /?role=agent#contact pre-picks Estate agent.
-                     If you change form fields, ALSO change
-                     public/__forms.html or Netlify won't save them.
+                     Saved in the admin's Enquiries tab; labels in
+                     LABELS in lib/sendForm.js.
   QuoteContext.jsx   lets packages, tabs, quote and form share the
                      service, quote and role (don't edit)
   HomeSections.jsx   showreel, how it works, reviews, FAQ
@@ -53,7 +53,7 @@ CAREFUL: class names (className="...") are tied to app/globals.css.
 MERGED FROM TOMORROW UAV (commercial "ops" look, classes start with t-)
   CommercialHero.jsx  terrain flyover + live telemetry (Commercial page)
   TodayTomorrow.jsx   "the job build": drag a construction site through 14 months
-  MissionPlanner.jsx  commercial planner. Fields must match public/__forms.html "mission"
+  MissionPlanner.jsx  commercial planner (form "mission", saved in the admin's Enquiries)
   MissionCard.jsx     dark service card linking to /services/<id>/
   CtaBand.jsx         dark call-to-action band
   TFaq.jsx            FAQ list for ops-style pages

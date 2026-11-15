@@ -1,8 +1,7 @@
 "use client";
 /* Agent account: how it works, plus the sign-up form (/estate-agents/#account).
-   Sent by lib/sendForm.js as form "agent-account" (email via Web3Forms, backup in
-   Netlify Forms). The hidden copy of this form is in public/__forms.html: keep
-   the field names the same. Credit limit: AGENT_ACCOUNT in lib/site.js.
+   Sent by lib/sendForm.js as form "agent-account": saved in the admin's
+   Enquiries tab, with a backup email via Web3Forms. Credit limit: AGENT_ACCOUNT in lib/site.js.
    The account terms are clause 3.9 of the booking agreement (/terms). */
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";

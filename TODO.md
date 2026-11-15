@@ -62,7 +62,7 @@
 - [ ] **Stronger Google two-step.** Add Google prompts or an authenticator app, keeping the text message as a backup.
 - [ ] **Original logo file.** The logos on /media were traced from the PNG. If whoever designed the logo has the original vector file (.ai, .eps, .svg or .pdf), send it and Claude will swap it in.
 - [ ] **Booking agreement mentions FPV.** /terms clause 8.1 gives delivery times for FPV. It has to match the signed contract, so it's unchanged. Remove FPV next time the contract is updated, then update /terms to match.
-- [ ] **Finish the Cloudflare move.** Test the site and email, then remove the domain from Netlify and delete the Netlify project. After that, tidy up the Netlify leftovers (netlify.toml, public/__forms.html, the Netlify backup in lib/sendForm.js, the privacy page line).
+- [ ] **Finish the Cloudflare move (optional, any time).** Netlify's repo link is removed (15 Nov), so it no longer builds or uses credits. Last step: in Netlify, remove the happydrones.co.uk domain from the site, then delete the site.
 - [ ] **Mavic 4 Pro.** Owned or not? It's currently marked coming soon.
 - [ ] **Interior photos.** The site says interiors are shot on the "Osmo Pocket 3 or mirrorless" with a wide-angle lens (8 Nov). A mirrorless camera is coming soon (looking at the Sony A7 II or Canon M50). When it's bought, mark it as owned in the fleet (the "camera" kit in lib/site.js). Check the property photography page's claim that each angle is shot as three exposures and blended matches how you shoot.
 

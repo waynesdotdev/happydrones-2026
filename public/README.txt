@@ -6,7 +6,6 @@ Anything in here is available at the same name on your site:
   logo.png       your HD logo (header, footer, Google)
   og.png         the image shown when your site is shared on social media
                  (1200 x 630). Replace it with the same size to change it.
-  __forms.html   DON'T DELETE. Tells Netlify about the contact form.
                  Must have the same field names as components/ContactSection.jsx
   posts/         photos for Viewing Room posts. Use them as /posts/name.jpg
 

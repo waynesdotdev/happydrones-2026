@@ -1,11 +1,12 @@
 # Happy Drones website: notes for Claude
 
-## Publishing (Netlify credits)
-Netlify's free plan gives 300 credits a month, and each live deploy costs 15. When they run out, the site goes offline.
-- **Netlify only deploys the `live` branch.** Everyday work goes on `main`. Pushing to `main` is free and doesn't change the website.
-- **Never push to `live` unless Wayne says to publish.** To publish: `git checkout live && git merge --ff-only main && git push origin live && git checkout main`.
-- Group changes together, and test locally (`npm run dev` or `npm run build`) before publishing.
-- Builds are skipped when a commit only changes notes files (see `ignore` in `netlify.toml`).
+## Publishing (Cloudflare Pages)
+The site is hosted on Cloudflare Pages (static pages in `out/` plus Pages Functions in `functions/`, database D1 bound as `DB`). Netlify is no longer used: its repo link was removed on 15 Nov 2026.
+- **Cloudflare only builds the `live` branch.** Everyday work goes on `main`. Pushing to `main` doesn't change the website.
+- **Never push to `live` unless Wayne says to publish** (or "make live"). To publish: `git fetch origin +refs/heads/live:refs/remotes/origin/live main && git merge-base --is-ancestor origin/live main && git push origin main:live`.
+- Cloudflare's free plan allows 500 builds a month. Still group changes together, and test locally (`npm run build`, and `wrangler pages dev out` for anything in `functions/`) before publishing.
+- Settings and secrets (Stripe, Resend, `ADMIN_EMAIL`, `TEST_MODE`) live in Cloudflare → the project → Settings → Variables and Secrets. Never put keys in code or chat. A change there needs a new deploy to take effect.
+- Redirects are in `public/_redirects`; headers in `public/_headers`.
 
 ## Marketing campaigns (Wayne's standing rule)
 Every campaign or special offer must have a distance limit from Wayne's base:
@@ -17,7 +18,7 @@ Confirm the base, zone distances and fees with Wayne before building. He'd rathe
 
 ## Log every change
 Every change to this site gets an entry at the top of `lib/changelog.js`.
-That includes code, content and settings done outside the code (Netlify, Google, Web3Forms).
+That includes code, content and settings done outside the code (Cloudflare, Stripe, Resend, Google, Web3Forms).
 The entries are shown on the unlisted page happydrones.co.uk/changelog.
 
 - Use UK time for `time`. Set `by` to "Claude" or "Wayne". Pick a `type`: new, change, fix, content or setup.

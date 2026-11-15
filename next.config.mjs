@@ -8,7 +8,7 @@ execFileSync(process.execPath, ["scripts/check-security.mjs", "source"], { stdio
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   // Build the whole site as plain HTML files in the "out" folder.
-  // Netlify serves that folder. No server needed, and every page
+  // Cloudflare Pages serves that folder. No server needed, and every page
   // (including each journal post) is real HTML that Google can read.
   output: "export",
 

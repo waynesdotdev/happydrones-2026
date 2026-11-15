@@ -1,7 +1,7 @@
 "use client";
 /* "Ready to book?" contact section and enquiry form.
    Sending is handled by lib/sendForm.js (email via Web3Forms, backup copy in
-   Netlify Forms). The matching hidden form lives in public/__forms.html.
+   the admin's Enquiries tab, with a confirmation to the customer).
    If you add or rename a field here, add/rename it there too. */
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";

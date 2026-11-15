@@ -1,7 +1,7 @@
 "use client";
 /* "Tell me when it's ready" form for coming-soon services.
    Sent by lib/sendForm.js as form "interest" (email via Web3Forms, backup in
-   Netlify Forms; hidden copy in public/__forms.html). Used on the
+   the admin's Enquiries tab). Used on the
    /services/<id>/ page of any service marked soon: true. */
 import { useState } from "react";
 import { sendEnquiry } from "@/lib/sendForm";
