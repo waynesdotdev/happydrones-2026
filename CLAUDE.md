@@ -8,6 +8,12 @@ The site is hosted on Cloudflare Pages (static pages in `out/` plus Pages Functi
 - Settings and secrets (Stripe, Resend, `ADMIN_EMAIL`, `TEST_MODE`) live in Cloudflare → the project → Settings → Variables and Secrets. Never put keys in code or chat. A change there needs a new deploy to take effect.
 - Redirects are in `public/_redirects`; headers in `public/_headers`.
 
+## Business standards (official rules)
+The official rules for quotes, bookings, prices, legal, security, website quality and customer emails are in the Claude Doc "Happy Drones Standards and Requirements": https://claude.ai/artifact/1RDuJF6dBRhX5uSu48YwsB
+- Read it before changing anything about quotes, bookings, payments, emails or customer data. If the website and the standards disagree, the standards win and the website is fixed.
+- Rules marked "Enforced by the website" must stay enforced in code. "Proposed" rules aren't official until Wayne approves them.
+- When Wayne adds or changes a rule, update the doc's log, then build anything it needs and log that in the changelog.
+
 ## Marketing campaigns (Wayne's standing rule)
 Every campaign or special offer must have a distance limit from Wayne's base:
 - free travel only in a core zone,
