@@ -21,9 +21,9 @@
 
 
 ## Accounts and bookings (built 15 Nov, test mode)
-- [ ] **Switch it on in Cloudflare (Wayne, about 10 minutes).** Workers & Pages → D1 → Create database, name it `happydrones-db`. Then the Pages project → Settings → Bindings → add D1 database, variable name `DB`, pick `happydrones-db`. Then Settings → Variables and secrets → add `ADMIN_EMAIL` = wayne@happydrones.co.uk and `TEST_MODE` = 1. The tables build themselves on first use.
+- [x] **Switch it on in Cloudflare (Wayne, about 10 minutes).** Workers & Pages → D1 → Create database, name it `happydrones-db`. Then the Pages project → Settings → Bindings → add D1 database, variable name `DB`, pick `happydrones-db`. Then Settings → Variables and secrets → add `ADMIN_EMAIL` = wayne@happydrones.co.uk and `TEST_MODE` = 1. The tables build themselves on first use.
 - [ ] **Test it end to end.** Sign up at /account with wayne@happydrones.co.uk (that becomes the admin), then /admin → Test tools → create Lynn Fox (lynn.fox@example.com). Sign in as Lynn, book, pay (simulated), cancel, download data, delete. Do the admin side: confirm, deliver, mark paid, cancel, reopen, delete customer, wipe test data.
-- [ ] **Stripe test keys.** When the Stripe account is ready: add `STRIPE_SECRET_KEY` (sk_test_…) as a Cloudflare secret, and a webhook to https://happydrones.co.uk/api/stripe-webhook for `checkout.session.completed`, saving its signing secret as `STRIPE_WEBHOOK_SECRET`. Never paste keys into chat or code.
+- [x] **Stripe test keys.** When the Stripe account is ready: add `STRIPE_SECRET_KEY` (sk_test_…) as a Cloudflare secret, and a webhook to https://happydrones.co.uk/api/stripe-webhook for `checkout.session.completed`, saving its signing secret as `STRIPE_WEBHOOK_SECRET`. Never paste keys into chat or code.
 - [ ] **Real emails.** Free Resend account, verify happydrones.co.uk (DNS records in Cloudflare), then secrets `RESEND_KEY` and `MAIL_FROM` (e.g. Happy Drones <bookings@happydrones.co.uk>). Until then emails only appear in the admin's Emails tab.
 - [ ] **ICO registration** (data protection fee, about £52 a year) before real customers sign up.
 - [ ] **Privacy policy update** before real customers: accounts, Stripe, Resend, Cloudflare D1, how long data is kept, and remove the old Netlify line. Claude to draft.
