@@ -62,8 +62,12 @@ export default function MissionPlanner() {
   }, [status]);
 
   useEffect(() => {
-    const q = new URLSearchParams(location.search).get("mission");
+    const p = new URLSearchParams(location.search), q = p.get("mission");
     if (q && PLANNER.missions.some((m) => m.id === q)) setSt((s) => ({ ...s, mission: q, freq: q === "construction" ? "monthly" : "once" }));
+    // Carried over from the playground ("Book this for real"): postcode and date
+    const pc = (p.get("pc") || "").slice(0, 8), d = p.get("date") || "";
+    if (pc) setSt((s) => ({ ...s, postcode: pc }));
+    if (/^\d{4}-\d{2}-\d{2}$/.test(d) && d >= minDate) setSt((s) => ({ ...s, date: d }));
     setCode(`HD-${Math.random().toString(36).slice(2, 6).toUpperCase()}`);
   }, []);
 

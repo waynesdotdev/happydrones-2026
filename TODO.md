@@ -49,6 +49,7 @@
 - [ ] **Optional hello@ alias.** Add hello@happydrones.co.uk as a free alias in Google Admin.
 
 ## Done
+- [x] The playground (/playground): a pretend booking for any service, start to finish, with example emails and a show-around. (15 Nov 2026)
 - [x] Nine new services with pages and prices, three coming-soon services with interest forms, online roof report (/report), review page (/review), before-and-after gallery (/work) and 14 draft blog posts at /drafts. (14 Nov 2026)
 - [x] /plan weather check for customers: verdict, best time, tap-to-pick hour chart, better dates; limited to 3 areas a person and 200 Met Office requests a day for customers. (14 Nov 2026)
 - [x] First three real blog posts (insurance, roof check, 5 listing shots); the old sample posts archived in content/posts/archive, with their addresses redirected to the Viewing Room. (14 Nov 2026)

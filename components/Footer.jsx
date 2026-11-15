@@ -36,6 +36,7 @@ export default function Footer() {
             <li><Link href="/roof-inspections/">Roof inspections</Link></li>
             <li><Link href="/local-business/">Local business content</Link></li>
             <li><Link href="/plan/">Plan a mission</Link></li>
+            <li><Link href="/playground/">Try the playground</Link></li>
             <li><Link href="/services/">Services</Link></li>
             <li><Link href="/fleet/">The fleet</Link></li>
             <li><Link href="/safety/">Safety</Link></li>
