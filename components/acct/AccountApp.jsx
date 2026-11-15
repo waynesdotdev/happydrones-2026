@@ -6,6 +6,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import SignIn from "./SignIn";
 import { api, STATUS, longDate, when } from "@/lib/acct/client";
+import { PasswordField, NewPassword, newPasswordProblem } from "./PasswordField";
 import { CATALOG, priceFor, zoneFor, MODE_WORDS, bundleSize } from "@/lib/acct/catalog";
 import { money } from "@/lib/site";
 
@@ -120,18 +121,24 @@ function Book({ hasBundle, startWithBundle, onBooked, config }) {
       <label className="acc-agree"><input type="checkbox" checked={f.agree} onChange={(e) => set("agree", e.target.checked)} /><span>I accept the <Link href="/terms/" target="_blank">booking agreement</Link> (version {config.agreement}).</span></label>
       {msg && <p className="ac-err" role="alert">{msg}</p>}
       <button className="t-btn t-btn-primary" disabled={busy}>{busy ? "Booking…" : p?.dueNow ? `Book and continue to payment` : "Book"}</button>
-      {config.test && <p className="ac-test">Test mode: payments are simulated and no money is taken.</p>}
+      {config.test && <p className="ac-test">{config.stripe ? "Test mode: pay on Stripe\u2019s test page with card 4242 4242 4242 4242. No real money moves." : "Test mode: payments are simulated and no money is taken."}</p>}
     </form>
   );
 }
 
 function Details({ user, onUser, onGone }) {
   const [f, setF] = useState({ name: user.name, phone: user.phone, company: user.company, marketing: user.marketing });
-  const [pw, setPw] = useState({ current: "", password: "" });
+  const [pw, setPw] = useState({ current: "", password: "", password2: "" });
   const [del, setDel] = useState("");
   const [msg, setMsg] = useState({});
   async function save(e) { e.preventDefault(); const r = await api("/api/acct/profile", f); setMsg({ p: r.error ? r.message : "Saved." }); if (!r.error) onUser(r.user); }
-  async function changePw(e) { e.preventDefault(); const r = await api("/api/acct/password", pw); setMsg({ pw: r.error ? r.message : "Password changed. Other devices have been signed out." }); if (!r.error) setPw({ current: "", password: "" }); }
+  async function changePw(e) {
+    e.preventDefault();
+    const p = newPasswordProblem(pw.password, pw.password2); if (p) return setMsg({ pw: p });
+    const r = await api("/api/acct/password", { current: pw.current, password: pw.password });
+    setMsg({ pw: r.error ? r.message : "Password changed. Other devices have been signed out." });
+    if (!r.error) setPw({ current: "", password: "", password2: "" });
+  }
   async function remove(e) {
     e.preventDefault();
     if (!confirm("Delete your account? Your details are removed for good. This can't be undone.")) return;
@@ -155,8 +162,8 @@ function Details({ user, onUser, onGone }) {
       </form>
       <form className="ac-form" onSubmit={changePw}>
         <h2>Change password</h2>
-        <div className="t-field"><label htmlFor="d-cur">Current password</label><input id="d-cur" type="password" autoComplete="current-password" value={pw.current} onChange={(e) => setPw({ ...pw, current: e.target.value })} /></div>
-        <div className="t-field"><label htmlFor="d-new">New password</label><input id="d-new" type="password" autoComplete="new-password" value={pw.password} onChange={(e) => setPw({ ...pw, password: e.target.value })} /></div>
+        <PasswordField id="d-cur" label="Current password" value={pw.current} onChange={(v) => setPw({ ...pw, current: v })} />
+        <NewPassword id="d-new" label="New password" value={pw.password} confirm={pw.password2} onChange={(v) => setPw({ ...pw, password: v })} onConfirm={(v) => setPw({ ...pw, password2: v })} />
         {msg.pw && <p className={msg.pw.startsWith("Password changed") ? "ac-ok" : "ac-err"}>{msg.pw}</p>}
         <button className="t-btn t-btn-ghost">Change password</button>
       </form>
@@ -167,7 +174,7 @@ function Details({ user, onUser, onGone }) {
         <form onSubmit={remove} className="ac-danger">
           <h3>Delete my account</h3>
           <p className="ac-small">Your name, email, phone and addresses are deleted. Payment records stay with Stripe for as long as tax law requires.</p>
-          <div className="t-field"><label htmlFor="d-del">Your password</label><input id="d-del" type="password" autoComplete="current-password" value={del} onChange={(e) => setDel(e.target.value)} /></div>
+          <PasswordField id="d-del" label="Your password" value={del} onChange={setDel} />
           {msg.d && <p className="ac-err">{msg.d}</p>}
           <button className="t-btn t-btn-ghost ac-del">Delete my account</button>
         </form>
@@ -189,7 +196,7 @@ export default function AccountApp() {
 
   if (state.loading) return <p className="ac-lede">Loading…</p>;
   if (state.error) return <p className="ac-err">{state.error}</p>;
-  const test = state.config?.test && <p className="ac-test ac-banner">Test mode: sign-in codes appear on screen, emails go to the admin outbox, and payments are simulated. Nothing is charged.</p>;
+  const test = state.config?.test && <p className="ac-test ac-banner">{state.config?.stripe ? "Test mode: sign-in codes appear on screen and emails go to the admin outbox. Payments use Stripe\u2019s test checkout (card 4242 4242 4242 4242), so no real money moves." : "Test mode: sign-in codes appear on screen, emails go to the admin outbox, and payments are simulated. Nothing is charged."}</p>;
   if (!state.user) return <div className="ac-wrap">{test}<SignIn onDone={(user) => setState((s) => ({ ...s, user }))} /></div>;
   const u = state.user;
   return (

@@ -194,7 +194,7 @@ export default function AdminApp() {
   const tabs = [["bookings", `Bookings (${st.counts.toDo} to do)`], ["customers", `Customers (${st.counts.customers})`], ["outbox", "Emails"], ["activity", "Activity"], ...(st.config.test ? [["test", "Test tools"]] : [])];
   return (
     <div className="ad">
-      {st.config.test && <p className="ac-test ac-banner">Test mode. Payments {st.config.stripe ? "go to Stripe" : "are simulated"}; emails {st.config.mail ? "are sent" : "go to the outbox only"}.</p>}
+      {st.config.test && <p className="ac-test ac-banner">Test mode. Payments {st.config.stripe ? "use Stripe's test checkout (no real money)" : "are simulated"}; emails {st.config.mail ? "are sent" : "go to the outbox only"}.</p>}
       <div className="ac-top">
         <h2>Admin</h2>
         <nav className="ac-tabs">
