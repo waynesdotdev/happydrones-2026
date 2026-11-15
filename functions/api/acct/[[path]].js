@@ -311,9 +311,16 @@ export async function onRequest(ctx) {
     if (path === "export" && m === "GET") {
       const { results } = await D.prepare("SELECT * FROM bookings WHERE user_id = ?").bind(u.id).all();
       const { results: bundles } = await D.prepare("SELECT * FROM bundles WHERE user_id = ?").bind(u.id).all();
+      const ids = results.map((r) => r.id), refs = results.map((r) => r.ref), marks = (n) => Array(n).fill("?").join(",");
+      const all = async (sql, ...v) => (await D.prepare(sql).bind(...v).all()).results;
+      const signatures = ids.length ? await all(`SELECT booking_id, kind, name, email, at, ip, ua, version, fingerprint, early, job FROM signatures WHERE booking_id IN (${marks(ids.length)})`, ...ids) : [];
+      const enquiries = (await all("SELECT ref, kind, name, email, phone, company, postcode, summary, price, fields, status, note, booking_ref, created FROM enquiries WHERE email = ?", u.email)).map((e) => ({ ...e, fields: JSON.parse(e.fields) }));
+      const activity = await all(`SELECT at, actor, action, target, detail FROM audit WHERE actor = ?${refs.length ? ` OR target IN (${marks(refs.length)})` : ""} ORDER BY id`, u.email, ...refs);
+      const emails = await all("SELECT created, subject, body, sent FROM outbox WHERE to_addr = ? ORDER BY id", u.email);
       await log(env, u.email, "export");
-      const data = { exported: new Date().toISOString(), account: publicUser(u), created: new Date(u.created * 1000).toISOString(), bookings: results, bundles,
-        note: "This is everything Happy Drones holds about you in its booking system. Payment details are held by Stripe, not here." };
+      const data = { exported: new Date().toISOString(), account: publicUser(u), created: new Date(u.created * 1000).toISOString(), lastSignIn: u.last_login ? new Date(u.last_login * 1000).toISOString() : null,
+        bookings: results, bundles, signedAgreements: signatures.map((g) => ({ ...g, job: JSON.parse(g.job) })), enquiries, activity, emailsSentToYou: emails,
+        note: "This is everything Happy Drones holds about you in its booking system: your account, bookings (with Wayne's notes on them), signed agreements, enquiries, the activity log and copies of emails sent to you in the last 30 days. Your password is stored scrambled and can't be shown. Card details are held by Stripe, not here." };
       return new Response(JSON.stringify(data, null, 2), { headers: { "content-type": "application/json", "content-disposition": `attachment; filename="happy-drones-my-data.json"`, "cache-control": "no-store" } });
     }
 

@@ -283,7 +283,9 @@ function Panel({ refId, onClose, onChanged }) {
   }
   if (!d) return <div className="ad-panel"><button type="button" className="ac-link ad-back" onClick={() => onClose()}>← All enquiries</button><p>{msg?.[1] || "Loading…"}</p></div>;
   const q = d.enquiry;
-  const mapUrl = q.fields.find(([k]) => k.startsWith("Job page"))?.[1];
+  // Built here from the postcode and date, never from a link the customer sent
+  const dj = draftFrom(q);
+  const mapUrl = q.postcode ? jobPage(q, dj.f0, linesTotal(dj.lines)) : "";
   const wa = waLink(q.phone, `Hi ${q.name?.split(" ")[0] || ""}, it's Wayne from Happy Drones about your ${KIND[q.kind]?.toLowerCase() || "enquiry"} (${q.ref}).`);
   const [now, customerSees] = STATUS_INFO[q.status] || ["", ""];
   const shown = q.fields.filter(([k]) => !k.startsWith("Job page"));

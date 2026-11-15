@@ -79,7 +79,7 @@ export default function ContactSection() {
           <input type="hidden" name="quote-summary" value={plan?.summary || ""} />
           <input type="hidden" name="quote-total" value={plan?.total || ""} />
           <input type="hidden" name="service-id" value={plan?.service || ""} />
-          <input type="hidden" name="price-lines" value={plan?.lines ? JSON.stringify(plan.lines) : ""} />
+          <input type="hidden" name="price-choice" value={plan?.choice ? JSON.stringify(plan.choice) : ""} />
           {/* The subject line of the enquiry email you receive */}
           <input type="hidden" name="subject" value={`New enquiry${role ? " from " + role.toLowerCase() : ""}${plan ? " · " + plan.total : ""}`} />
           <p className="bot"><label>Leave this empty <input name="bot-field" tabIndex={-1} autoComplete="off" /></label></p>

@@ -41,6 +41,9 @@ The entries are shown on the unlisted page happydrones.co.uk/changelog.
 ## Working on the site
 - Run `git pull` before editing.
 - Run `npm run build` before pushing (it includes the security check).
+- Run `npm test` after building and before publishing anything that touches `functions/`, `lib/acct/`, `lib/pricing.js` or the forms. It starts a fresh local copy of the site and runs every suite in `tests/suites/` (sign-in, bookings, bundles, enquiries, data protection, payments, test mode off). All must pass. When you add or change a rule or a route, add or change its test in the same commit.
+- Prices: the server never trusts a price from a browser. Forms send choices; `lib/pricing.js` works out the price on both sides.
+- Test mode shows codes on screen only for test accounts and @example addresses. The tests use `admin@example.com` as the admin.
 - Write commit messages in plain English.
 - Most settings live in `lib/site.js`.
 - `TODO.md` holds the to-do list. Tick items off there as they're done.

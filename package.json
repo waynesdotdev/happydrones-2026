@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "node scripts/check-security.mjs source && next build && node scripts/check-security.mjs",
     "start": "npx serve out",
-    "check:security": "node scripts/check-security.mjs"
+    "check:security": "node scripts/check-security.mjs",
+    "test": "node tests/run.mjs"
   },
   "dependencies": {
     "@fontsource/blinker": "^5.3.0",

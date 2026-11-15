@@ -7,6 +7,8 @@
 import { json, fail, now, ipOf, sameSite, body, db, limited, randomHex, sha256, sendMail, MAIL as MAIL_ENQ } from "../../lib/acct/server.js";
 import { LABELS, SKIP } from "../../lib/sendForm.js";
 import { CATALOG, tidyPostcode } from "../../lib/acct/catalog.js";
+import { priceChoice } from "../../lib/pricing.js";
+import { money } from "../../lib/site.js";
 
 const SITE = "https://happydrones.co.uk";
 const KINDS = { quote: "quote request", mission: "mission plan", "agent-account": "agent account request", interest: "interest in a coming-soon service", feedback: "feedback" };
@@ -14,7 +16,6 @@ const PUBLIC_STATUS = { new: "Received: Wayne will reply within a day", contacte
 const EMAIL = /^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i;
 const HIDE_FROM_CUSTOMER = new Set(["Job page: map and weather (tap to open)", "Weather when they checked"]);
 const clean = (v, n = 2000) => String(v ?? "").replace(/[\u0000-\u0008\u000b-\u001f]/g, " ").trim().slice(0, n);
-const pounds = (v) => { const n = Number(String(v || "").replace(/[^\d.]/g, "")); return n > 0 ? Math.round(n) : null; };
 
 export async function onRequest({ request, env }) {
   try {
@@ -39,20 +40,29 @@ async function save(request, env) {
   if (kind !== "feedback" && (name.length < 2 || (!email && phone.replace(/\D/g, "").length < 10))) return fail("details", "Add your name and an email or phone number.");
   if ((kind === "quote" || kind === "mission") && !/^\d{4}-\d{2}-\d{2}$/.test(String(x.date || ""))) return fail("date", "Pick the date you'd like.");
 
+  // THE PRICE IS WORKED OUT HERE, from what they chose, never taken from the browser.
+  // Anything the browser sent as a price or a summary is replaced or dropped.
+  let choice = null; try { choice = JSON.parse(x["price-choice"] || "null"); } catch { /* not a real choice */ }
+  const priced = priceChoice(choice, x.postcode);
+  for (const k of ["quote-total", "total", "quote-summary", "price-lines"]) delete x[k];
+  if (priced) {
+    x[kind === "mission" ? "total" : "quote-total"] = money(priced.total);
+    if (kind === "mission") x.plan = [priced.summary, ...priced.lines.map(([n, p]) => `${n}: ${p < 0 ? "-" : ""}${money(Math.abs(p))}`), `Guide total ${money(priced.total)}`].join("\n");
+    else x["quote-summary"] = priced.summary;
+  } else if (kind === "mission") delete x.plan;
+  // The job page link must be this site's own map page, or it's dropped
+  if (x.map && !String(x.map).startsWith(`${SITE}/map/?`)) delete x.map;
+
   // Every field, with its readable label, in the order sent (max 40)
   const fields = Object.entries(x).filter(([k, v]) => !SKIP.has(k) && clean(v) !== "").slice(0, 40).map(([k, v]) => [LABELS[k] || clean(k, 60), clean(v)]);
-  const svc = CATALOG.find((c) => c.id === (x["service-id"] || x.mission));
-  const summary = clean(x.plan || x["quote-summary"] || (x.service ? `Interested in: ${x.service}` : "") || x.message, 1500);
-  const price = pounds(x.total || x["quote-total"]);
+  const svc = CATALOG.find((c) => c.id === (priced?.serviceId || x["service-id"] || x.mission));
+  // The customer's confirmation only ever repeats words from our own price list,
+  // never text they typed, so the form can't be used to send someone else a message.
+  const summary = priced ? priced.summary : "";
+  const price = priced ? priced.total : null;
+  const lines = priced ? priced.lines : null;
   const postcode = tidyPostcode(x.postcode) || clean(x.postcode, 10).toUpperCase() || null;
 
-  // Itemised price lines from the quote builder or mission planner: [[name, £, kind], …]
-  let lines = null;
-  try {
-    const raw = JSON.parse(x["price-lines"] || "null");
-    if (Array.isArray(raw)) lines = raw.slice(0, 20).filter((l) => Array.isArray(l) && Number.isFinite(Number(l[1])))
-      .map(([n, p, k]) => [clean(n, 120), Math.max(-100000, Math.min(100000, Math.round(Number(p)))), ["service", "size", "extra", "discount", "travel"].includes(k) ? k : "extra"]);
-  } catch { /* ignore a bad list */ }
   const ref = `Q-${randomHex(3).toUpperCase()}`, token = randomHex(16), t = now();
   await (await db(env)).prepare(`INSERT INTO enquiries (ref, token_hash, kind, name, email, phone, company, postcode, service_id, summary, price, fields, lines, status, created, updated)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'new', ?, ?)`)

@@ -18,7 +18,7 @@ export default function PrivacyPage() {
           <p><em>Last updated: 15 November 2026</em></p>
 
           <h2>Who I am</h2>
-          <p>Happy Drones is run by Wayne Fox, a sole trader, {SITE.base}, United Kingdom. I decide how your information is used, so I&apos;m responsible for it under UK data protection law (the UK GDPR and the Data Protection Act 2018). Contact me at <a href={`mailto:${SITE.email}`}>{SITE.email}</a> about anything on this page.</p>
+          <p>Happy Drones is run by Wayne Fox, a sole trader, {SITE.base}, United Kingdom. Happy Drones is registered with the Information Commissioner&apos;s Office (ICO){SITE.icoNumber ? `, registration number ${SITE.icoNumber}` : ""}. I decide how your information is used, so I&apos;m responsible for it under UK data protection law (the UK GDPR and the Data Protection Act 2018). Contact me at <a href={`mailto:${SITE.email}`}>{SITE.email}</a> about anything on this page.</p>
 
           <h2>What I collect</h2>
           <ul>
@@ -49,10 +49,10 @@ export default function PrivacyPage() {
             <li>Sign-in codes: they stop working after 10 minutes and are deleted within a day. Codes are never kept in my copies of emails.</li>
             <li>Copies of emails the site sends you: 30 days.</li>
             <li>The activity log: 2 years.</li>
-            <li>Records for booked jobs: 6 years, for tax.</li>
+            <li>Records for booked jobs: 7 years, which covers the time tax law requires. They&apos;re then deleted automatically.</li>
             <li>Signed booking agreements: 7 years from signing (about 6 years after the job), in case there&apos;s ever a dispute about what was agreed. These are kept even if you delete your account.</li>
           </ul>
-          <p>When you delete your account, your name, contact details, site addresses, notes and file links are removed straight away. What&apos;s left is an anonymous record of each job (the service, dates, price and payments) for the tax records, and any signed booking agreements, kept as above in case of a dispute. Stripe keeps its own payment records for as long as the law requires.</p>
+          <p>When you delete your account, your name, contact details, site addresses, notes and file links are removed straight away. What&apos;s left is a record of each job with nothing that names you (the service, the first half of the postcode, dates, price and payments) for the tax records, and any signed booking agreements, kept as above in case of a dispute. Stripe keeps its own payment records for as long as the law requires.</p>
 
           <h2>Services this site uses</h2>
           <p>These companies handle information for me, only to provide their service, under contracts that require them to keep it safe:</p>

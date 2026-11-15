@@ -8,6 +8,7 @@ import PlanWeather from "./PlanWeather";
 import { PLANNER, PAYMENT, SITE, TRAVEL, travelFor, money, depositFor, whatsappLink, missionBase } from "@/lib/site";
 import { Arrow } from "./TIcons";
 import { sendEnquiry } from "@/lib/sendForm";
+import { missionPrice } from "@/lib/pricing";
 import { lookupPostcode, areaLine, mapPageUrl } from "@/lib/siteMap";
 
 // Travel areas and fees are set in TRAVEL in lib/site.js
@@ -27,20 +28,8 @@ function postcodeInfo(pc) {
   return { ok: true, cls: "warn", travel: null, msg: `${area}: outside the usual area. Travel will be quoted with your plan.` };
 }
 
-export function priceMission(st) {
-  const m = PLANNER.missions.find((x) => x.id === st.mission);
-  const sc = PLANNER.scale.find((x) => x.id === st.scale);
-  const fr = PLANNER.frequency.find((x) => x.id === st.freq);
-  if (!m || !sc || !fr) return null;
-  const base = missionBase(m.base, sc.mult);
-  const extras = PLANNER.extras.filter((x) => st.extras.includes(x.id));
-  const perVisit = base + extras.reduce((a, x) => a + x.price, 0);
-  const gross = perVisit * fr.visits;
-  const disc = Math.round(gross * fr.disc);
-  const travel = postcodeInfo(st.postcode).travel || 0;
-  const total = gross - disc + travel * fr.visits;
-  return { m, sc, fr, base, extras, perVisit, gross, disc, travel, total };
-}
+/* The sums live in lib/pricing.js (shared with the server) */
+export const priceMission = (st) => missionPrice(st);
 
 export default function MissionPlanner() {
   const [st, setSt] = useState({ mission: "construction", scale: "medium", freq: "monthly", extras: [], postcode: "", date: "", time: "", name: "", company: "", email: "", phone: "", notes: "" });
@@ -95,10 +84,7 @@ export default function MissionPlanner() {
     // If the lookup fails the plan still sends, just without these two lines.
     const [site, base] = await Promise.all([lookupPostcode(st.postcode), lookupPostcode(SITE.basePostcode)]);
     const where = site ? { area: areaLine(site, base), map: mapPageUrl(site, fullCode, { kind: st.mission, mission: q.m.name, scale: q.sc.name, freq: q.fr.name, extras: q.extras.map((x) => x.name).join(", "), date: st.date, time: st.time, total: money(q.total), notes: st.notes }) } : {};
-    const v = q.fr.visits, times = v > 1 ? ` × ${v} visits` : "";
-    const priceLines = [[`${q.m.name}, ${q.sc.name}${times}`, q.base * v, "service"], ...q.extras.map((x) => [`${x.name}${times}`, x.price * v, "extra"]),
-      ...(q.disc ? [[`${q.fr.name} saving`, -q.disc, "discount"]] : []), ...(q.travel ? [[`Travel${times}`, q.travel * v, "travel"]] : [])];
-    const fields = { "form-name": "mission", "service-id": st.mission, "price-lines": JSON.stringify(priceLines), subject: `Mission ${fullCode} · ${q.m.name} · ${money(q.total)}`, code: fullCode, plan: summary, total: money(q.total), ...Object.fromEntries(Object.entries(st).map(([k, v]) => [k, Array.isArray(v) ? v.join(", ") : v])), ...where, ...(wx ? { weather: wx } : {}), "bot-field": "" };
+    const fields = { "form-name": "mission", "service-id": st.mission, "price-choice": JSON.stringify({ t: "mission", mission: st.mission, scale: st.scale, freq: st.freq, extras: st.extras }), subject: `Mission ${fullCode} · ${q.m.name} · ${money(q.total)}`, code: fullCode, plan: summary, total: money(q.total), ...Object.fromEntries(Object.entries(st).map(([k, v]) => [k, Array.isArray(v) ? v.join(", ") : v])), ...where, ...(wx ? { weather: wx } : {}), "bot-field": "" };
     try {
       await sendEnquiry(fields);
       setStatus("sent");
