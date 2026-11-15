@@ -24,15 +24,16 @@ export async function onRequest({ request, env, params }) {
       await tidy(env);
       await bundleJobs(env);
       const q = (sql) => D.prepare(sql).first();
-      const [c, b, o, n, tc, nq] = await Promise.all([
+      const [c, b, o, n, tc, nq, eq] = await Promise.all([
         q("SELECT COUNT(*) n FROM users WHERE role = 'customer'"),
         q("SELECT COUNT(*) n FROM bookings"),
         q("SELECT COUNT(*) n FROM bookings WHERE status IN ('requested','awaiting_payment','cancel_requested')"),
         q("SELECT COUNT(*) n FROM bookings WHERE status = 'confirmed'"),
         q("SELECT COUNT(*) n FROM users WHERE test = 1"),
         q("SELECT COUNT(*) n FROM enquiries WHERE status = 'new'"),
+        q("SELECT COUNT(*) n FROM enquiries"),
       ]);
-      return json({ me: publicUser(me), counts: { customers: c.n, bookings: b.n, toDo: o.n, upcoming: n.n, testCustomers: tc.n, newEnquiries: nq.n }, config: { test: testMode(env), stripe: !!env.STRIPE_SECRET_KEY, mail: !!env.RESEND_KEY } });
+      return json({ me: publicUser(me), counts: { customers: c.n, bookings: b.n, toDo: o.n, upcoming: n.n, testCustomers: tc.n, newEnquiries: nq.n, enquiries: eq.n }, config: { test: testMode(env), stripe: !!env.STRIPE_SECRET_KEY, mail: !!env.RESEND_KEY } });
     }
 
     if (path === "bookings" && m === "GET") {
@@ -297,13 +298,14 @@ export async function onRequest({ request, env, params }) {
       if (x.confirm !== "RESET") return fail("confirm", "Type RESET to confirm.");
       const n = await D.prepare("SELECT COUNT(*) n FROM users WHERE role != 'admin'").first();
       const b = await D.prepare("SELECT COUNT(*) n FROM bookings").first();
+      const e = await D.prepare("SELECT COUNT(*) n FROM enquiries").first();
       await D.batch([
-        "DELETE FROM signatures", "DELETE FROM bundles", "DELETE FROM bookings", "DELETE FROM outbox", "DELETE FROM codes",
+        "DELETE FROM enquiries", "DELETE FROM signatures", "DELETE FROM bundles", "DELETE FROM bookings", "DELETE FROM outbox", "DELETE FROM codes",
         "DELETE FROM sessions WHERE user_id NOT IN (SELECT id FROM users WHERE role = 'admin')",
         "DELETE FROM users WHERE role != 'admin'", "DELETE FROM audit", "DELETE FROM limits",
       ].map((q) => D.prepare(q)));
       await log(env, actor, "full-reset", "", `${n.n} accounts, ${b.n} bookings`);
-      return json({ ok: true, accounts: n.n, bookings: b.n });
+      return json({ ok: true, accounts: n.n, bookings: b.n, enquiries: e.n });
     }
     if (path === "test/wipe" && m === "POST") {
       if (!testMode(env)) return fail("test", "Only in test mode.", 403);

@@ -234,15 +234,15 @@ function TestTools({ counts, onChanged }) {
     const r = await api("/api/admin/test/wipe", {}); setMsg({ wipe: r.error ? ["err", r.message] : ["ok", `Done: deleted ${plural(r.removed, "test customer")} and their bookings.`] }); if (!r.error) onChanged();
   }
   async function reset() {
-    const c = prompt("This deletes every account except yours and every booking. Type RESET to confirm."); if (c === null) return;
+    const c = prompt("This deletes every account except yours, and every enquiry and booking. Type RESET to confirm."); if (c === null) return;
     const r = await api("/api/admin/test/reset", { confirm: c.trim().toUpperCase() });
-    setMsg({ reset: r.error ? ["err", r.message] : ["ok", `Done: deleted ${plural(r.accounts, "account")} and ${plural(r.bookings, "booking")}. Everything is clear and your admin account is untouched.`] }); if (!r.error) onChanged();
+    setMsg({ reset: r.error ? ["err", r.message] : ["ok", `Done: deleted ${plural(r.accounts, "account")}, ${plural(r.bookings, "booking")} and ${plural(r.enquiries, "enquiry").replace("enquirys", "enquiries")}. Everything is clear and your admin account is untouched.`] }); if (!r.error) onChanged();
   }
   const Msg = ({ k }) => (msg[k] ? <p className={msg[k][0] === "ok" ? "ac-ok" : "ac-err"} role="status">{msg[k][1]}</p> : null);
-  const empty = !counts.customers && !counts.bookings;
+  const empty = !counts.customers && !counts.bookings && !counts.enquiries;
   return (
     <div className="ac-details">
-      <p className="ad-now"><b>Right now:</b> {plural(counts.customers, "customer account")} ({counts.testCustomers} made here as test), {plural(counts.bookings, "booking")}.</p>
+      <p className="ad-now"><b>Right now:</b> {plural(counts.customers, "customer account")} ({counts.testCustomers} made here as test), {plural(counts.bookings, "booking")}, {plural(counts.enquiries || 0, "enquiry").replace("enquirys", "enquiries")}.</p>
       <form className="ac-form" onSubmit={create}>
         <h2>Create a test customer</h2>
         <p className="ac-small">Marked as test, ready to sign in (no verification email). @example.com addresses never get real emails.</p>
@@ -254,7 +254,7 @@ function TestTools({ counts, onChanged }) {
       </form>
       <div className="ac-form"><h2>Clear test customers</h2><p className="ac-small">Deletes only the test customers made on this page, and their bookings and bundles. Accounts made through the normal sign-up stay.</p>
         <button type="button" className="t-btn t-btn-ghost ac-del" disabled={!counts.testCustomers} onClick={wipe}>{counts.testCustomers ? `Delete ${plural(counts.testCustomers, "test customer")}` : "No test customers to delete"}</button><Msg k="wipe" /></div>
-      <div className="ac-form"><h2>Start completely fresh</h2><p className="ac-small">Deletes every account except yours, plus every booking, signed agreement, bundle, email copy and activity record. Only works in test mode. Use it before testing from scratch, and once more before real customers.</p>
+      <div className="ac-form"><h2>Start completely fresh</h2><p className="ac-small">Deletes every account except yours, plus every enquiry, booking, signed agreement, bundle, email copy and activity record. Only works in test mode. Use it before testing from scratch, and once more before real customers.</p>
         <button type="button" className="t-btn t-btn-ghost ac-del" disabled={empty} onClick={reset}>{empty ? "Already clear: nothing to reset" : "Reset everything"}</button><Msg k="reset" /></div>
     </div>
   );
