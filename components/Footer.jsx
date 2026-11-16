@@ -24,6 +24,7 @@ export default function Footer() {
           <h2>Explore</h2>
           <ul>
             <li><Link href="/">Home</Link></li>
+            <li><Link href="/business/">For business</Link></li>
             <li><Link href="/property/">Property packages</Link></li>
             <li><Link href="/property-photography/">Property photography</Link></li>
             <li><Link href="/aerial-photography/">Aerial photography</Link></li>

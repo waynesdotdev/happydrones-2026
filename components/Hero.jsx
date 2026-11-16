@@ -48,19 +48,19 @@ export default function Hero() {
       </div>
 
       <div className="hero-copy">
-        <h1>Every angle.<br />One visit.</h1>
+        <h1>Your regular<br />drone pilot.</h1>
         <p className="hero-sub">
-          Homes for sale or to let, roof inspections without ladders, and construction progress for builders and developers. One pilot, {SITE.areaShort}.
+          Listings for estate agents, monthly progress for builders, and roof and building checks for landlords and trades. One pilot, fixed prices, {SITE.areaShort}.
         </p>
         <div className="hero-ctas">
-          <Link className="btn btn-orange" href="/#packages">See property packages</Link>
-          <Link className="btn btn-ghost" href="/roof-inspections/">Roof inspections</Link>
-          <Link className="btn btn-ghost" href="/construction/">Construction progress</Link>
+          <Link className="btn btn-orange" href="/business/">For business</Link>
+          <Link className="btn btn-ghost" href="/estate-agents/">Estate agents</Link>
+          <Link className="btn btn-ghost" href="/#packages">Selling your own home?</Link>
         </div>
         {/*<p className="hero-note">Prices in under a minute. No sign-up.</p>*/}
       </div>
 
-      <a className="scroll-cue" href="#packages" aria-label="Scroll to packages"><span></span></a>
+      <a className="scroll-cue" href="#services" aria-label="Scroll to who I work for"><span></span></a>
     </section>
   );
 }

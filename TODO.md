@@ -2,6 +2,10 @@
 
 ## Next up
 From the 15 Nov review. Details for each are further down under "Accounts and bookings".
+- [ ] **Publish the business-first website (Wayne says "publish").** New /business page, homepage and menu now lead with agents, builders and people who look after buildings. On `main`, tested (175 checks), not live yet. Goes live together with the reviewed build below.
+- [ ] **Business plan decisions (Wayne).** In the Claude Doc "Happy Drones Business Plan: winning business work" (https://claude.ai/artifact/EagvsnkEJu787wL8D5UNN1), last section: trial offer for agents, thank-you for introductions, a trade price for roofers, the income target, days available to fly.
+- [ ] **Three proof pieces (Wayne):** one listing (photos, aerial, walkthrough), one set of site progress photos, one roof or empty-building report. Needed before contacting businesses.
+- [ ] **Contact tracker (Claude, on request):** a simple sheet for the 10 businesses a week, with a do-not-contact list.
 - [ ] **Publish the reviewed build (Wayne says "publish").** Server-side prices, tighter data protection and the saved tests are on `main`, tested (171 checks), not live yet. The build before it is on the branch `previous-tested`.
 - [ ] **ICO number (Wayne):** send it to Claude when it arrives; it goes on the privacy policy.
 - [ ] **Move testing off the live site (Wayne + Claude, 20 minutes):** a private Cloudflare copy for testing, then test mode off for real visitors.
@@ -9,7 +13,7 @@ From the 15 Nov review. Details for each are further down under "Accounts and bo
 - [ ] **Decide: sign in by emailed code only, no passwords (Wayne).** Needs a small change to clause 12.5 of the booking agreement.
 - [ ] **PDF copy of the signed agreement (Claude).**
 - [ ] **Solicitor's read of the booking agreement (Wayne)** before real customers.
-- [ ] **Decide which services to focus on (Wayne).** About 28 is a lot for one person. The review suggests leading with repeat work: estate agents, monthly vacant-property and construction visits, and roof checks through roofers and trades. Claude can then reshape the homepage and menus around them.
+- [x] **Decide which services to focus on.** Done 16 Nov: business first (see the business plan). Original note: About 28 is a lot for one person. The review suggests leading with repeat work: estate agents, monthly vacant-property and construction visits, and roof checks through roofers and trades. Claude can then reshape the homepage and menus around them.
 - [ ] **Proof before features (Wayne):** first real jobs in the gallery, the Google review link, and the 14 draft blog posts approved (see "When ready").
 - [ ] **Sign three estate agents (Wayne).** Claude can draft the outreach emails and a one-page offer.
 

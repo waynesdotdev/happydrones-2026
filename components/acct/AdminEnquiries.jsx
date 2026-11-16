@@ -8,7 +8,7 @@ import { CATALOG, zoneFor } from "@/lib/acct/catalog";
 import { money, PRICING, PLANNER, PAYMENT, depositFor } from "@/lib/site";
 import { LABELS } from "@/lib/sendForm";
 
-const KIND = { quote: "Quote", mission: "Mission plan", "agent-account": "Agent account", interest: "Interest", feedback: "Feedback" };
+const KIND = { quote: "Quote", mission: "Mission plan", "agent-account": "Agent account", business: "Business", interest: "Interest", feedback: "Feedback" };
 const ST = { new: ["New", "warn"], contacted: ["Contacted", "info"], quoted: ["Price sent", "info"], won: ["Booked", "good"], lost: ["Lost", "muted"], scrapped: ["Scrapped", "muted"] };
 const FILTERS = [["open", "Open"], ["new", "New"], ["won", "Booked"], ["lost", "Lost"], ["scrapped", "Scrapped"], ["all", "All"]];
 const GROUPS = [...new Set(CATALOG.filter((c) => !c.pay).map((c) => c.group))];

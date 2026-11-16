@@ -61,6 +61,13 @@ r = await call(P, `/api/acct/booking/${bref}/sign`, { name: "Pat Personal", agre
 
 section("Other forms, deleting and limits");
 r = await call(null, "/api/enquiry", { "form-name": "feedback", rating: "5", good: "Brilliant", "bot-field": "" }); ok(r.s === 200, "feedback needs no name, email or date");
+sql("DELETE FROM limits WHERE k LIKE 'enq%'");
+r = await call(null, "/api/enquiry", { "form-name": "business", role: "Estate or letting agent", need: "Listing photos and video", "how-often": "Weekly", company: "Tees Homes Ltd", name: "Bea Business", email: "bea@example.com", postcode: "TS18 1AB", "quote-total": "£1", "bot-field": "" });
+ok(/^Q-[A-F0-9]{6}$/.test(r.b.ref), "a business enquiry needs no date", r.b); const bizRef = r.b.ref;
+r = await call(A, `/api/admin/enquiry/${bizRef}`);
+ok(r.b.enquiry.kind === "business" && r.b.enquiry.company === "Tees Homes Ltd" && r.b.enquiry.price === null && r.b.enquiry.fields.some(([k, v]) => k === "What they need" && v === "Listing photos and video") && !JSON.stringify(r.b.enquiry.fields).includes("£1"), "saved as a business enquiry with the company, and no price invented", r.b.enquiry);
+ob = await outbox(A); ok(ob.some((e) => e.to_addr === "bea@example.com" && /business enquiry/.test(e.subject)) && ob.some((e) => e.to_addr === "admin@example.com" && e.subject.startsWith("New business enquiry")), "the business and Wayne both get an email");
+r = await call(null, "/api/enquiry", { "form-name": "business", company: "No Contact Ltd", name: "Nat", "bot-field": "" }); ok(r.s === 400, "a business enquiry still needs an email or phone");
 r = await call(A, `/api/admin/enquiry/${mref}`, { action: "delete" }); ok(r.b.deleted, "an enquiry can be deleted for good");
 r = await call(A, `/api/admin/enquiry/${mref}`); ok(r.s === 404, "and it's gone");
 sql("DELETE FROM limits WHERE k LIKE 'enq%'");

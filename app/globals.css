@@ -4408,3 +4408,17 @@ body:has(.sm-app) { background: #001A33; }
 .sm-day:focus-visible { outline: 2px solid #6CB8FF; outline-offset: 2px; }
 .ad-note-row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
 .ad-saved { color: #8FE5B5; font-weight: 700; }
+
+/* ---- /business: the front door for business customers (app/business/page.js) ---- */
+.biz-who { display: grid; gap: 20px; }
+@media (min-width: 960px) { .biz-who { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.biz-card { background: #fff; border: 1px solid var(--t-paper-line); border-radius: 12px; padding: 26px; display: grid; gap: 12px; align-content: start; box-shadow: 0 20px 50px -34px rgba(0, 51, 102, 0.45); }
+.biz-card .t-mono { margin: 0; color: var(--orange-deep); }
+.biz-card h3 { margin: 0; font-family: var(--font-display); font-size: 1.45rem; line-height: 1.15; color: var(--navy); }
+.biz-price { margin: 0; font-weight: 700; color: var(--navy); }
+.biz-card .ticks { margin: 4px 0 8px; }
+.biz-ctas { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 18px; margin-top: auto; }
+.biz-start { display: grid; gap: 36px; align-items: start; }
+@media (min-width: 960px) { .biz-start { grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); gap: 56px; } }
+.biz-travel { margin: 0; font-size: 0.92rem; color: var(--t-paper-soft); }
+.tw-home { margin: 44px 0 0; font-weight: 700; color: var(--navy); }

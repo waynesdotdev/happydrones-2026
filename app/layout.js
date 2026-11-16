@@ -20,7 +20,7 @@ import { SITE, liveSocials } from "@/lib/site";
 export const metadata = {
   metadataBase: new URL(SITE.url),
   title: {
-    default: `${SITE.name} · Property photography, aerial & video in the North East`,
+    default: `${SITE.name} · Drone photography and inspections for North East businesses`,
     template: `%s · ${SITE.name}`, // each page title becomes "Page name · Happy Drones"
   },
   description: SITE.description,

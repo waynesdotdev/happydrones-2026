@@ -32,8 +32,8 @@ export default function HomePage() {
       <Hero />
       <Promises />
       <ThreeWays />
-      <Packages />
       <AgentBand />
+      <Packages />
       <TodayTomorrow />
       <QuoteBuilder />
       <HowItWorks />

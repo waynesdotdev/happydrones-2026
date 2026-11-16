@@ -11,7 +11,7 @@ import { priceChoice } from "../../lib/pricing.js";
 import { money } from "../../lib/site.js";
 
 const SITE = "https://happydrones.co.uk";
-const KINDS = { quote: "quote request", mission: "mission plan", "agent-account": "agent account request", interest: "interest in a coming-soon service", feedback: "feedback" };
+const KINDS = { quote: "quote request", mission: "mission plan", "agent-account": "agent account request", business: "business enquiry", interest: "interest in a coming-soon service", feedback: "feedback" };
 const PUBLIC_STATUS = { new: "Received: Wayne will reply within a day", contacted: "Wayne has been in touch", quoted: "Price sent", won: "Booked", lost: "Closed", scrapped: "Closed" };
 const EMAIL = /^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i;
 const HIDE_FROM_CUSTOMER = new Set(["Job page: map and weather (tap to open)", "Weather when they checked"]);
