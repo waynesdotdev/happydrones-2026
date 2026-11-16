@@ -1,6 +1,18 @@
 # Happy Drones website: to do
 
 ## Next up
+From the 15 Nov review. Details for each are further down under "Accounts and bookings".
+- [ ] **Publish the reviewed build (Wayne says "publish").** Server-side prices, tighter data protection and the saved tests are on `main`, tested (171 checks), not live yet. The build before it is on the branch `previous-tested`.
+- [ ] **ICO number (Wayne):** send it to Claude when it arrives; it goes on the privacy policy.
+- [ ] **Move testing off the live site (Wayne + Claude, 20 minutes):** a private Cloudflare copy for testing, then test mode off for real visitors.
+- [ ] **Bot check on the forms (Wayne + Claude):** Wayne creates a free Cloudflare Turnstile key; Claude adds it.
+- [ ] **Decide: sign in by emailed code only, no passwords (Wayne).** Needs a small change to clause 12.5 of the booking agreement.
+- [ ] **PDF copy of the signed agreement (Claude).**
+- [ ] **Solicitor's read of the booking agreement (Wayne)** before real customers.
+- [ ] **Decide which services to focus on (Wayne).** About 28 is a lot for one person. The review suggests leading with repeat work: estate agents, monthly vacant-property and construction visits, and roof checks through roofers and trades. Claude can then reshape the homepage and menus around them.
+- [ ] **Proof before features (Wayne):** first real jobs in the gallery, the Google review link, and the 14 draft blog posts approved (see "When ready").
+- [ ] **Sign three estate agents (Wayne).** Claude can draft the outreach emails and a one-page offer.
+
 - [ ] **Business cards: fresh design and reprint (not urgent).** The first 100 from Printful came back with a white strip down one side and poor print quality. Wayne wants a fresh design, printed with a better printer such as Vistaprint, using its exact template and checking the proof before paying.
 - [ ] **New link preview image.** Replace `public/og.png` with `og.png` from the social kit (09-Website-and-Email).
 
@@ -32,7 +44,6 @@
 - [x] **Real emails.** Free Resend account (3,000 a month, 100 a day), region Ireland, verify happydrones.co.uk (DNS records in Cloudflare), sending-only API key as secret `RESEND_KEY`, plain text `MAIL_FROM` = Happy Drones <bookings@happydrones.co.uk>. Add bookings@ as a free alias in Google Workspace so emails sent to it reach Wayne. Until then emails only appear in the admin's Emails tab.
 - [ ] **ICO registration** (data protection fee, about £52 a year) before real customers sign up.
 - [x] **Privacy policy update** for accounts, Stripe, Resend and Cloudflare (15 Nov).
-- [ ] **ICO number on the privacy policy.** Once registered, add the registration number to the "Who I am" section.
 - [x] **Booking agreement clauses** for online booking and the 10-listing bundle (3.10), in /terms and the signed document (15 Nov).
 - [ ] **Bundle reminders run when someone opens the site.** They check at most once an hour, when you open the admin or a customer opens their account. On a quiet week a reminder could go out a little late. Later: a scheduled daily check.
 - [ ] **Going live with real customers (do these together, Claude can walk through it):**
