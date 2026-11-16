@@ -17,6 +17,52 @@ From the 15 Nov review. Details for each are further down under "Accounts and bo
 - [ ] **Proof before features (Wayne):** first real jobs in the gallery, the Google review link, and the 14 draft blog posts approved (see "When ready").
 - [ ] **Sign three estate agents (Wayne).** Claude can draft the outreach emails and a one-page offer.
 
+## Customer journey test, 16 Nov 2026: what to fix
+Five made-up customers were taken from a social link to a paid, delivered job on a private copy of the site: Harry (tiny estate agent), Josephine (large agency), Michael and Michelle (house buyers), Tony (Stockton council, bridges for PR) and Priya (property manager, three empty units). 74 checks: 32 worked, 42 showed a gap.
+- The checks are saved in `tests/journeys/five-customers.mjs`. A ✗ there is a gap in the website, not a broken build. It is not part of `npm test`.
+- To run: `npm run build`, start a local copy on port 8799 in test mode (the same command `tests/run.mjs` uses), then `node --no-warnings tests/journeys/five-customers.mjs`. Use a fresh `.wrangler` folder each run.
+- **For whoever fixes these:** do one numbered item per commit. When an item is fixed, move its check into the right suite in `tests/suites/` so `npm test` guards it, tick it here, and log it in `lib/changelog.js`. Read the Standards doc first (see CLAUDE.md). Items marked **(agreement)** change what the customer signs: `/terms`, the Booking Agreement doc and `AGREEMENT_VERSION` change together, and Wayne approves the wording first. Items marked **(Wayne decides)** need his answer before any code.
+
+### What already works (leave alone)
+Quote form priced by the server, Wayne's one-click accept, invitation to sign, signing, deposit, balance, files locked until paid, changes after signing needing the customer's approval, custom jobs with Wayne's own price lines on invoice terms, the 10-listing bundle, cancelling online, the 3D-model interest form.
+
+### A. Fix before the first real customer (small, no decisions needed)
+- [ ] **A1. Dates and times aren't checked properly.** The server accepts 30 February, a date five years away, 23:30 at night, and free typing in the time box. Check the date is a real calendar date, no more than 12 months ahead, and the time is one of the choices on the form or HH:MM in daylight hours. Same rules in `functions/api/acct/[[path]].js` (book), `functions/api/enquiry.js` and the admin's book and confirm actions. One shared helper in `lib/acct/catalog.js`.
+- [ ] **A2. A booking whose date has passed can still be signed, and Wayne can confirm a flying date in the past.** Refuse both with a plain message ("That date has passed. Pick a new one.").
+- [ ] **A3. When Wayne changes the wanted date before confirming, the customer isn't told.** `edit` in `functions/api/admin/[[path]].js` saves `wanted_date` and `wanted_time` silently. Send a short email ("Wayne has suggested a new date") with the new date and a link to the booking.
+- [ ] **A4. A customer who cancels after paying: nothing tells Wayne a refund is owed.** The customer's email says "any refund due will be made", but the admin shows no amount and no to-do. Add "Refund to check: £X" to the admin's to-do count and the booking page when `paid - refunded > 0` on a cancelled booking, and put the amount paid in Wayne's "Cancelled" email. The refund itself stays manual in Stripe.
+- [ ] **A5. Two customers can pick the same date and time and nobody is warned.** Don't block it (Wayne may fit both in). Show Wayne a "Same day as HD-XXXXXX" warning on the booking and enquiry pages and in his new-booking email.
+- [ ] **A6. The invitation email lower-cases the job name** ("bridges of stockton: pr photo and film"). Keep custom names as typed in `MAIL.invite` (and check the other templates) in `lib/acct/server.js`.
+- [ ] **A7. The /links page (where social bios point) still leads with homeowners.** In `LINKS` in `lib/site.js`: new intro line to match the footer, and a "For business" button to `/business/` as the first or second button.
+- [ ] **A8. Christmas Day and other days Wayne doesn't fly can be booked.** Add a short list of closed dates to `lib/site.js` that the date pickers and the server both use. **(Wayne decides)** which days.
+
+### B. Make booking from the account page match the price list
+- [ ] **B1. Booking from the account page ignores house size and extras.** Harry picked a 3-4 bed Showcase with a floor plan and white label and was charged the flat £219, not £323. The quote form gets it right because it uses `lib/pricing.js`. Make the account booking form ask the same questions (size, extras) and price with `quotePrice`, writing the lines into "Extras agreed" and white label into "Branding" in the Job Details. Until this is done, the safe route for anything but a plain job is quote form → Wayne accepts.
+- [ ] **B2. A listing from a bundle doesn't ask the house size.** A 5-bed costs the same as a flat. **(Wayne decides)** whether bundle listings carry a size top-up; then build it.
+- [ ] **B3. The account booking form has no weather check.** The weather for the chosen date and time exists on /plan and on the job map page. Show the same check beside the date on the account booking form (`components/acct/AccountApp.jsx`, reuse `components/PlanWeather.jsx`).
+- [ ] **B4. A customer can't ask to move their date.** Add "Ask to move the date" on their booking page: they pick a new date, Wayne gets an email and a to-do, and nothing changes until he confirms it.
+- [ ] **B5. A joint account can't be signed by one person.** "Michael and Michelle Moore" must be typed in full. Accept either named person, or tell joint customers at sign-up to use one person's name. **(agreement)** if the rule on who signs changes.
+- [ ] **B6. No numbered invoice or receipt.** Harry got a thank-you email, nothing for his accounts. Every payment should produce a numbered receipt, and every invoice-terms job a numbered invoice with the due date, as a page in the account and attached to the email. **(Wayne decides)** his bank details for the invoice and confirms he is not VAT registered (agreement 3.1 says VAT is shown if he is).
+
+### C. Business customers: the plan depends on these. Build each when the first customer of that kind is close to signing
+- [ ] **C1. Agent accounts don't exist in the system.** Josephine's request is saved, but Wayne can't turn it into an account. Her listings were charged full price with a card deposit and a fresh signature every time. Needed: an "Open agent account" action on an agent-account enquiry; a flag on the customer; then her bookings get the agent discount (`AGENT_DISCOUNT`), go on invoice terms, respect the credit limit (`AGENT_ACCOUNT.creditLimit`) and show white label at the account price. **(agreement)** clause 3.9 already describes this: check whether one signed account agreement can cover later listings so she doesn't sign 25 a month. Solicitor's read first.
+- [ ] **C2. One monthly statement for an agency.** Depends on B6 and C1: one invoice a month listing every job, sent to the "send invoices to" address from the account form.
+- [ ] **C3. Purchase order numbers.** Add an optional PO box to business bookings; show it in the Job Details and on the invoice. Today it can only go in Special notes.
+- [ ] **C4. More than one person per company.** Josephine's branch staff each get a separate account and can't see each other's bookings. Let the account owner invite colleagues who share the company's bookings, discount and bundle.
+- [ ] **C5. The 20-bookings-a-day limit stops a big agency** (she was stopped part-way through a month of listings). Raise it for agent accounts.
+- [ ] **C6. Jobs with several places or several days** (Tony's five bridges over two days). Let Wayne list the sites and write a schedule on a custom job; the Job Details row is already called "Shoot date and time (or visit schedule)".
+- [ ] **C7. Permission to fly isn't recorded anywhere.** For every job: who owns the land Wayne takes off from, who gave permission, and any airspace or road and river notes. A private admin section plus one line in the Job Details. For Michael and Michelle (buying, not owning) the booking form should ask "Do you own this property? If not, has the owner agreed?". **(agreement)** if it goes in the Job Details. Suggest adding this to the Standards doc as a rule.
+- [ ] **C8. Nobody checks a person can sign for their organisation.** Anyone with the email can sign for the council. For business bookings ask for a job title and a tick: "I'm authorised to agree this for [business]". **(agreement)**.
+- [ ] **C9. The licence for a business job just says "Business".** Tony needs PR and press use by the council and its partners. Give Wayne a few licence choices when he sets up a job (own marketing; PR and press; resale needs a quote), matching section 9. **(agreement)** check the wording covers them.
+- [ ] **C10. Regular visits.** Priya wanted 12 monthly checks on three units: the site can only book one visit for one building (£95) and needs a signature each time. Needed: number of buildings in the price, a visit schedule in one agreement, a "Set up next visit" button for Wayne, and each month's report kept together under the building. **(agreement)** for a run of visits under one signature.
+- [ ] **C11. Invoices aren't chased.** No due date is stored and no reminder goes out. Depends on B6.
+
+### D. For Wayne to decide
+- [ ] **Front-of-building (facade) checks:** offer as its own service, or as part of a roof check? The buyers couldn't book one.
+- [ ] **3D models:** marked "coming soon". Keep the interest form only, or take it off until the kit arrives?
+- [ ] **House buyers:** will Wayne fly a property the customer doesn't own yet? If yes, only with the seller's written agreement (C7).
+- [ ] **Council and public-sector work:** it usually needs a supplier form, a PO and proof of insurance before any work. Is Wayne happy to do that paperwork by hand for now?
+
 - [ ] **Business cards: fresh design and reprint (not urgent).** The first 100 from Printful came back with a white strip down one side and poor print quality. Wayne wants a fresh design, printed with a better printer such as Vistaprint, using its exact template and checking the proof before paying.
 - [ ] **New link preview image.** Replace `public/og.png` with `og.png` from the social kit (09-Website-and-Email).
 
