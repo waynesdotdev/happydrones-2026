@@ -1,5 +1,8 @@
 # Happy Drones website: to do
 
+## Decision, 16 Nov 2026: stay on this site, feature freeze
+Wayne decided to stay on this website rather than move to Shopify or Squarespace. **No new features until a paying customer needs one.** Fixes, content and the items Wayne approves are fine. Review at the first 10 paid jobs: if the site keeps breaking or changes are a struggle, move the front pages to Squarespace with Acuity Scheduling.
+
 ## Next up
 From the 15 Nov review. Details for each are further down under "Accounts and bookings".
 - [ ] **Publish the business-first website (Wayne says "publish").** New /business page, homepage and menu now lead with agents, builders and people who look after buildings. On `main`, tested (175 checks), not live yet. Goes live together with the reviewed build below.
