@@ -7,12 +7,52 @@ import Link from "next/link";
 import SignIn from "./SignIn";
 import { api, STATUS, longDate, when } from "@/lib/acct/client";
 import { PasswordField, NewPassword, newPasswordProblem } from "./PasswordField";
-import { CATALOG, priceFor, zoneFor, MODE_WORDS, bundleSize, greeting } from "@/lib/acct/catalog";
+import { CATALOG, priceFor, zoneFor, MODE_WORDS, bundleSize, greeting, optionsFor, TIME_CHOICES, dateProblem, ukToday, addDays } from "@/lib/acct/catalog";
 import { money } from "@/lib/site";
 import useScrollToTop from "@/components/useScrollToTop";
 
 const GROUPS = [...new Set(CATALOG.map((c) => c.group))];
-const minDate = () => new Date(Date.now() + 2 * 864e5).toISOString().slice(0, 10);
+const minDate = () => addDays(ukToday(), 2);
+const maxDate = () => addDays(ukToday(), 366);
+
+/* The time box: the same choices as the quote form, nothing typed */
+function TimeSelect({ id, value, onChange }) {
+  return (
+    <select id={id} value={value} onChange={(e) => onChange(e.target.value)}>
+      <option value="">Any time that day</option>
+      {TIME_CHOICES.map((t) => <option key={t} value={t}>{t}</option>)}
+    </select>
+  );
+}
+/* Link to the job page: hour-by-hour weather for that day and place */
+const weatherLink = (postcode, date, time) => `/map/?pc=${encodeURIComponent(postcode)}${date ? `&d=${date}` : ""}${/^\d\d:\d\d$/.test(time || "") ? `&h=${time}` : ""}`;
+
+/* Ask for a different date. Before Wayne confirms it just changes; after, he has to agree. */
+function MoveDate({ b, onDone }) {
+  const [open, setOpen] = useState(false);
+  const [f, setF] = useState({ date: "", time: "" });
+  const [msg, setMsg] = useState(""); const [busy, setBusy] = useState(false);
+  if (["cancelled", "delivered", "cancel_requested"].includes(b.status)) return null;
+  if (b.moveRequest) return <p className="ac-note" role="status">You&apos;ve asked to move this to {longDate(b.moveRequest.date)}{b.moveRequest.time ? `, ${b.moveRequest.time}` : ""}. Wayne will confirm or get in touch. Until then it stays on its current date.</p>;
+  if (!open) return <button type="button" className="t-btn t-btn-ghost" onClick={() => setOpen(true)} title="Pick a different day. Before Wayne confirms, it changes straight away. After he confirms, he has to agree the new date.">Change the date</button>;
+  async function send(e) {
+    e.preventDefault(); const p = dateProblem(f.date); if (p) return setMsg(p);
+    setBusy(true); const r = await api(`/api/acct/booking/${b.ref}/date`, f); setBusy(false);
+    if (r.error) return setMsg(r.message);
+    setOpen(false); onDone(r.message);
+  }
+  return (
+    <form className="ac-move" onSubmit={send} noValidate>
+      <div className="t-c2">
+        <div className="t-field"><label htmlFor={`mv-d-${b.ref}`}>New date</label><input id={`mv-d-${b.ref}`} type="date" min={minDate()} max={maxDate()} value={f.date} onChange={(e) => setF({ ...f, date: e.target.value })} required /></div>
+        <div className="t-field"><label htmlFor={`mv-t-${b.ref}`}>Time</label><TimeSelect id={`mv-t-${b.ref}`} value={f.time} onChange={(v) => setF({ ...f, time: v })} /></div>
+      </div>
+      {f.date && <a className="ac-link" href={weatherLink(b.postcode, f.date, f.time)} target="_blank" rel="noopener">See the weather for that day ↗</a>}
+      {msg && <p className="ac-err" role="alert">{msg}</p>}
+      <div className="ac-actions"><button className="t-btn t-btn-primary" disabled={busy}>{busy ? "Sending…" : b.go ? "Ask Wayne for this date" : "Change to this date"}</button><button type="button" className="ac-link" onClick={() => setOpen(false)}>Keep the current date</button></div>
+    </form>
+  );
+}
 
 function Badge({ status }) { const [w, c] = STATUS[status] || [status, "info"]; return <span className={`ac-badge ac-${c}`}>{w}</span>; }
 
@@ -63,10 +103,15 @@ function Bookings({ data, reload, onBook, onSign, confirming }) {
               <button type="button" className="t-btn t-btn-primary" onClick={() => onSign(b.ref)}>Review and approve</button></div>
           )}
           {b.files && <a className="t-btn t-btn-primary" href={b.files} target="_blank" rel="noopener">Open your files ↗</a>}
+          {(b.receipts?.length > 0 || b.invoice) && (
+            <p className="ac-docs">{b.invoice && <a href={`/api/acct/booking/${b.ref}/invoice`} target="_blank" rel="noopener">Invoice {b.invoice} ↗</a>}
+              {b.receipts?.map((r) => <a key={r.id} href={`/api/acct/booking/${b.ref}/receipt/${r.id}`} target="_blank" rel="noopener">Receipt {r.no}: {money(r.amount)} ↗</a>)}</p>
+          )}
           {b.filesWaiting && <p className="ac-note">Your files are ready. Pay the balance to unlock them.</p>}
           <div className="ac-actions">
             {confirming === b.ref && <p className="ac-note" role="status">Thanks, Stripe has taken your payment. Just confirming it now; you don&apos;t need to pay again.</p>}
             {b.owed > 0 && b.signed && !b.changes && confirming !== b.ref && <button type="button" className="t-btn t-btn-primary" disabled={busy === b.ref} onClick={() => pay(b.ref)}>Pay {money(b.owed)}</button>}
+            <MoveDate b={b} onDone={(m) => { setMsg(m); reload(); }} />
             {!["cancelled", "delivered", "cancel_requested"].includes(b.status) && <button type="button" className="t-btn t-btn-ghost" disabled={busy === b.ref} onClick={() => cancel(b.ref)}>{b.status === "confirmed" ? "Ask to cancel" : "Cancel"}</button>}
           </div>
           <p className="ac-small">Booked {when(b.created)}.{b.signed ? <> Signed {when(b.signedAt)}, agreement version {b.agreement} · <a href={`/api/acct/booking/${b.ref}/agreement/${b.signatureId}`} target="_blank" rel="noopener">Your signed agreement ↗</a></> : " Not signed yet."}{b.refunded ? ` Refunded ${money(b.refunded)}.` : ""}</p>
@@ -155,14 +200,22 @@ function SignView({ refId, onDone, onBack, config }) {
 }
 
 function Book({ hasBundle, startWithBundle, onBooked, config, initialService = "" }) {
-  const [f, setF] = useState({ service: CATALOG.some((c) => c.id === initialService) ? initialService : "", useBundle: startWithBundle, postcode: "", address: "", date: "", time: "", notes: "", bookingAs: "" });
+  const [f, setF] = useState({ service: CATALOG.some((c) => c.id === initialService) ? initialService : "", useBundle: startWithBundle, postcode: "", address: "", date: "", time: "", notes: "", bookingAs: "", size: 0, extras: [], buildings: 1, owner: "" });
   const [msg, setMsg] = useState("");
   const [busy, setBusy] = useState(false);
   const set = (k, v) => setF((s) => ({ ...s, [k]: v }));
   const zone = zoneFor(f.postcode);
-  const p = useMemo(() => ((f.service || f.useBundle) && f.postcode ? priceFor(f.service, f.postcode, { bundleListing: f.useBundle }) : null), [f.service, f.useBundle, f.postcode]);
+  const pick = (id) => setF((s) => ({ ...s, service: id, size: 0, extras: [], buildings: 1 }));
+  const toggle = (id) => setF((s) => ({ ...s, extras: s.extras.includes(id) ? s.extras.filter((x) => x !== id) : [...s.extras, id] }));
+  const opts = useMemo(() => optionsFor(f.useBundle ? "" : f.service), [f.service, f.useBundle]);
+  const buyingBundle = f.service === "bundle" && !f.useBundle;
+  const p = useMemo(() => ((f.service || f.useBundle) && f.postcode ? priceFor(f.service, f.postcode, { bundleListing: f.useBundle, size: f.size, extras: f.extras, buildings: f.buildings }) : null), [f.service, f.useBundle, f.postcode, f.size, f.extras, f.buildings]);
+  const dateMsg = f.date ? dateProblem(f.date) : "";
   async function submit(e) {
-    e.preventDefault(); setBusy(true); setMsg("");
+    e.preventDefault(); setMsg("");
+    if (dateMsg) return setMsg(dateMsg);
+    if (!buyingBundle && f.owner === "not-yet") return setMsg("I can only fly a property with the owner's OK. Ask the owner (or the seller's agent) first, then book.");
+    setBusy(true);
     const r = await api("/api/acct/book", f);
     setBusy(false);
     if (r.error) return setMsg(r.message);
@@ -174,21 +227,52 @@ function Book({ hasBundle, startWithBundle, onBooked, config, initialService = "
       {hasBundle && <label className="acc-agree"><input type="checkbox" checked={f.useBundle} onChange={(e) => set("useBundle", e.target.checked)} /><span>Use a listing from my bundle (Showcase)</span></label>}
       {!f.useBundle && (
         <div className="t-field"><label htmlFor="bk-svc">What do you need?</label>
-          <select id="bk-svc" value={f.service} onChange={(e) => set("service", e.target.value)}>
+          <select id="bk-svc" value={f.service} onChange={(e) => pick(e.target.value)}>
             <option value="">Choose a service…</option>
             {GROUPS.map((g) => <optgroup key={g} label={g}>{CATALOG.filter((c) => c.group === g).map((c) => <option key={c.id} value={c.id}>{c.name} · {money(c.price)}</option>)}</optgroup>)}
           </select>
         </div>
       )}
+      {opts.sizes.length > 1 && (
+        <div className="t-field"><label htmlFor="bk-size">{opts.sizeTitle}</label>
+          <select id="bk-size" value={f.size} onChange={(e) => set("size", Number(e.target.value))}>
+            {opts.sizes.map((z) => <option key={z.i} value={z.i}>{z.name}{z.add ? ` (+${money(z.add)})` : ""}</option>)}
+          </select>
+        </div>
+      )}
+      {opts.perBuilding && (
+        <div className="t-field"><label htmlFor="bk-bld">How many buildings on this visit?</label>
+          <input id="bk-bld" type="number" min={1} max={20} value={f.buildings} onChange={(e) => set("buildings", Math.max(1, Math.min(20, Number(e.target.value) || 1)))} />
+          <span className="t-hint">Each building is a separate check and a separate report.</span></div>
+      )}
+      {opts.extras.length > 0 && (
+        <fieldset className="ac-extras"><legend>Extras <span className="if-opt">(optional)</span></legend>
+          {opts.extras.map((x) => <label key={x.id}><input type="checkbox" checked={f.extras.includes(x.id)} onChange={() => toggle(x.id)} /> {x.name} <b>+{money(x.price)}</b></label>)}
+        </fieldset>
+      )}
       <div className="t-c2">
-        <div className="t-field"><label htmlFor="bk-pc">Site postcode</label><input id="bk-pc" autoComplete="postal-code" value={f.postcode} onChange={(e) => set("postcode", e.target.value)} placeholder="TS17 6AB" /><span className="t-hint">{!f.postcode ? "The postcode where the flying happens." : zone ? (zone.fee ? `${zone.name}: +${money(zone.fee)} travel` : `${zone.name}: travel included`) : "Full postcode please, inside the travel zones."}</span></div>
+        <div className="t-field"><label htmlFor="bk-pc">Site postcode</label><input id="bk-pc" autoComplete="postal-code" value={f.postcode} onChange={(e) => set("postcode", e.target.value)} placeholder="TS17 6AB" /><span className="t-hint">{!f.postcode ? "The postcode sets any travel fee." : zone ? zone.name : "Check the postcode: the full one, e.g. TS17 6AB."}</span></div>
         <div className="t-field"><label htmlFor="bk-addr">First line of the address</label><input id="bk-addr" autoComplete="address-line1" value={f.address} onChange={(e) => set("address", e.target.value)} /></div>
       </div>
-      <div className="t-c2">
-        <div className="t-field"><label htmlFor="bk-date">Date you&apos;d like</label><input id="bk-date" type="date" min={minDate()} value={f.date} onChange={(e) => set("date", e.target.value)} required /><span className="t-hint">Wayne confirms it after checking the weather and airspace, and moves it free if the weather turns.</span></div>
-        <div className="t-field"><label htmlFor="bk-time">Time you&apos;d like</label><input id="bk-time" value={f.time} onChange={(e) => set("time", e.target.value)} placeholder="e.g. morning, or 10:00" /></div>
-      </div>
-      <div className="t-field"><label htmlFor="bk-notes">Anything I should know? <span className="if-opt">(optional)</span></label><textarea id="bk-notes" rows={3} value={f.notes} onChange={(e) => set("notes", e.target.value)} placeholder="Access, parking, site rules, what the photos are for" /></div>
+      {!buyingBundle && (
+        <div className="t-c2">
+          <div className="t-field"><label htmlFor="bk-date">Date you&apos;d like</label><input id="bk-date" type="date" min={minDate()} max={maxDate()} value={f.date} onChange={(e) => set("date", e.target.value)} required />
+            <span className="t-hint">{dateMsg || "Wayne confirms it after checking the weather and the airspace."}</span></div>
+          <div className="t-field"><label htmlFor="bk-time">Time you&apos;d like</label><TimeSelect id="bk-time" value={f.time} onChange={(v) => set("time", v)} />
+            {f.date && !dateMsg && zone && <a className="ac-link" href={weatherLink(f.postcode, f.date, f.time)} target="_blank" rel="noopener">See the weather hour by hour for that day ↗</a>}</div>
+        </div>
+      )}
+      {!buyingBundle && (
+        <fieldset className="ac-radio"><legend>The property</legend>
+          <label><input type="radio" name="owner" checked={f.owner === "own"} onChange={() => set("owner", "own")} /> I own it</label>
+          <label><input type="radio" name="owner" checked={f.owner === "act"} onChange={() => set("owner", "act")} /> I act for the owner (estate agent, letting agent, manager)</label>
+          <label><input type="radio" name="owner" checked={f.owner === "agreed"} onChange={() => set("owner", "agreed")} /> It isn&apos;t mine, but the owner has agreed (for example, I&apos;m buying it)</label>
+          <label><input type="radio" name="owner" checked={f.owner === "not-yet"} onChange={() => set("owner", "not-yet")} /> It isn&apos;t mine and I haven&apos;t asked the owner yet</label>
+          {f.owner === "agreed" && <p className="ac-note">Fine: Wayne will ask to see the owner&apos;s OK (an email or message is enough) before he flies.</p>}
+          {f.owner === "not-yet" && <p className="ac-err">I can only fly with the owner&apos;s OK. If you&apos;re buying, ask the seller or their estate agent first.</p>}
+        </fieldset>
+      )}
+      <div className="t-field"><label htmlFor="bk-notes">Anything I should know? <span className="if-opt">(optional)</span></label><textarea id="bk-notes" rows={3} value={f.notes} onChange={(e) => set("notes", e.target.value)} placeholder="Access, parking, site contact, keys…" /></div>
       <fieldset className="ac-radio"><legend>Booking as</legend>
         <label><input type="radio" name="as" checked={f.bookingAs === "consumer"} onChange={() => set("bookingAs", "consumer")} /> A private customer (e.g. your own home)</label>
         <label><input type="radio" name="as" checked={f.bookingAs === "business"} onChange={() => set("bookingAs", "business")} /> A business</label>
@@ -200,7 +284,7 @@ function Book({ hasBundle, startWithBundle, onBooked, config, initialService = "
       )}
       {p && !p.error && (
         <div className="ac-price">
-          <div><span>{p.name}</span><b>{money(p.base)}</b></div>
+          {(p.lines?.length ? p.lines : [[p.name, p.base]]).map(([n, v], i) => <div key={i}><span>{n}</span><b>{money(v)}</b></div>)}
           {p.travel > 0 && <div><span>Travel ({p.zone.name})</span><b>{money(p.travel)}</b></div>}
           <div className="ac-total"><span>Total</span><b>{money(p.total)}</b></div>
           <div><span>{MODE_WORDS[p.mode]}</span><b>{p.dueNow ? `${money(p.dueNow)} today` : "Nothing today"}</b></div>

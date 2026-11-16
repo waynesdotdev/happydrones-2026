@@ -5,7 +5,7 @@ The site is hosted on Cloudflare Pages (static pages in `out/` plus Pages Functi
 - **Cloudflare only builds the `live` branch.** Everyday work goes on `main`. Pushing to `main` doesn't change the website.
 - **Never push to `live` unless Wayne says to publish** (or "make live"). To publish: `git fetch origin +refs/heads/live:refs/remotes/origin/live main && git merge-base --is-ancestor origin/live main && git push origin main:live`.
 - Cloudflare's free plan allows 500 builds a month. Still group changes together, and test locally (`npm run build`, and `wrangler pages dev out` for anything in `functions/`) before publishing.
-- Settings and secrets (Stripe, Resend, `ADMIN_EMAIL`, `TEST_MODE`) live in Cloudflare → the project → Settings → Variables and Secrets. Never put keys in code or chat. A change there needs a new deploy to take effect.
+- Settings and secrets (Stripe, Resend, `ADMIN_EMAIL`, `TEST_MODE`, `BANK_DETAILS` for invoices) live in Cloudflare → the project → Settings → Variables and Secrets. Never put keys in code or chat. A change there needs a new deploy to take effect.
 - Redirects are in `public/_redirects`; headers in `public/_headers`.
 
 ## Business standards (official rules)
@@ -42,6 +42,7 @@ The entries are shown on the unlisted page happydrones.co.uk/changelog.
 - Run `git pull` before editing.
 - Run `npm run build` before pushing (it includes the security check).
 - Run `npm test` after building and before publishing anything that touches `functions/`, `lib/acct/`, `lib/pricing.js` or the forms. It starts a fresh local copy of the site and runs every suite in `tests/suites/` (sign-in, bookings, bundles, enquiries, data protection, payments, test mode off). All must pass. When you add or change a rule or a route, add or change its test in the same commit.
+- Dates and times: `dateProblem` and `timeProblem` in `lib/acct/catalog.js` are the only rules; closed days are `CLOSED_DAYS` in `lib/site.js`. Use them in any new form or route.
 - Prices: the server never trusts a price from a browser. Forms send choices; `lib/pricing.js` works out the price on both sides.
 - Test mode shows codes on screen only for test accounts and @example addresses. The tests use `admin@example.com` as the admin.
 - Write commit messages in plain English.

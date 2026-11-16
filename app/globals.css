@@ -4422,3 +4422,13 @@ body:has(.sm-app) { background: #001A33; }
 @media (min-width: 960px) { .biz-start { grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); gap: 56px; } }
 .biz-travel { margin: 0; font-size: 0.92rem; color: var(--t-paper-soft); }
 .tw-home { margin: 44px 0 0; font-weight: 700; color: var(--navy); }
+
+/* ---- account and admin: warnings, receipts, date change, extras (16 Nov 2026) ---- */
+.ad-alerts { list-style: none; margin: 12px 0; padding: 0; display: grid; gap: 8px; }
+.ad-alerts li { background: #fff4e5; border: 1px solid #f0b866; border-left: 5px solid #e08a00; border-radius: 8px; padding: 10px 12px; font-weight: 600; color: #5a3600; }
+.ac-docs { display: flex; flex-wrap: wrap; gap: 6px 16px; margin: 10px 0 0; font-size: 0.92rem; }
+.ac-move { border: 1px solid var(--t-paper-line, #d6dde6); border-radius: 10px; padding: 12px; margin: 8px 0; display: grid; gap: 8px; width: 100%; }
+.ac-extras { border: 0; padding: 0; margin: 0; display: grid; gap: 6px; }
+.ac-extras legend { font-weight: 600; margin-bottom: 4px; }
+.ac-extras label { display: flex; gap: 8px; align-items: center; }
+.ac-extras b { margin-left: auto; }

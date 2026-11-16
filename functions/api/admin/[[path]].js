@@ -2,10 +2,10 @@
    the account whose email matches ADMIN_EMAIL, signed in with
    password + emailed code. Every change is written to the activity log. */
 import { json, fail, now, testMode, sameSite, body, db, tidy, log, currentUser, publicUser, hashPassword, passwordProblem,
-  MAIL, sendMail, recordPayment, deleteUser, bundleJobs, extendBundle, randomHex } from "../../../lib/acct/server.js";
-import { CONTRACT_FIELDS, changeList, signedFile, defaultsFor } from "../../../lib/acct/agreement.js";
-import { depositFor } from "../../../lib/site.js";
-import { CATALOG, tidyPostcode, AGREEMENT_VERSION } from "../../../lib/acct/catalog.js";
+  MAIL, sendMail, recordPayment, deleteUser, bundleJobs, extendBundle, randomHex, sameDay } from "../../../lib/acct/server.js";
+import { CONTRACT_FIELDS, changeList, signedFile, defaultsFor, invoiceNo } from "../../../lib/acct/agreement.js";
+import { depositFor, PAYMENT } from "../../../lib/site.js";
+import { CATALOG, tidyPostcode, AGREEMENT_VERSION, dateProblem, timeProblem } from "../../../lib/acct/catalog.js";
 
 const clean = (s, n = 500) => String(s || "").replace(/[\u0000-\u001f]/g, " ").trim().slice(0, n);
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
@@ -27,7 +27,7 @@ export async function onRequest({ request, env, params }) {
       const [c, b, o, n, tc, nq, eq] = await Promise.all([
         q("SELECT COUNT(*) n FROM users WHERE role = 'customer'"),
         q("SELECT COUNT(*) n FROM bookings"),
-        q("SELECT COUNT(*) n FROM bookings WHERE status IN ('requested','awaiting_payment','cancel_requested')"),
+        q("SELECT COUNT(*) n FROM bookings WHERE status IN ('requested','awaiting_payment','cancel_requested') OR move_request IS NOT NULL OR (status = 'cancelled' AND paid > refunded)"),
         q("SELECT COUNT(*) n FROM bookings WHERE status = 'confirmed'"),
         q("SELECT COUNT(*) n FROM users WHERE test = 1"),
         q("SELECT COUNT(*) n FROM enquiries WHERE status = 'new'"),
@@ -58,7 +58,13 @@ export async function onRequest({ request, env, params }) {
       if (m === "GET") {
         const { results: history } = await D.prepare("SELECT * FROM audit WHERE target = ? ORDER BY id DESC LIMIT 50").bind(b.ref).all();
         const { results: signatures } = await D.prepare("SELECT id, kind, name, at, ip, version, fingerprint, early FROM signatures WHERE booking_id = ? ORDER BY id DESC").bind(b.id).all();
-        return json({ booking: { ...b, ...Object.fromEntries(Object.entries(defaultsFor(b)).map(([k, v]) => [k, b[k] ?? v])) }, history, signatures, changes: changeList(b) });
+        const alerts = [];
+        const clash = ["cancelled", "delivered"].includes(b.status) ? [] : await sameDay(D, b);
+        if (clash.length) alerts.push(`Same day as ${clash.join(", ")}. Check you can fit both in.`);
+        if (b.status === "cancelled" && b.paid > (b.refunded || 0)) alerts.push(`Refund to check: they paid £${b.paid - (b.refunded || 0)}. See section 7 of the agreement for what's due back, refund it in Stripe, then record it with "Refund".`);
+        if (b.move_request) { const r = JSON.parse(b.move_request); alerts.push(`They've asked to move the date to ${r.date}${r.time ? ` ${r.time}` : ""}. Confirm a new date below (It's a go) or contact them.`); }
+        if (b.owner && /Check before flying/.test(b.owner)) alerts.push("The customer doesn't own this property. Get the owner's OK in writing before you fly.");
+        return json({ booking: { ...b, ...Object.fromEntries(Object.entries(defaultsFor(b)).map(([k, v]) => [k, b[k] ?? v])) }, history, signatures, changes: changeList(b), alerts, moveRequest: b.move_request ? JSON.parse(b.move_request) : null });
       }
       const x = await body(request);
       const u = b.user_id ? await D.prepare("SELECT * FROM users WHERE id = ?").bind(b.user_id).first() : null;
@@ -66,11 +72,13 @@ export async function onRequest({ request, env, params }) {
       switch (x.action) {
         case "confirm": { // "It's a go": Wayne accepts the signed agreement and fixes the date
           if (!DATE.test(x.date || "")) return fail("date", "Pick the flying date.");
+          { const dp = dateProblem(x.date, { minDays: 0 }); if (dp) return fail("date", dp); }
+          { const tp = timeProblem(x.time); if (tp) return fail("time", tp); }
           if (!b.signed_at) return fail("unsigned", "They haven't signed the booking agreement yet.");
           if (b.pending) return fail("pending", "They haven't approved your changes yet. Wait for that, or undo the changes.");
           if (b.mode !== "invoice" && b.paid < b.due_now && !x.anyway) return fail("unpaid", `The ${b.mode === "deposit" ? "deposit" : "payment"} of £${b.due_now - b.paid} isn't paid yet. Record it first if they paid another way.`);
           const again = !!b.go_at;
-          await set("confirmed_date = ?, confirmed_time = ?, status = 'confirmed', go_at = COALESCE(go_at, ?)", x.date, clean(x.time, 20), now());
+          await set("confirmed_date = ?, confirmed_time = ?, status = 'confirmed', go_at = COALESCE(go_at, ?), move_request = NULL", x.date, clean(x.time, 20), now());
           await log(env, actor, again ? "date-changed" : "its-a-go", b.ref, `${x.date} ${clean(x.time, 20)}`);
           if (u) await sendMail(env, u.email, MAIL.confirmed(u, { ...b, confirmed_date: x.date, confirmed_time: clean(x.time, 20) }, again), "confirmed");
           break;
@@ -97,7 +105,13 @@ export async function onRequest({ request, env, params }) {
           if ("wanted_date" in p && (p.wanted_date === "" || DATE.test(p.wanted_date)) && p.wanted_date !== (b.wanted_date || "")) direct.wanted_date = p.wanted_date;
           if ("wanted_time" in p && clean(p.wanted_time, 20) !== (b.wanted_time || "")) direct.wanted_time = clean(p.wanted_time, 20);
           if (!Object.keys(ch).length && !Object.keys(direct).length) return fail("same", "Nothing has changed.");
-          if (Object.keys(direct).length) await set(Object.keys(direct).map((k) => `${k} = ?`).join(", "), ...Object.values(direct));
+          if (direct.wanted_date) { const dp = dateProblem(direct.wanted_date, { minDays: 0 }); if (dp) return fail("date", dp); }
+          if (direct.wanted_time) { const tp = timeProblem(direct.wanted_time); if (tp) return fail("time", tp); }
+          if (Object.keys(direct).length) {
+            await set(Object.keys(direct).map((k) => `${k} = ?`).join(", "), ...Object.values(direct));
+            // Tell them: a new date shouldn't be a surprise
+            if (u && !b.pending && (direct.wanted_date || direct.wanted_time)) await sendMail(env, u.email, MAIL.dateSuggested(u, { ...b, ...direct }), "date");
+          }
           if (Object.keys(ch).length) {
             if (!b.signed_at) {
               // Not signed yet: change it straight away; they'll sign the updated version
@@ -131,16 +145,16 @@ export async function onRequest({ request, env, params }) {
           const link = clean(x.files, 500);
           if (!/^https:\/\/\S+$/.test(link)) return fail("files", "Paste the Drive folder link (starting https://).");
           if (!b.signed_at) return fail("unsigned", "They haven't signed the booking agreement yet.");
-          await set("files = ?, status = 'delivered'", link);
+          await set("files = ?, status = 'delivered', delivered_at = COALESCE(delivered_at, ?)", link, now());
           await log(env, actor, "delivered", b.ref);
           const balance = b.mode === "deposit" ? b.total - b.paid : 0;
-          if (u) await sendMail(env, u.email, MAIL.delivered(u, b, balance > 0 ? balance : 0), "delivered");
+          if (u) await sendMail(env, u.email, MAIL.delivered(u, b, balance > 0 ? balance : 0, b.mode === "invoice" ? { no: invoiceNo(b), bank: env.BANK_DETAILS || "", days: PAYMENT.termsDays } : null), "delivered");
           break;
         }
         case "paid": {
           const amount = Math.round(Number(x.amount));
           if (!(amount > 0 && amount <= b.total - b.paid)) return fail("amount", `Enter an amount up to £${b.total - b.paid}.`);
-          await recordPayment(env, b.ref, amount, `${actor} (marked paid: ${clean(x.how, 40) || "manual"})`);
+          await recordPayment(env, b.ref, amount, `${actor} (marked paid: ${clean(x.how, 40) || "manual"})`, clean(x.how, 40) || "Bank transfer");
           break;
         }
         case "cancel": {
@@ -256,6 +270,8 @@ export async function onRequest({ request, env, params }) {
         const mode = x.mode === "invoice" ? "invoice" : "deposit";
         const date = DATE.test(x.date || "") ? x.date : "";
         if (!date) return fail("date", "Add the date you've agreed with them. It goes in the agreement they sign.");
+        { const dp = dateProblem(date, { minDays: 0 }); if (dp) return fail("date", dp); }
+        { const tp = timeProblem(x.time); if (tp) return fail("time", tp); }
         const acct = await D.prepare("SELECT * FROM users WHERE email = ?").bind(q.email).first();
         const ref = `HD-${randomHex(3).toUpperCase()}`, t = now();
         await D.prepare(`INSERT INTO bookings (ref, user_id, invite_email, service_id, service, postcode, address, wanted_date, wanted_time, notes, booking_as, early_start, agreement,

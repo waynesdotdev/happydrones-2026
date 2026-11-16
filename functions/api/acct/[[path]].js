@@ -2,9 +2,9 @@
    Sign-in is two-step: password, then a 6-digit code sent by email.
    Helpers and settings: lib/acct/server.js. Prices: lib/acct/catalog.js. */
 import { json, fail, now, ipOf, testMode, sameSite, body, db, tidy, log, limited, hashPassword, checkPassword, passwordProblem,
-  newCode, useCode, startSession, endSession, endCookie, currentUser, publicUser, MAIL, sendMail, stripeCheckout, recordPayment, randomHex, deleteUser, bundleJobs, extendBundle, stripeSession, settleSession } from "../../../lib/acct/server.js";
-import { priceFor, tidyPostcode, AGREEMENT_VERSION, bundleSize, BUNDLE_WARN_DAYS, sameName, plainName } from "../../../lib/acct/catalog.js";
-import { jobRows, currentTerms, fingerprint, toBase64, ukTime, CONTRACT_FIELDS, withPending, changeList, signedHtml, signedFile } from "../../../lib/acct/agreement.js";
+  newCode, useCode, startSession, endSession, endCookie, currentUser, publicUser, MAIL, sendMail, stripeCheckout, recordPayment, randomHex, deleteUser, bundleJobs, extendBundle, stripeSession, settleSession, sameDay } from "../../../lib/acct/server.js";
+import { priceFor, tidyPostcode, AGREEMENT_VERSION, bundleSize, BUNDLE_WARN_DAYS, sameName, plainName, signerNames, dateProblem, timeProblem, ukToday } from "../../../lib/acct/catalog.js";
+import { jobRows, currentTerms, fingerprint, toBase64, ukTime, CONTRACT_FIELDS, withPending, changeList, signedHtml, signedFile, receiptHtml, invoiceHtml, docResponse, receiptNo, invoiceNo } from "../../../lib/acct/agreement.js";
 
 const EMAIL = /^[^\s@]{1,64}@[^\s@]{1,190}\.[a-z]{2,}$/i;
 const cleanEmail = (e) => String(e || "").trim().toLowerCase();
@@ -140,7 +140,9 @@ export async function onRequest(ctx) {
       const { results: rows } = await D.prepare("SELECT * FROM bundles WHERE user_id = ? AND active = 1 AND closed = 0 ORDER BY id DESC").bind(u.id).all();
       const t = now();
       const bundles = rows.map((x) => ({ id: x.id, size: x.size, used: x.used, expires: x.expires, extended: !!x.extended, canExtend: !x.extended && x.expires > t && x.expires - t <= BUNDLE_WARN_DAYS * 86400 }));
-      return json({ bookings: results.map(view), bundles });
+      const { results: pays } = await D.prepare("SELECT p.id, p.booking_id, p.amount, p.how, p.at FROM payments p JOIN bookings b ON b.id = p.booking_id WHERE b.user_id = ? ORDER BY p.id").bind(u.id).all();
+      const extra = (b) => ({ receipts: pays.filter((p) => p.booking_id === b.id).map((p) => ({ id: p.id, no: receiptNo(p.id), amount: p.amount, at: p.at })), invoice: invoiceReady(b) ? invoiceNo(b) : null });
+      return json({ bookings: results.map((b) => ({ ...view(b), ...extra(b) })), bundles });
     }
 
     const bx = path.match(/^bundle\/(\d+)\/extend$/);
@@ -157,7 +159,7 @@ export async function onRequest(ctx) {
 
     if (path === "quote" && m === "POST") {
       const b = await body(request);
-      return json(priceFor(b.service, b.postcode, { bundleListing: !!b.useBundle }));
+      return json(priceFor(b.service, b.postcode, { bundleListing: !!b.useBundle, size: b.size, extras: b.extras, buildings: b.buildings }));
     }
 
     if (path === "book" && m === "POST") {
@@ -166,22 +168,28 @@ export async function onRequest(ctx) {
       const postcode = tidyPostcode(b.postcode);
       if (!postcode) return fail("postcode", "Add the full postcode of the site, e.g. TS17 6AB.");
       if (!["consumer", "business"].includes(b.bookingAs)) return fail("as", "Say whether you're booking as a private customer or a business.");
-      const date = /^\d{4}-\d{2}-\d{2}$/.test(b.date || "") ? b.date : "";
-      if (!date && b.service !== "bundle") return fail("date", "Pick the date you'd like. Wayne confirms it after checking the weather.");
-      if (date && date < new Date(Date.now() + 2 * 864e5).toISOString().slice(0, 10)) return fail("date", "Pick a date at least 2 days from now.");
+      const buyingBundle = b.service === "bundle" && !b.useBundle;
+      const date = b.date ? String(b.date) : "";
+      if (!date && !buyingBundle) return fail("date", "Pick the date you'd like. Wayne confirms it after checking the weather.");
+      if (date) { const dp = dateProblem(date); if (dp) return fail("date", dp); }
+      const tp = timeProblem(b.time); if (tp) return fail("time", tp);
+      // Who owns the property (Wayne, 16 Nov 2026): flying needs the owner's OK
+      const OWNER = { own: "The customer owns it", act: "The customer acts for the owner (agent or manager)", agreed: "Not the customer's: they say the owner has agreed. Check before flying" };
+      if (!buyingBundle && b.owner === "not-yet") return fail("owner", "I can only fly a property with the owner's OK. Ask the owner (or the seller's agent) first, then book.");
+      if (!buyingBundle && !OWNER[b.owner]) return fail("owner", "Say whether you own the property, act for the owner, or the owner has agreed.");
       let bundle = null;
       if (b.useBundle) {
         bundle = await D.prepare("SELECT * FROM bundles WHERE user_id = ? AND active = 1 AND closed = 0 AND used < size AND expires > ? ORDER BY id LIMIT 1").bind(u.id, now()).first();
         if (!bundle) return fail("bundle", "You don't have a bundle with listings left.");
       }
-      const p = priceFor(b.service, postcode, { bundleListing: !!bundle });
+      const p = priceFor(b.service, postcode, { bundleListing: !!bundle, size: b.size, extras: b.extras, buildings: b.buildings });
       if (p.error) return fail(p.error, p.message);
       const ref = `HD-${randomHex(3).toUpperCase()}`;
       const status = "awaiting_signature"; // sign first, then pay (Wayne, 15 Nov 2026)
       await D.prepare(`INSERT INTO bookings (ref, user_id, service_id, service, postcode, address, wanted_date, wanted_time, notes, booking_as, early_start, agreement, agreed_at,
-        base, travel, total, mode, due_now, status, bundle_id, created, updated) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`)
-        .bind(ref, u.id, bundle ? "bundle-listing" : b.service, p.name, postcode, clean(b.address, 200), date, clean(b.time, 20), clean(b.notes, 1000), b.bookingAs, 0,
-          AGREEMENT_VERSION, null, p.base, p.travel, p.total, p.mode, p.dueNow, status, bundle ? bundle.id : null, now(), now()).run();
+        base, travel, total, mode, due_now, status, bundle_id, created, updated, extras, branding, owner) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`)
+        .bind(ref, u.id, bundle ? "bundle-listing" : b.service, p.name, postcode, clean(b.address, 200), date || null, clean(b.time, 20), clean(b.notes, 1000), b.bookingAs, 0,
+          AGREEMENT_VERSION, null, p.base, p.travel, p.total, p.mode, p.dueNow, status, bundle ? bundle.id : null, now(), now(), p.extras || null, p.branding || null, buyingBundle ? null : OWNER[b.owner]).run();
       const row = await D.prepare("SELECT * FROM bookings WHERE ref = ?").bind(ref).first();
       if (bundle) await D.prepare("UPDATE bundles SET used = used + 1 WHERE id = ?").bind(bundle.id).run();
       if (b.service === "bundle" && !bundle) await D.prepare("INSERT INTO bundles (user_id, booking_id, size, created) VALUES (?, ?, ?, ?)").bind(u.id, row.id, bundleSize, now()).run();
@@ -190,11 +198,44 @@ export async function onRequest(ctx) {
       return json({ booking: view(row) });
     }
 
-    const one = path.match(/^booking\/(HD-[A-F0-9]{6})(?:\/(pay|cancel|check|sign|agreement|decline))?(?:\/(\d+))?$/);
+    const one = path.match(/^booking\/(HD-[A-F0-9]{6})(?:\/(pay|cancel|check|sign|agreement|decline|date|receipt|invoice))?(?:\/(\d+))?$/);
     if (one) {
       const b = await D.prepare("SELECT * FROM bookings WHERE ref = ? AND user_id = ?").bind(one[1], u.id).first();
       if (!b) return fail("missing", "Booking not found.", 404);
-      if (!one[2] && m === "GET") return json({ booking: view(b) });
+      if (!one[2] && m === "GET") {
+        const { results: pays } = await D.prepare("SELECT id, amount, how, at FROM payments WHERE booking_id = ? ORDER BY id").bind(b.id).all();
+        return json({ booking: { ...view(b), receipts: pays.map((p) => ({ id: p.id, no: receiptNo(p.id), amount: p.amount, how: p.how, at: p.at })), invoice: invoiceReady(b) ? invoiceNo(b) : null } });
+      }
+      if (one[2] === "receipt" && m === "GET" && one[3]) {
+        const pay = await D.prepare("SELECT * FROM payments WHERE id = ? AND booking_id = ?").bind(Number(one[3]), b.id).first();
+        if (!pay) return fail("missing", "Receipt not found.", 404);
+        return docResponse(receiptHtml(pay, b, u), `Happy-Drones-Receipt-${receiptNo(pay.id)}.html`);
+      }
+      if (one[2] === "invoice" && m === "GET") {
+        if (!invoiceReady(b)) return fail("missing", "There's no invoice for this booking yet. Invoices go out once the work is done.", 404);
+        return docResponse(invoiceHtml(b, u, env.BANK_DETAILS || "", b.delivered_at || b.go_at || b.updated), `Happy-Drones-Invoice-${invoiceNo(b)}.html`);
+      }
+      // Ask for a different date. Before Wayne confirms, the wanted date just changes.
+      // After he confirms, it's a request: nothing moves until he confirms a new date.
+      if (one[2] === "date" && m === "POST") {
+        if (["cancelled", "delivered", "cancel_requested"].includes(b.status)) return fail("state", "This booking's date can't be changed online. Get in touch instead.");
+        const x = await body(request);
+        const dp = dateProblem(x.date); if (dp) return fail("date", dp);
+        const tp = timeProblem(x.time); if (tp) return fail("time", tp);
+        const time = clean(x.time, 20);
+        if (!b.go_at) {
+          await D.prepare("UPDATE bookings SET wanted_date = ?, wanted_time = ?, updated = ? WHERE id = ?").bind(x.date, time, now(), b.id).run();
+          await log(env, u.email, "date-changed", b.ref, `${b.wanted_date || "none"} to ${x.date} ${time}`);
+          const fresh = await D.prepare("SELECT * FROM bookings WHERE id = ?").bind(b.id).first();
+          if (env.ADMIN_EMAIL) await sendMail(env, env.ADMIN_EMAIL, MAIL.dateChanged(u, fresh, b.wanted_date), "admin");
+          return json({ booking: view(fresh), message: "Done: your date has changed. Wayne confirms it after checking the weather." });
+        }
+        await D.prepare("UPDATE bookings SET move_request = ?, updated = ? WHERE id = ?").bind(JSON.stringify({ date: x.date, time, at: now() }), now(), b.id).run();
+        await log(env, u.email, "move-asked", b.ref, `to ${x.date} ${time}`);
+        if (env.ADMIN_EMAIL) await sendMail(env, env.ADMIN_EMAIL, MAIL.moveAsked(u, b, { date: x.date, time }), "admin");
+        const fresh = await D.prepare("SELECT * FROM bookings WHERE id = ?").bind(b.id).first();
+        return json({ booking: view(fresh), message: "Sent: Wayne will confirm the new date or get in touch. Until then your booking stays on its current date." });
+      }
       if (one[2] === "pay" && m === "POST") {
         if (!b.signed_at) return fail("sign", "Please sign the booking agreement first.");
         if (b.pending) return fail("changes", "Please approve or decline the changes to this booking first.");
@@ -207,7 +248,7 @@ export async function onRequest(ctx) {
           return json({ url: s.url });
         }
         if (!testMode(env)) return fail("pay", "Online payment isn't switched on yet. I'll send you a payment link.", 503);
-        const done = await recordPayment(env, b.ref, due, `${u.email} (test payment)`);
+        const done = await recordPayment(env, b.ref, due, `${u.email} (test payment)`, "Card (test payment, no money taken)");
         return json({ booking: view(done), simulated: true });
       }
       if (one[2] === "check" && m === "POST") {
@@ -242,7 +283,9 @@ export async function onRequest(ctx) {
         const x = await body(request);
         if (!x.agree) return fail("agree", "Tick to say you've read and agree to the booking agreement and Job Details.");
         const typed = String(x.name || "").trim().replace(/\s+/g, " ");
-        if (!sameName(typed, u.name)) return fail("name", `Type your full name as it is on your account: ${plainName(u.name)}. If that's not right, change it under My details first.`);
+        if (!sameName(typed, u.name)) { const ok = signerNames(u.name); return fail("name", `Type your full name as it is on your account: ${ok.length > 1 ? ok.slice(1).join(" or ") : plainName(u.name)}. If that's not right, change it under My details first.`); }
+        const when = b.confirmed_date || b.wanted_date;
+        if (when && when < ukToday() && b.status !== "delivered") return fail("date", "The date on this booking has passed. Ask for a new date first (Change the date), then sign.");
         const next = withPending(b);
         const early = next.booking_as === "consumer" && x.earlyStart ? 1 : 0;
         const { terms, cancel } = await currentTerms(env, request);
@@ -265,7 +308,7 @@ export async function onRequest(ctx) {
         const file = await signedHtml(D, sig, fresh);
         const attach = [{ filename: `Happy-Drones-Booking-Agreement-${b.ref}.html`, content: toBase64(file) }];
         await sendMail(env, u.email, MAIL.signed(u, fresh, { name: typed, when: ukTime(at), version: AGREEMENT_VERSION, fingerprint: fp }), "signed", attach);
-        if (env.ADMIN_EMAIL) await sendMail(env, env.ADMIN_EMAIL, kind === "change" ? MAIL.approved(u, fresh) : MAIL.adminNew(u, fresh), "admin", attach);
+        if (env.ADMIN_EMAIL) await sendMail(env, env.ADMIN_EMAIL, kind === "change" ? MAIL.approved(u, fresh) : MAIL.adminNew(u, fresh, await sameDay(D, fresh)), "admin", attach);
         return json({ booking: view(fresh), signatureId: sigId, fingerprint: fp });
       }
       if (one[2] === "decline" && m === "POST") {
@@ -285,7 +328,7 @@ export async function onRequest(ctx) {
         if (b.service_id === "bundle" && status === "cancelled") await D.prepare("UPDATE bundles SET closed = 1 WHERE booking_id = ?").bind(b.id).run();
         await log(env, u.email, status, b.ref);
         if (status === "cancelled") await sendMail(env, u.email, MAIL.cancelled(u, b), "cancelled");
-        if (env.ADMIN_EMAIL) await sendMail(env, env.ADMIN_EMAIL, [`${status === "cancelled" ? "Cancelled" : "Cancellation request"}: ${b.ref}`, `${u.name} (${u.email}) ${status === "cancelled" ? "cancelled" : "asked to cancel"} ${b.service} at ${b.postcode}. Paid so far: £${b.paid}. Check the booking agreement for any refund.`], "admin");
+        if (env.ADMIN_EMAIL) await sendMail(env, env.ADMIN_EMAIL, status === "cancelled" ? MAIL.adminCancelled(u, b) : [`Cancellation request: ${b.ref}`, `${u.name} (${u.email}) ${status === "cancelled" ? "cancelled" : "asked to cancel"} ${b.service} at ${b.postcode}. Paid so far: £${b.paid}. Check the booking agreement for any refund.`], "admin");
         return json({ booking: view({ ...b, status }) });
       }
     }
@@ -350,11 +393,13 @@ function owed(b) {
   return 0;
 }
 /* What the customer sees: files only once paid in full (or on invoice terms) */
+const invoiceReady = (b) => b.mode === "invoice" && ["delivered"].includes(b.status);
 function view(b) {
   const unlocked = b.status === "delivered" && (b.mode === "invoice" || b.paid >= b.total);
   return { ref: b.ref, service: b.service, serviceId: b.service_id, postcode: b.postcode, address: b.address, wantedDate: b.wanted_date, wantedTime: b.wanted_time,
     confirmedDate: b.confirmed_date, confirmedTime: b.confirmed_time, notes: b.notes, bookingAs: b.booking_as, total: b.total, travel: b.travel, mode: b.mode,
     dueNow: b.due_now, paid: b.paid, owed: owed(b), status: b.status, files: unlocked ? b.files : null, filesWaiting: b.status === "delivered" && !unlocked,
-    agreement: b.agreement, created: b.created, signed: !!b.signed_at, signedAt: b.signed_at, signatureId: b.signature_id, changes: changeList(b), go: !!b.go_at, refunded: b.refunded || 0 };
+    agreement: b.agreement, created: b.created, signed: !!b.signed_at, signedAt: b.signed_at, signatureId: b.signature_id, changes: changeList(b), go: !!b.go_at, refunded: b.refunded || 0,
+    owner: b.owner, moveRequest: b.move_request ? JSON.parse(b.move_request) : null, extras: b.extras, branding: b.branding };
 }
 

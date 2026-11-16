@@ -9,7 +9,8 @@ export const B = `http://localhost:${process.env.TEST_PORT || 8799}`;
 export const ADMIN = "admin@example.com";
 export const PW = "blue sky over teesside";
 export const jar = () => ({ c: "" });
-export const plus = (n) => new Date(Date.now() + n * 864e5).toISOString().slice(0, 10);
+// A date n days ahead, moved on past the days nobody can book (25, 26 Dec and 1 Jan)
+export const plus = (n) => { let d = new Date(Date.now() + n * 864e5); while (n >= 0 && ["12-25", "12-26", "01-01"].includes(d.toISOString().slice(5, 10))) d = new Date(d.getTime() + 864e5); return d.toISOString().slice(0, 10); };
 export const now = () => Math.floor(Date.now() / 1000);
 
 let pass = 0, failed = 0;
@@ -51,7 +52,7 @@ export const admin = () => signUp("Wayne Fox", ADMIN);
 
 /* Book, sign and pay what's due now. Returns the booking as the customer sees it. */
 export async function bookSignPay(j, name, body, { pay = true, earlyStart = false } = {}) {
-  let r = await call(j, "/api/acct/book", body);
+  let r = await call(j, "/api/acct/book", { owner: "own", ...body });
   if (!r.b.booking) throw new Error(`book failed: ${JSON.stringify(r.b)}`);
   const ref = r.b.booking.ref;
   r = await call(j, `/api/acct/booking/${ref}/sign`, { name, agree: true, earlyStart });

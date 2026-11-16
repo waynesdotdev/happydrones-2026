@@ -45,11 +45,13 @@ function BookingPanel({ refId, onClose, onChanged }) {
         <div><dt>Site</dt><dd>{b.address ? `${b.address}, ` : ""}{b.postcode} · <a href={`/map/?pc=${encodeURIComponent(b.postcode)}&c=${b.ref}&m=${encodeURIComponent(b.service)}&d=${b.wanted_date || ""}`} target="_blank">job page ↗</a></dd></div>
         <div><dt>Wanted</dt><dd>{longDate(b.wanted_date) || "Any date"} {b.wanted_time}</dd></div>
         <div><dt>Money</dt><dd>{money(b.total)} total{b.travel ? ` (incl. ${money(b.travel)} travel)` : ""} · paid {money(b.paid)} · {b.mode}</dd></div>
+        {b.owner && <div><dt>Property</dt><dd>{b.owner}</dd></div>}
         <div><dt>Booked as</dt><dd>{b.booking_as}{b.early_start ? ", asked to start within 14 days" : ""}</dd></div>
         <div><dt>Agreement</dt><dd>{d.signatures.length ? d.signatures.map((g) => <span key={g.id} className="ad-sig">{g.kind === "change" ? "Changes approved" : "Signed"} by {g.name}, {when(g.at)} · <a href={`/api/admin/booking/${b.ref}/agreement/${g.id}`} target="_blank" rel="noopener">view ↗</a><br /></span>) : <b className="ad-warn">Not signed yet</b>}</dd></div>
         {b.refunded > 0 && <div><dt>Refunded</dt><dd>{money(b.refunded)}</dd></div>}
         {b.notes && <div><dt>Their notes</dt><dd>{b.notes}</dd></div>}
       </dl>
+      {d.alerts?.length > 0 && <ul className="ad-alerts" role="status">{d.alerts.map((a) => <li key={a}>{a}</li>)}</ul>}
       {d.changes && (
         <div className="ac-next ac-changes"><p><b>Waiting for them to approve your changes:</b></p>
           <ul>{d.changes.map((c) => <li key={c.key}>{c.label}: <s>{c.from || "–"}</s> → <b>{c.to || "–"}</b></li>)}</ul>

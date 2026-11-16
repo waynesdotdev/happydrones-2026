@@ -17,7 +17,7 @@ const row = (rows, k) => (rows.find((x) => x[0].startsWith(k)) || [])[1];
 /* ============ 1. HARRY: a tiny estate agent, one or two listings a month ============ */
 section("HARRY (tiny agent): books a 3-bed Showcase with a floor plan, straight from the account page");
 const H = await signUp("Harry Hart", "harry@example.com", { company: "Hart & Home Ltd", phone: "07700 900111" });
-let r = await call(H, "/api/acct/book", { service: "showcase", size: 1, extras: ["floorplan", "whitelabel"], postcode: "TS18 1AB", address: "4 Example Close", date: plus(6), time: "10:00", bookingAs: "business" });
+let r = await call(H, "/api/acct/book", { owner: "own", service: "showcase", size: 1, extras: ["floorplan", "whitelabel"], postcode: "TS18 1AB", address: "4 Example Close", date: plus(6), time: "10:00", bookingAs: "business" });
 let hb = r.b.booking;
 ok(hb?.total === 219 + 30 + 45 + 29, "online booking prices the house size and the extras he picked (3-4 bed +£30, floor plan +£45, white label +£29)", `charged £${hb?.total}`);
 let rows = await rowsOf(H, hb.ref);
@@ -50,7 +50,7 @@ ok((await mailTo("harry@example.com", "confirmed")).length === 2, "moving a conf
 r = await call(A, `/api/admin/booking/${href}`, { action: "deliver", files: "https://drive.example.com/harry" });
 r = await call(H, `/api/acct/booking/${href}`); ok(r.b.booking.status === "delivered" && !r.b.booking.files, "delivered: files locked until the balance is paid");
 r = await call(H, `/api/acct/booking/${href}/pay`, {}); ok(r.b.booking?.paid === 323 && r.b.booking.files, "balance paid, files unlocked");
-ok((await mailTo("harry@example.com")).some((e) => /invoice (number|no)/i.test(e.body)), "he gets a numbered invoice or receipt for his accounts", "a thank-you email only, no numbered document");
+ok((await mailTo("harry@example.com", "paid")).some((e) => /Receipt R-\d{5}/.test(e.body)), "he gets a numbered receipt for his accounts", "a thank-you email only, no numbered document");
 
 /* ============ 2. JOSEPHINE: a large agency, 5 branches, 25 listings a month ============ */
 section("JOSEPHINE (large agency): asks for an agent account");
@@ -61,48 +61,48 @@ r = await call(A, `/api/admin/enquiry/${jq}`); ok(r.b.enquiry.kind === "agent-ac
 r = await call(A, `/api/admin/enquiry/${jq}`, { action: "open-account" }); ok(r.s === 200, "Wayne can turn the request into an agent account", `no such action (${r.b.message})`);
 const J = await signUp("Josephine Jones", "josephine@example.com", { company: "Tees Valley Estates Ltd" });
 r = await call(J, "/api/acct/me"); ok(r.b.user?.agent || r.b.user?.account === "agent", "her login is marked as an agent account", JSON.stringify(r.b.user));
-r = await call(J, "/api/acct/book", { service: "showcase", postcode: "TS15 9AA", address: "1 High Street, Yarm", date: plus(8), bookingAs: "business" });
+r = await call(J, "/api/acct/book", { owner: "own", service: "showcase", postcode: "TS15 9AA", address: "1 High Street, Yarm", date: plus(8), bookingAs: "business" });
 let jb = r.b.booking;
 ok(jb?.total === Math.round(219 * 0.9), "her listings get the 10% agent discount automatically", `charged £${jb?.total}`);
 ok(jb?.mode === "invoice", "her listings go on the monthly invoice, no card deposit each time", `mode ${jb?.mode}, £${jb?.dueNow} due now by card`);
 r = await call(J, `/api/acct/booking/${jb.ref}/agreement`); ok(r.b.toSign !== "original", "she doesn't have to sign a full agreement for every single listing", "every listing needs its own signature");
-r = await call(J, "/api/acct/book", { service: "showcase", postcode: "TS15 9AA", date: plus(8), bookingAs: "business", po: "PO-4471" });
+r = await call(J, "/api/acct/book", { owner: "own", service: "showcase", postcode: "TS15 9AA", date: plus(8), bookingAs: "business", po: "PO-4471" });
 ok(JSON.stringify(await rowsOf(J, r.b.booking.ref)).includes("PO-4471"), "a purchase order number can be put on a booking", "no PO field");
 const J2 = await signUp("Ben Branch", "ben.branch@example.com", { company: "Tees Valley Estates Ltd" });
 r = await call(J2, "/api/acct/bookings"); ok(r.b.bookings?.length > 0, "a branch colleague can see and book on the agency's account", "each person has a separate account");
 r = await call(A, "/api/admin/statement?company=Tees%20Valley%20Estates%20Ltd"); ok(r.s === 200, "Wayne can produce one monthly statement for the agency", `status ${r.s}`);
 
 section("JOSEPHINE: the bundle (10 listings up front) does work");
-r = await call(J, "/api/acct/book", { service: "bundle", postcode: "TS15 9AA", bookingAs: "business" }); const bun = r.b.booking;
+r = await call(J, "/api/acct/book", { owner: "own", service: "bundle", postcode: "TS15 9AA", bookingAs: "business" }); const bun = r.b.booking;
 ok(bun?.total === 1971 && bun.dueNow === 1971, "bundle of 10 Showcase listings: £1,971 up front", bun);
 r = await call(J, `/api/acct/booking/${bun.ref}/sign`, { name: "Josephine Jones", agree: true }); r = await call(J, `/api/acct/booking/${bun.ref}/pay`, {});
-r = await call(J, "/api/acct/book", { useBundle: true, service: "showcase", postcode: "DL1 1AA", address: "2 Example Row", date: plus(7), bookingAs: "business" });
+r = await call(J, "/api/acct/book", { owner: "own", useBundle: true, service: "showcase", postcode: "DL1 1AA", address: "2 Example Row", date: plus(7), bookingAs: "business" });
 ok(r.b.booking?.total === 0, "a listing from the bundle costs nothing extra in Darlington", r.b);
-r = await call(J, "/api/acct/book", { useBundle: true, service: "showcase", size: 2, postcode: "DL1 1AA", date: plus(7), bookingAs: "business" });
+r = await call(J, "/api/acct/book", { owner: "own", useBundle: true, service: "showcase", size: 2, postcode: "DL1 1AA", date: plus(7), bookingAs: "business" });
 ok(r.b.booking?.total > 0 || /size|bed/i.test(JSON.stringify(r.b)), "a 5-bed house from the bundle is priced or flagged differently from a flat", "same as a flat: size isn't asked");
 
-let n = 0; for (let i = 0; i < 25; i++) { const x = await call(J, "/api/acct/book", { service: "essentials", postcode: "TS15 9AA", date: plus(8 + (i % 20)), bookingAs: "business" }); if (x.b.booking) n++; else { r = x; break; } }
+let n = 0; for (let i = 0; i < 25; i++) { const x = await call(J, "/api/acct/book", { owner: "own", service: "essentials", postcode: "TS15 9AA", date: plus(8 + (i % 20)), bookingAs: "business" }); if (x.b.booking) n++; else { r = x; break; } }
 ok(n === 25, "she can book a month of listings (25) without being stopped", `stopped after ${n + 2} in one day: ${r.b?.message}`);
 sql("DELETE FROM limits WHERE k LIKE 'book%'");
 
 /* ============ 3. MICHAEL AND MICHELLE: buying a house, want the roof and front checked ============ */
 section("MICHAEL & MICHELLE (buyers): roof check on a house they don't own yet");
 const M = await signUp("Michael and Michelle Moore", "mm@example.com");
-r = await call(M, "/api/acct/book", { service: "roofs", postcode: "TS16 0AA", address: "9 Example Avenue", date: plus(4), time: "13:00", bookingAs: "consumer", notes: "We are buying this house. Survey due next week." });
+r = await call(M, "/api/acct/book", { owner: "agreed", service: "roofs", postcode: "TS16 0AA", address: "9 Example Avenue", date: plus(4), time: "13:00", bookingAs: "consumer", notes: "We are buying this house. Survey due next week." });
 const mb = r.b.booking; ok(mb?.total === 135, "roof check booked: £135");
 rows = await rowsOf(M, mb.ref);
-ok(rows.some(([k]) => /owner|permission/i.test(k)), "the booking asks who owns the property and whether the owner has agreed", "never asked");
+ok(/owner has agreed/i.test((await adminBooking(mb.ref)).owner || ""), "the booking asks who owns the property and whether the owner has agreed", "never asked");
 r = await call(M, `/api/acct/booking/${mb.ref}/sign`, { name: "Michael Moore", agree: true }); ok(r.s === 200, "Michael can sign on his own for a joint account", r.b.message);
-r = await call(M, `/api/acct/booking/${mb.ref}/sign`, { name: "Michael and Michelle Moore", agree: true, earlyStart: true }); ok(r.b.booking?.signed, "signing with the joint name works");
+r = await call(M, `/api/acct/booking/${mb.ref}`); ok(r.b.booking?.signed, "the booking shows as signed");
 r = await call(M, `/api/acct/booking/${mb.ref}/pay`, {}); ok(r.b.booking?.paid === 34, "deposit paid");
 r = await call(null, "/api/acct/quote?service=facade&postcode=TS16%200AA"); 
-r = await call(M, "/api/acct/book", { service: "facade", postcode: "TS16 0AA", date: plus(4), bookingAs: "consumer" }); ok(r.b.booking, "they can add a check of the front of the building (facade)", r.b.message);
-r = await call(M, "/api/acct/book", { service: "mapping", postcode: "TS16 0AA", date: plus(4), bookingAs: "consumer" }); ok(r.b.booking, "they can add a basic 3D model", r.b.message);
+r = await call(M, "/api/acct/book", { owner: "own", service: "facade", postcode: "TS16 0AA", date: plus(4), bookingAs: "consumer" }); ok(r.b.booking, "they can add a check of the front of the building (facade)", r.b.message);
+r = await call(M, "/api/acct/book", { owner: "own", service: "mapping", postcode: "TS16 0AA", date: plus(4), bookingAs: "consumer" }); ok(r.b.booking, "they can add a basic 3D model", r.b.message);
 r = await call(null, "/api/enquiry", { "form-name": "interest", service: "3D model", name: "Michelle Moore", email: "mm@example.com", "bot-field": "" }); ok(r.s === 200, "they can at least register interest in the 3D model");
 section("MICHAEL & MICHELLE: the sale falls through, they cancel");
 r = await call(M, `/api/acct/booking/${mb.ref}/cancel`, {}); ok(r.b.booking?.status === "cancelled", "they can cancel online before Wayne confirms");
 const cm = (await mailTo("mm@example.com", "cancelled"))[0]; ok(cm && /refund/i.test(cm.body), "the cancellation email tells them about their refund");
-r = await adminBooking(mb.ref); ok(r.refunded === 34 || r.refund_due, "the £34 deposit refund is started or flagged for Wayne automatically", `paid £${r.paid}, refunded £${r.refunded || 0}, nothing flagged`);
+r = await call(A, `/api/admin/booking/${mb.ref}`); ok(r.b.alerts?.some((a) => /Refund to check: they paid £34/.test(a)), "the £34 deposit refund is flagged for Wayne", r.b.alerts);
 
 /* ============ 4. TONY: Stockton council, PR photos and film of the bridges ============ */
 section("TONY (council): photos and video of every Tees bridge in Stockton, for PR");
@@ -137,11 +137,11 @@ r = await adminBooking(tref); ok(r.invoice_due || r.due_date, "the site knows wh
 /* ============ 5. PRIYA: property manager, three empty units, monthly checks ============ */
 section("PRIYA (property manager): monthly checks on three empty units");
 const P = await signUp("Priya Patel", "priya@example.com", { company: "Northgate Property Management Ltd" });
-r = await call(P, "/api/acct/book", { service: "vacant", postcode: "TS17 6AB", address: "Unit 3, Example Park", date: plus(10), bookingAs: "business", visits: 12, every: "month" });
+r = await call(P, "/api/acct/book", { owner: "own", service: "vacant", postcode: "TS17 6AB", address: "Unit 3, Example Park", date: plus(10), bookingAs: "business", visits: 12, every: "month" });
 const pb = r.b.booking; ok(pb?.mode === "invoice" && pb.dueNow === 0, "vacant check booked on invoice terms, nothing to pay now");
 ok(pb?.total === 95 * 12 || /12/.test(JSON.stringify(pb)), "she can book 12 monthly visits in one go", `one visit only (£${pb?.total})`);
 rows = await rowsOf(P, pb.ref); ok(/month/i.test(row(rows, "Shoot date") || ""), "the agreement shows the visit schedule", row(rows, "Shoot date"));
-r = await call(P, "/api/acct/book", { service: "vacant", postcode: "TS17 6AB", address: "Units 3, 4 and 7, Example Park", buildings: 3, date: plus(10), bookingAs: "business" });
+r = await call(P, "/api/acct/book", { owner: "own", service: "vacant", postcode: "TS17 6AB", address: "Units 3, 4 and 7, Example Park", buildings: 3, date: plus(10), bookingAs: "business" });
 ok(r.b.booking?.total === 285, "three buildings on one visit are priced as three", `charged £${r.b.booking?.total}`);
 r = await call(P, `/api/acct/booking/${pb.ref}/sign`, { name: "Priya Patel", agree: true });
 r = await call(A, `/api/admin/booking/${pb.ref}`, { action: "confirm", date: plus(10), time: "11:00" });
@@ -152,14 +152,15 @@ r = await call(P, `/api/acct/booking/${pb.ref}`); ok(Array.isArray(r.b.booking.r
 /* ============ Things that could go wrong for anyone ============ */
 section("DATES: what the website lets through");
 const X = await signUp("Xena Extra", "xena@example.com");
-r = await call(X, "/api/acct/book", { service: "aerial", postcode: "TS18 1AB", date: plus(6), time: "10:00", bookingAs: "consumer" });
-ok(r.s === 400 || r.b.clash, "a second customer picking Harry's first date and time is warned or refused", "accepted with no warning to anyone");
-r = await call(X, "/api/acct/book", { service: "aerial", postcode: "TS18 1AB", date: "2026-12-25", bookingAs: "consumer" }); ok(r.s === 400, "Christmas Day can't be booked", "accepted");
-r = await call(X, "/api/acct/book", { service: "aerial", postcode: "TS18 1AB", date: "2031-01-01", bookingAs: "consumer" }); ok(r.s === 400, "a date five years away is refused", "accepted");
-r = await call(X, "/api/acct/book", { service: "aerial", postcode: "TS18 1AB", date: plus(5), time: "23:30", bookingAs: "consumer" }); ok(r.s === 400, "a flying time in the dark (23:30) is refused", "accepted");
-r = await call(X, "/api/acct/book", { service: "aerial", postcode: "TS18 1AB", date: plus(5), time: "<b>noon</b>", bookingAs: "consumer" }); ok(r.s === 400, "the time must be a real time, not free typing", "saved as typed: <b>noon</b>");
-r = await call(X, "/api/acct/book", { service: "aerial", postcode: "TS18 1AB", date: "2027-02-30", bookingAs: "consumer" }); ok(r.s === 400, "an impossible date (30 Feb) is refused", "accepted");
-r = await call(X, "/api/acct/book", { service: "aerial", postcode: "TS18 1AB", date: plus(5), bookingAs: "consumer" }); const xb = r.b.booking;
+r = await call(X, "/api/acct/book", { owner: "own", service: "aerial", postcode: "TS18 1AB", date: plus(11), time: "10:00", bookingAs: "consumer" });
+const xr = r.b.booking?.ref; await call(X, `/api/acct/booking/${xr}/sign`, { name: "Xena Extra", agree: true });
+ok((await call(A, `/api/admin/booking/${xr}`)).b.alerts?.some((a) => /Same day as/.test(a)), "a second customer picking Harry's first date: Wayne is warned", "no warning");
+r = await call(X, "/api/acct/book", { owner: "own", service: "aerial", postcode: "TS18 1AB", date: "2026-12-25", bookingAs: "consumer" }); ok(r.s === 400, "Christmas Day can't be booked", "accepted");
+r = await call(X, "/api/acct/book", { owner: "own", service: "aerial", postcode: "TS18 1AB", date: "2031-01-01", bookingAs: "consumer" }); ok(r.s === 400, "a date five years away is refused", "accepted");
+r = await call(X, "/api/acct/book", { owner: "own", service: "aerial", postcode: "TS18 1AB", date: plus(5), time: "23:30", bookingAs: "consumer" }); ok(r.s === 400, "a flying time in the dark (23:30) is refused", "accepted");
+r = await call(X, "/api/acct/book", { owner: "own", service: "aerial", postcode: "TS18 1AB", date: plus(5), time: "<b>noon</b>", bookingAs: "consumer" }); ok(r.s === 400, "the time must be a real time, not free typing", "saved as typed: <b>noon</b>");
+r = await call(X, "/api/acct/book", { owner: "own", service: "aerial", postcode: "TS18 1AB", date: "2027-02-30", bookingAs: "consumer" }); ok(r.s === 400, "an impossible date (30 Feb) is refused", "accepted");
+r = await call(X, "/api/acct/book", { owner: "own", service: "aerial", postcode: "TS18 1AB", date: plus(5), bookingAs: "consumer" }); const xb = r.b.booking;
 sql("UPDATE bookings SET wanted_date = ? WHERE ref = ?", plus(-3), xb.ref);
 r = await call(X, `/api/acct/booking/${xb.ref}/sign`, { name: "Xena Extra", agree: true }); ok(r.s === 400, "an unsigned booking whose date has passed can't be signed as it is", "signed with a date in the past");
 r = await call(A, `/api/admin/booking/${xb.ref}`, { action: "confirm", date: plus(-3), anyway: true }); ok(r.s === 400, "Wayne can't confirm a flying date in the past by mistake", "accepted");

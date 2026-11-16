@@ -36,7 +36,7 @@ const old = (days) => now() - days * 86400;
 const Pk = await signUp("Peter Past", "peter@example.com");
 const pb = await bookSignPay(Pk, "Peter Past", { service: "roofs", postcode: "TS17 6AB", date: plus(5), bookingAs: "consumer" });
 await call(null, "/api/enquiry", { "form-name": "quote", name: "Stale Sam", email: "sam@example.com", postcode: "TS17 6AB", date: plus(6), "bot-field": "" });
-r = await call(Pk, "/api/acct/book", { service: "gutter-check", postcode: "TS17 6AB", date: plus(6), bookingAs: "consumer" }); const unsigned = r.b.booking.ref;
+r = await call(Pk, "/api/acct/book", { owner: "own", service: "gutter-check", postcode: "TS17 6AB", date: plus(6), bookingAs: "consumer" }); const unsigned = r.b.booking.ref;
 sql(`UPDATE bookings SET created = ${old(8 * 365)} WHERE ref = '${pb.ref}'`);
 sql(`UPDATE signatures SET at = ${old(8 * 365)} WHERE booking_id = (SELECT id FROM bookings WHERE ref = '${pb.ref}')`);
 sql(`UPDATE enquiries SET updated = ${old(370)} WHERE email = 'sam@example.com'`);

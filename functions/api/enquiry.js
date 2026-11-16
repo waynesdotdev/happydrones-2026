@@ -6,7 +6,7 @@
    The token is only ever in the customer's email; the database keeps a hash of it. */
 import { json, fail, now, ipOf, sameSite, body, db, limited, randomHex, sha256, sendMail, MAIL as MAIL_ENQ } from "../../lib/acct/server.js";
 import { LABELS, SKIP } from "../../lib/sendForm.js";
-import { CATALOG, tidyPostcode } from "../../lib/acct/catalog.js";
+import { CATALOG, tidyPostcode, dateProblem, timeProblem } from "../../lib/acct/catalog.js";
 import { priceChoice } from "../../lib/pricing.js";
 import { money } from "../../lib/site.js";
 
@@ -39,6 +39,8 @@ async function save(request, env) {
   if (email && !EMAIL.test(email)) return fail("email", "That email address doesn't look right.");
   if (kind !== "feedback" && (name.length < 2 || (!email && phone.replace(/\D/g, "").length < 10))) return fail("details", "Add your name and an email or phone number.");
   if ((kind === "quote" || kind === "mission") && !/^\d{4}-\d{2}-\d{2}$/.test(String(x.date || ""))) return fail("date", "Pick the date you'd like.");
+  if (x.date) { const dp = dateProblem(String(x.date), { minDays: 1 }); if (dp) return fail("date", dp); }
+  if (x.time) { const tp = timeProblem(x.time); if (tp) return fail("time", tp); }
 
   // THE PRICE IS WORKED OUT HERE, from what they chose, never taken from the browser.
   // Anything the browser sent as a price or a summary is replaced or dropped.

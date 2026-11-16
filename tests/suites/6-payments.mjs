@@ -4,7 +4,7 @@ import crypto from "node:crypto";
 
 const A = await admin();
 const L = await signUp("Lynn Fox", "lynn.fox@example.com");
-let r = await call(L, "/api/acct/book", { service: "roofs", postcode: "TS17 6AB", date: plus(5), bookingAs: "consumer" }); const b = r.b.booking;
+let r = await call(L, "/api/acct/book", { owner: "own", service: "roofs", postcode: "TS17 6AB", date: plus(5), bookingAs: "consumer" }); const b = r.b.booking;
 await call(L, `/api/acct/booking/${b.ref}/sign`, { name: "Lynn Fox", agree: true });
 const session = { id: "cs_test_1", payment_status: "paid", amount_total: 3400, metadata: { ref: b.ref } };
 

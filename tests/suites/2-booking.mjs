@@ -6,15 +6,15 @@ const L = await signUp("Mrs Lynn Fox", "lynn.fox@example.com");
 const O = await signUp("Olive Other", "olive@example.com");
 
 section("Booking needs the basics");
-let r = await call(L, "/api/acct/book", { service: "roofs", postcode: "TS17 6AB", bookingAs: "consumer" }); ok(r.s === 400 && /date/i.test(r.b.message), "no date, no booking");
-r = await call(L, "/api/acct/book", { service: "roofs", postcode: "TS17 6AB", date: plus(1), bookingAs: "consumer" }); ok(r.s === 400, "date must be at least 2 days ahead");
-r = await call(L, "/api/acct/book", { service: "roofs", postcode: "TS17", date: plus(5), bookingAs: "consumer" }); ok(r.s === 400, "needs a full postcode");
-r = await call(L, "/api/acct/book", { service: "roofs", postcode: "TS17 6AB", date: plus(5) }); ok(r.s === 400, "must say private customer or business");
-r = await call(L, "/api/acct/book", { service: "roofs", postcode: "EH1 1AA", date: plus(5), bookingAs: "consumer" }); ok(r.s === 400, "outside the travel zones can't be booked online");
-r = await call(L, "/api/acct/book", { service: "roofs", postcode: "DH1 3LE", date: plus(5), bookingAs: "consumer", total: 1, price: 1 }); ok(r.b.booking?.total === 160 && r.b.booking.travel === 25, "price is set by the server (roof check £135 + £25 Durham travel), whatever the browser sends", r.b);
+let r = await call(L, "/api/acct/book", { owner: "own", service: "roofs", postcode: "TS17 6AB", bookingAs: "consumer" }); ok(r.s === 400 && /date/i.test(r.b.message), "no date, no booking");
+r = await call(L, "/api/acct/book", { owner: "own", service: "roofs", postcode: "TS17 6AB", date: plus(1), bookingAs: "consumer" }); ok(r.s === 400, "date must be at least 2 days ahead");
+r = await call(L, "/api/acct/book", { owner: "own", service: "roofs", postcode: "TS17", date: plus(5), bookingAs: "consumer" }); ok(r.s === 400, "needs a full postcode");
+r = await call(L, "/api/acct/book", { owner: "own", service: "roofs", postcode: "TS17 6AB", date: plus(5) }); ok(r.s === 400, "must say private customer or business");
+r = await call(L, "/api/acct/book", { owner: "own", service: "roofs", postcode: "EH1 1AA", date: plus(5), bookingAs: "consumer" }); ok(r.s === 400, "outside the travel zones can't be booked online");
+r = await call(L, "/api/acct/book", { owner: "own", service: "roofs", postcode: "DH1 3LE", date: plus(5), bookingAs: "consumer", total: 1, price: 1 }); ok(r.b.booking?.total === 160 && r.b.booking.travel === 25, "price is set by the server (roof check £135 + £25 Durham travel), whatever the browser sends", r.b);
 
 section("Sign, then pay");
-r = await call(L, "/api/acct/book", { service: "roofs", postcode: "ts17 6ab", address: "2 Example Road", date: plus(5), time: "10:00", bookingAs: "consumer", notes: "Side gate code 1234" });
+r = await call(L, "/api/acct/book", { owner: "own", service: "roofs", postcode: "ts17 6ab", address: "2 Example Road", date: plus(5), time: "10:00", bookingAs: "consumer", notes: "Side gate code 1234" });
 const b = r.b.booking; ok(b?.status === "awaiting_signature" && b.total === 135 && b.dueNow === 34 && !b.signed, "booked: £135, £34 deposit, waiting for a signature", b);
 r = await call(L, `/api/acct/booking/${b.ref}/pay`, {}); ok(r.s === 400 && /sign/i.test(r.b.message), "can't pay before signing");
 r = await call(O, `/api/acct/booking/${b.ref}`); ok(r.s === 404, "another customer can't see it");
@@ -70,7 +70,7 @@ ok((await outbox(A)).some((e) => e.kind === "refund" && e.to_addr === "lynn.fox@
 
 section("Invoice jobs, cancelling and unsigned bookings");
 const v = await bookSignPay(L, "Lynn Fox", { service: "vacant", postcode: "TS17 6AB", date: plus(9), bookingAs: "business" }); ok(v.mode === "invoice" && v.owed === 0 && v.status === "requested", "repeat-visit job: nothing to pay up front");
-r = await call(L, "/api/acct/book", { service: "gutter-check", postcode: "TS17 6AB", date: plus(9), bookingAs: "business" }); const g = r.b.booking;
+r = await call(L, "/api/acct/book", { owner: "own", service: "gutter-check", postcode: "TS17 6AB", date: plus(9), bookingAs: "business" }); const g = r.b.booking;
 r = await call(A, `/api/admin/booking/${g.ref}`, { action: "edit", changes: { total: 90 } }); ok(r.b.booking.total === 90 && !r.b.booking.pending, "before signing, Wayne's change applies straight away");
 r = await call(A, `/api/admin/booking/${g.ref}`, { action: "confirm", date: plus(9) }); ok(r.s === 400, "an unsigned booking can't be confirmed");
 r = await call(A, `/api/admin/booking/${g.ref}`, { action: "deliver", files: "https://drive.example.com/x" }); ok(r.s === 400, "an unsigned booking can't be delivered");
