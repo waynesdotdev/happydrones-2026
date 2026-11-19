@@ -113,7 +113,7 @@ export default function ServicesPage() {
           <h2 className="section-title">Not sure which one you need?</h2>
           <p>Tell me what you&apos;re trying to show and I&apos;ll suggest the best approach and a fixed price.</p>
           <div className="unsure-actions">
-            <Link className="btn btn-orange" href="/#quote">Build a quote</Link>
+            <Link className="btn btn-orange" href="/property/#quote">Build a quote</Link>
             {wa && <a className="btn btn-ghost" href={wa} target="_blank" rel="noopener">Message on WhatsApp</a>}
           </div>
         </div>

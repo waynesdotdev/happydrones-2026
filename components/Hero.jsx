@@ -55,7 +55,7 @@ export default function Hero() {
         <div className="hero-ctas">
           <Link className="btn btn-orange" href="/business/">For business</Link>
           <Link className="btn btn-ghost" href="/estate-agents/">Estate agents</Link>
-          <Link className="btn btn-ghost" href="/#packages">Selling your own home?</Link>
+          <Link className="btn btn-ghost" href="/property/">Selling your own home?</Link>
         </div>
         {/*<p className="hero-note">Prices in under a minute. No sign-up.</p>*/}
       </div>

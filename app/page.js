@@ -6,18 +6,15 @@
 import Credentials from "@/components/Credentials";
 import Link from "next/link";
 import Hero from "@/components/Hero";
-import Promises from "@/components/Promises";
-import Packages from "@/components/Packages";
 import ThreeWays from "@/components/ThreeWays";
 import TodayTomorrow from "@/components/TodayTomorrow";
 import AgentBand from "@/components/AgentBand";
-import QuoteBuilder from "@/components/QuoteBuilder";
-import ContactSection from "@/components/ContactSection";
+import BusinessContact from "@/components/BusinessContact";
 import Follow from "@/components/Follow";
 import PostCard from "@/components/PostCard";
 import JsonLd from "@/components/JsonLd";
-import { QuoteProvider } from "@/components/QuoteContext";
-import { Showreel, HowItWorks, Reviews, Faq, faqSchema } from "@/components/HomeSections";
+import { Showreel, Reviews, Faq, faqSchema, BusinessSteps } from "@/components/HomeSections";
+import { BUSINESS_FAQ } from "@/lib/site";
 import { getPostSummaries } from "@/lib/posts";
 
 export const metadata = {
@@ -28,17 +25,14 @@ export default function HomePage() {
   const latest = getPostSummaries().slice(0, 3);
 
   return (
-    <QuoteProvider>
-      <JsonLd data={faqSchema()} />
+    <>
+      <JsonLd data={faqSchema(BUSINESS_FAQ)} />
       <Hero />
-      <Credentials />
-      <Promises />
+      <Credentials promises />
       <ThreeWays />
       <AgentBand />
-      <Packages />
       <TodayTomorrow />
-      <QuoteBuilder />
-      <HowItWorks />
+      <BusinessSteps />
       <Showreel />
       <Reviews />
 
@@ -55,8 +49,8 @@ export default function HomePage() {
       )}
 
       <Follow />
-      <Faq />
-      <ContactSection />
-    </QuoteProvider>
+      <Faq items={BUSINESS_FAQ} title="Questions businesses ask" />
+      <BusinessContact />
+    </>
   );
 }

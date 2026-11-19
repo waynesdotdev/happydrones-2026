@@ -1,7 +1,8 @@
 /* Smaller homepage sections: showreel, how it works, reviews, FAQ.
    Their words live in lib/site.js (HOW_STEPS, FAQ, SITE.reviews, SITE.showreel). */
 import VideoEmbed from "./VideoEmbed";
-import { FAQ, HOW_STEPS, SITE, fillInsurance } from "@/lib/site";
+import Link from "next/link";
+import { FAQ, HOW_STEPS, SITE, BUSINESS_STEPS, fillInsurance } from "@/lib/site";
 import { youtubeId } from "@/lib/youtube";
 
 export function Showreel() {
@@ -56,13 +57,13 @@ export function Reviews() {
   );
 }
 
-export function Faq() {
+export function Faq({ items = FAQ, title = "Questions people ask" }) {
   return (
     <section className="faq" id="faq" aria-labelledby="faq-title">
       <div className="wrap faq-grid">
-        <h2 id="faq-title" className="section-title">Questions people ask</h2>
+        <h2 id="faq-title" className="section-title">{title}</h2>
         <div className="faq-list">
-          {FAQ.map((f) => (
+          {items.map((f) => (
             <details key={f.q} name="faq">
               <summary>{f.q}</summary>
               <p>{fillInsurance(f.a)}</p>
@@ -75,14 +76,29 @@ export function Faq() {
 }
 
 /** FAQ as structured data, so Google can show it in search results */
-export function faqSchema() {
+export function faqSchema(items = FAQ) {
   return {
     "@context": "https://schema.org",
     "@type": "FAQPage",
-    mainEntity: FAQ.map((f) => ({
+    mainEntity: items.map((f) => ({
       "@type": "Question",
       name: f.q,
       acceptedAnswer: { "@type": "Answer", text: fillInsurance(f.a) },
     })),
   };
+}
+
+/* How business work starts (homepage): the same steps as /business */
+export function BusinessSteps() {
+  return (
+    <section className="t-section t-dark" aria-labelledby="bs-title">
+      <div className="wrap">
+        <div className="t-head t-split">
+          <div className="t-stack"><span className="t-tag">How it starts</span><h2 id="bs-title">One job first. A regular slot if it works.</h2></div>
+          <p className="t-lede">Nobody should sign up for a year of visits on a promise. Try one job at the normal price and judge the result. <Link className="text-link" href="/business/">More for business</Link></p>
+        </div>
+        <ol className="cx-process">{BUSINESS_STEPS.map((s) => <li key={s.t}><span className="t-mono">{s.tag}</span><h3>{s.t}</h3><p>{s.d}</p></li>)}</ol>
+      </div>
+    </section>
+  );
 }

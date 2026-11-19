@@ -41,4 +41,4 @@ On the [walkthrough page](/walkthrough-video/) you can scroll through an example
 
 The Showcase package (from £219) includes the walkthrough video. Signature (from £379) adds the one-take glide tour.
 
-[See the walkthrough page](/walkthrough-video/), or [get your price](/#quote).
+[See the walkthrough page](/walkthrough-video/), or [get your price](/property/#quote).

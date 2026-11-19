@@ -52,4 +52,4 @@ You don't need to be in every room while I shoot. Most people make a cup of tea 
 
 If something's not right on the day, like a car you couldn't move, tell me. A lot can be framed around.
 
-[See how a property shoot works](/property-photography/), or [get your price](/#quote).
+[See how a property shoot works](/property-photography/), or [get your price](/property/#quote).

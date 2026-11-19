@@ -5,7 +5,7 @@
 import Link from "next/link";
 import { SITE } from "@/lib/site";
 
-export default function Credentials({ tone = "light" }) {
+export default function Credentials({ tone = "light", promises = false }) {
   const items = [
     "CAA Operator and Flyer ID",
     ...(SITE.credentials.includes("A2 CofC") ? ["A2 CofC qualified"] : []),
@@ -13,6 +13,7 @@ export default function Credentials({ tone = "light" }) {
     `${SITE.insurance.professionalIndemnity} professional indemnity`,
     "ICO registered",
     "RAMS for site work",
+    ...(promises ? ["Bad weather moves your date for free", "Files in 48 to 72 hours"] : []),
   ];
   return (
     <section className={`creds creds-${tone}`} aria-label="Credentials">

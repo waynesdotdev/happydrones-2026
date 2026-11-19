@@ -24,7 +24,7 @@ export default function Dock() {
     <nav className={`dock${on ? " is-on" : ""}`} aria-label="Quick actions">
       {SITE.phone && <a href={`tel:${SITE.phone}`}>Call</a>}
       {wa && <a href={wa} target="_blank" rel="noopener">WhatsApp</a>}
-      <Link className="dock-main" href="/#quote">Get a quote</Link>
+      <Link className="dock-main" href="/#contact">Start with one job</Link>
     </nav>
   );
 }

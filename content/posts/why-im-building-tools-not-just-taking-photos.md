@@ -24,7 +24,7 @@ I'd rather you could see it for yourself, straight away.
 ## What's there now
 
 - **[Weather check](/plan/):** pick a date and see the forecast for your area, the best time of day to fly, and a better date if yours looks poor.
-- **[Quote builder](/#quote):** a guide price for your property in three taps.
+- **[Quote builder](/property/#quote):** a guide price for your property in three taps.
 - **[Tour finder](/estate-agents/):** pick a property type and see how the tour runs and which package fits.
 - **[Roof explorer](/roof-inspections/):** tap any part of a roof to see what it is and what gets photographed.
 - **[Mission planner](/plan/):** build a commercial job, see a guide price and get a mission code.

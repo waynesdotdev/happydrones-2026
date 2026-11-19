@@ -58,7 +58,7 @@ const SMALL = [
     tag: `Homes · from ${priceFrom("essentials")}`,
     title: "Selling or letting your own home",
     text: "Listing photos, aerials and a walkthrough video in one visit. Pick a package and see the price straight away.",
-    href: "/#packages",
+    href: "/property/",
   },
   {
     id: "roof",

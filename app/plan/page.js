@@ -22,7 +22,7 @@ export default function Plan() {
   return (
     <div className="sub-page">
       <PageHero small crumbs={[{ label: "Commercial", href: "/commercial/" }, { label: "Plan a mission" }]} eyebrow="Mission planner" title="Build your flight plan." lede="Six quick choices give you a guide price straight away. Send it, and I reply within a day with a fixed quote and a written plan.">
-        <p style={{ fontSize: "1rem" }}>Selling a home? <Link href="/#quote" style={{ color: "#FF915F" }}>Use the property quote builder</Link>. Not sure yet? <Link href="/playground/" style={{ color: "#FF915F" }}>Try a pretend booking in the playground</Link>.</p>
+        <p style={{ fontSize: "1rem" }}>Selling a home? <Link href="/property/#quote" style={{ color: "#FF915F" }}>Use the property quote builder</Link>. Not sure yet? <Link href="/playground/" style={{ color: "#FF915F" }}>Try a pretend booking in the playground</Link>.</p>
       </PageHero>
       <section className="t-section t-dark" style={{ paddingTop: "clamp(40px, 6vw, 72px)" }}>
         <div className="wrap"><MissionPlanner /></div>

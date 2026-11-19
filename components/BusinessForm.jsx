@@ -2,7 +2,7 @@
 /* "Start a regular arrangement" form on /business.
    Sent by lib/sendForm.js as form "business": saved in the admin's
    Enquiries tab, the customer gets a confirmation, Wayne gets an email. */
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { sendEnquiry } from "@/lib/sendForm";
 import { SITE, whatsappLink } from "@/lib/site";
@@ -33,6 +33,13 @@ export default function BusinessForm() {
   const [msg, setMsg] = useState("");
   const [ref, setRef] = useState("");
   const set = (k, v) => setSt((s) => ({ ...s, [k]: v }));
+  // A link like /?role=agent#contact picks the matching kind of business
+  useEffect(() => {
+    const r = (new URLSearchParams(window.location.search).get("role") || "").toLowerCase();
+    const pick = { agent: 0, estate: 0, letting: 0, builder: 1, construction: 1, developer: 1, landlord: 2, manager: 2, property: 2, roof: 3, trade: 3, surveyor: 3 };
+    const k = Object.keys(pick).find((w) => r.includes(w));
+    if (k !== undefined) setSt((s) => (s.role ? s : { ...s, role: WHO[pick[k]] }));
+  }, []);
 
   async function submit(e) {
     e.preventDefault();

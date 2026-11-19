@@ -46,4 +46,4 @@ Buyers should walk in and recognise the photos. That's good for them, and good f
 
 Every property package uses blended photos as standard: Essentials from £109, Showcase from £219 and Signature from £379.
 
-[See the property photography page](/property-photography/), or [get your price](/#quote).
+[See the property photography page](/property-photography/), or [get your price](/property/#quote).

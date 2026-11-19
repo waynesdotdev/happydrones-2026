@@ -8,7 +8,7 @@ import Link from "next/link";
 import JsonLd from "@/components/JsonLd";
 import BusinessForm from "@/components/BusinessForm";
 import { Arrow } from "@/components/TIcons";
-import { SITE, AGENT_OFFER, BUNDLE, VACANT, PAYMENT, TRAVEL_TEXT, money, priceFrom } from "@/lib/site";
+import { SITE, AGENT_OFFER, BUNDLE, VACANT, PAYMENT, TRAVEL_TEXT, BUSINESS_STEPS as STEPS, money, priceFrom } from "@/lib/site";
 
 export const metadata = {
   title: "Drone photography and inspections for business",
@@ -22,12 +22,6 @@ const WHY = [
   { t: "Fixed prices and one invoice", d: `Every price is on this website. Regular work goes on one monthly invoice on ${PAYMENT.termsDays}-day terms.` },
 ];
 
-const STEPS = [
-  { tag: "STEP 1", t: "Tell me what you need", d: "Use the form below, call or WhatsApp. I reply within one working day." },
-  { tag: "STEP 2", t: "One trial job", d: "A normal job at the normal price: one listing, one site visit or one building. You see the files, the timing and the paperwork before agreeing to anything regular." },
-  { tag: "STEP 3", t: "Agree the regular slot", d: "If it worked, we set the day, the price and how you pay. The agreement is signed online and you get a copy." },
-  { tag: "STEP 4", t: "It just happens", d: "I turn up on the agreed days. Files and reports arrive in 48 to 72 hours, and everything is kept in your online account." },
-];
 
 export default function BusinessPage() {
   const WHO = [

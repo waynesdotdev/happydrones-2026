@@ -65,7 +65,7 @@ export default function Header() {
         ))}
       </nav>
 
-      <Link className="btn btn-orange btn-small topbar-cta" href="/#quote">Get a quote</Link>
+      <Link className="btn btn-orange btn-small topbar-cta" href="/#contact" title="Tell me what you need. I reply within one working day.">Start with one job</Link>
 
       <button
         className="menu-btn"

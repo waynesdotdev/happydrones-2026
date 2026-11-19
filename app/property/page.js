@@ -5,8 +5,12 @@ import ServicesCam from "@/components/ServicesCam";
 import ServiceArt from "@/components/ServiceArt";
 import KitIcon from "@/components/KitIcon";
 import JsonLd from "@/components/JsonLd";
-import { PACKAGES, PACKAGE_ROWS, SINGLES, PRICING, SITE, priceFrom, money, kitById, whatsappLink } from "@/lib/site";
+import { PACKAGES, PACKAGE_ROWS, SINGLES, PRICING, SITE, FAQ, priceFrom, money, kitById, whatsappLink } from "@/lib/site";
 import MoreServices from "@/components/MoreServices";
+import QuoteBuilder from "@/components/QuoteBuilder";
+import ContactSection from "@/components/ContactSection";
+import { QuoteProvider } from "@/components/QuoteContext";
+import { Faq, faqSchema } from "@/components/HomeSections";
 
 export const metadata = {
   title: "Property packages",
@@ -138,6 +142,14 @@ export default function PropertyPage() {
           </div>
         </div>
       </section>
+
+      {/* The instant quote and the homeowner enquiry form (moved here from the homepage, 19 Nov 2026) */}
+      <JsonLd data={faqSchema(FAQ)} />
+      <QuoteProvider>
+        <QuoteBuilder />
+        <Faq items={FAQ} title="Questions homeowners ask" />
+        <ContactSection />
+      </QuoteProvider>
     </div>
   );
 }

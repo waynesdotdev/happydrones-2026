@@ -37,4 +37,4 @@ From 120 metres a house becomes a small rectangle. Buyers can't see the front do
 
 I plan the heights and angles before every shoot, based on what the photos are for. If you have a shot in mind, send me an example and I'll match it.
 
-Aerial-only shoots start from £75. [See aerial photography](/aerial-photography/), or [get your price](/#quote).
+Aerial-only shoots start from £75. [See aerial photography](/aerial-photography/), or [get your price](/property/#quote).
