@@ -1,6 +1,7 @@
 /* CONSTRUCTION — the in-depth sales page for construction progress work.
    Send developers, contractors and funders here: happydrones.co.uk/construction
    Words and lists: lib/construction.js. Prices come from the mission planner. */
+import Credentials from "@/components/Credentials";
 import BookOnline from "@/components/BookOnline";
 import Link from "next/link";
 import CtaBand from "@/components/CtaBand";
@@ -70,6 +71,7 @@ export default function ConstructionPage() {
           </dl>
         </div>
       </section>
+      <Credentials />
 
       {/* WHY */}
       <section className="t-section t-dark" aria-labelledby="cx-why-title" style={{ paddingTop: "clamp(40px, 6vw, 72px)" }}>

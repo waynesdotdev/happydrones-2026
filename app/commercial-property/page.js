@@ -1,5 +1,6 @@
 /* COMMERCIAL PROPERTY — in-depth page for commercial agents, landlords and developers.
    happydrones.co.uk/commercial-property · Words and prices: lib/cproperty.js */
+import Credentials from "@/components/Credentials";
 import Link from "next/link";
 import CtaBand from "@/components/CtaBand";
 import TFaq from "@/components/TFaq";
@@ -71,6 +72,7 @@ export default function CommercialPropertyPage() {
           </dl>
         </div>
       </section>
+      <Credentials />
 
       {/* WHO */}
       <section className="t-section t-dark" aria-labelledby="cp-who-title" style={{ paddingTop: "clamp(40px, 6vw, 72px)" }}>

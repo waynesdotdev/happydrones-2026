@@ -1,5 +1,6 @@
 /* ESTATE AGENTS PAGE — the pitch for agencies.
    Words: AGENT_OFFER in lib/site.js. Packages and prices: PACKAGES and PRICING. */
+import Credentials from "@/components/Credentials";
 import Link from "next/link";
 import JsonLd from "@/components/JsonLd";
 import { AGENT_OFFER, PACKAGES, SITE, priceFrom, whatsappLink } from "@/lib/site";
@@ -49,6 +50,7 @@ export default function EstateAgentsPage() {
           </dl>
         </div>
       </section>
+      <Credentials />
 
       <section className="kit" aria-labelledby="why-title">
         <div className="wrap">

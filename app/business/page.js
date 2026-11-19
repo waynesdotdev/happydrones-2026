@@ -3,6 +3,7 @@
    managers, roofers and surveyors.
    happydrones.co.uk/business
    Prices come from lib/site.js (AGENT_OFFER, PRICING, VACANT). Form: components/BusinessForm.jsx */
+import Credentials from "@/components/Credentials";
 import Link from "next/link";
 import JsonLd from "@/components/JsonLd";
 import BusinessForm from "@/components/BusinessForm";
@@ -75,6 +76,7 @@ export default function BusinessPage() {
           </dl>
         </div>
       </section>
+      <Credentials />
 
       <section className="t-section t-light" aria-labelledby="biz-who-title">
         <div className="wrap">
@@ -127,6 +129,7 @@ export default function BusinessPage() {
               <li>CAA registered operator, ICO registered for data protection</li>
               <li>Risk assessment and method statement for site work</li>
               <li>Agreement signed online, with a copy emailed to you</li>
+              <li>Repeat visits and jobs of {money(PAYMENT.largeFrom)} or more go on invoice terms: no deposit, {PAYMENT.termsDays} days to pay. Put your purchase order number in the notes and it goes into the Job Details.</li>
             </ul>
             <p className="biz-travel">{TRAVEL_TEXT}</p>
           </div>

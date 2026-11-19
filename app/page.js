@@ -3,6 +3,7 @@
    Each section is its own component in /components.
    Move or delete a line below to reorder or remove a section.
    ========================================================= */
+import Credentials from "@/components/Credentials";
 import Link from "next/link";
 import Hero from "@/components/Hero";
 import Promises from "@/components/Promises";
@@ -30,6 +31,7 @@ export default function HomePage() {
     <QuoteProvider>
       <JsonLd data={faqSchema()} />
       <Hero />
+      <Credentials />
       <Promises />
       <ThreeWays />
       <AgentBand />

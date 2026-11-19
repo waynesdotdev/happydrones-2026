@@ -51,7 +51,9 @@ const businessSchema = {
   image: `${SITE.url}/og.png`,
   email: SITE.email,
   telephone: SITE.phone,
-  areaServed: SITE.areaServed,
+  areaServed: [SITE.areaServed, "Stockton-on-Tees", "Middlesbrough", "Darlington", "Hartlepool", "Yarm", "Redcar"].map((name) => ({ "@type": "Place", name })),
+  address: { "@type": "PostalAddress", addressLocality: "Stockton-on-Tees", addressRegion: "County Durham", addressCountry: "GB" },
+  knowsAbout: ["Drone roof inspections", "Construction progress photography", "Estate agent property photography and video", "Empty building inspections", "Aerial photography"],
   sameAs: liveSocials().map((s) => s.url),
 };
 

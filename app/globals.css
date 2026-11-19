@@ -4432,3 +4432,11 @@ body:has(.sm-app) { background: #001A33; }
 .ac-extras legend { font-weight: 600; margin-bottom: 4px; }
 .ac-extras label { display: flex; gap: 8px; align-items: center; }
 .ac-extras b { margin-left: auto; }
+
+/* ---- credentials strip (components/Credentials.jsx) ---- */
+.creds { background: #f2f6fb; border-bottom: 1px solid #d6dde6; }
+.creds-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 20px; padding-top: 14px; padding-bottom: 14px; }
+.creds ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.creds li { font-size: 0.86rem; font-weight: 600; color: var(--navy); background: #fff; border: 1px solid #c9d3df; border-radius: 999px; padding: 5px 12px 5px 28px; position: relative; }
+.creds li::before { content: ""; position: absolute; left: 11px; top: 50%; width: 9px; height: 5px; border-left: 2px solid #1d8a4e; border-bottom: 2px solid #1d8a4e; transform: translateY(-70%) rotate(-45deg); }
+.creds-link { font-size: 0.88rem; font-weight: 600; color: var(--navy); text-decoration: underline; text-underline-offset: 3px; }

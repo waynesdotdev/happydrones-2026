@@ -1,5 +1,6 @@
 /* ROOF INSPECTIONS — in-depth page for homeowners, landlords, roofers and property managers.
    happydrones.co.uk/roof-inspections · Words and prices: lib/roofs.js */
+import Credentials from "@/components/Credentials";
 import BookOnline from "@/components/BookOnline";
 import Link from "next/link";
 import CtaBand from "@/components/CtaBand";
@@ -71,6 +72,7 @@ export default function RoofInspectionsPage() {
           </dl>
         </div>
       </section>
+      <Credentials />
 
       {/* WHY */}
       <section className="t-section t-dark" aria-labelledby="rf-why-title" style={{ paddingTop: "clamp(40px, 6vw, 72px)" }}>

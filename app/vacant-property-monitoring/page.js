@@ -2,6 +2,7 @@
    For developers waiting on planning, owners, receivers and agents.
    happydrones.co.uk/vacant-property-monitoring
    Words: lib/vacant.js · Price: VACANT in lib/site.js (null = "price on request") */
+import Credentials from "@/components/Credentials";
 import Link from "next/link";
 import TFaq from "@/components/TFaq";
 import JsonLd from "@/components/JsonLd";
@@ -62,6 +63,7 @@ export default function VacantPage() {
           </dl>
         </div>
       </section>
+      <Credentials />
 
       {/* WHY */}
       <section className="t-section t-dark" aria-labelledby="vp-why-title" style={{ paddingTop: "clamp(40px, 6vw, 72px)" }}>
