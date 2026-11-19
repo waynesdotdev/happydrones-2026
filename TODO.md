@@ -1,5 +1,10 @@
 # Happy Drones website: to do
 
+## Waiting for Wayne to check: the `business` branch (remind Wayne when he looks)
+Not on main or live yet. When Wayne says "publish the business branch", merge it into main, run the tests and publish.
+- **Business-first homepage** (19 Nov): credentials, who I work for, how it starts, business FAQ, business form. Homeowner quote, FAQ and form moved to /property.
+- **For homeowners page** (19 Nov): /property is now "For homeowners" with three paths: selling or letting (packages from £109), worried about your roof (from £135, plain-words roof check), your home from the air (from £75). Each says the price and has "Book online". Plus how it works (book, sign, deposit, fly, balance), the 14-day right to cancel in plain words, the instant quote, homeowner FAQ and form. Menu item "Homes" is now "For homeowners".
+
 ## Decision, 16 Nov 2026: stay on this site, feature freeze
 Wayne decided to stay on this website rather than move to Shopify or Squarespace. **No new features until a paying customer needs one.** Fixes, content and the items Wayne approves are fine. Review at the first 10 paid jobs: if the site keeps breaking or changes are a struggle, move the front pages to Squarespace with Acuity Scheduling.
 

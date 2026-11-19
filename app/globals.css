@@ -4442,3 +4442,19 @@ body:has(.sm-app) { background: #001A33; }
 .creds-link { font-size: 0.88rem; font-weight: 600; color: var(--navy); text-decoration: underline; text-underline-offset: 3px; }
 .biz-home { margin-top: 8px; padding: 16px; border: 1px solid var(--t-paper-line, #d6dde6); border-radius: 12px; background: #fff; display: grid; gap: 10px; justify-items: start; }
 .biz-home p { margin: 0; }
+
+/* ---- /property: for homeowners (19 Nov 2026) ---- */
+.home-paths { padding-top: 56px; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+.home-more { padding: 72px 0; }
+.home-more-grid { display: grid; gap: 28px; align-items: center; }
+@media (min-width: 900px) { .home-more-grid { grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); gap: 56px; } }
+.home-more-art { max-width: 420px; width: 100%; justify-self: center; }
+.home-more .eyebrow { color: var(--orange-deep, #e0561f); font-weight: 700; margin: 0 0 8px; }
+.home-more .lede { margin: 0 0 14px; }
+.home-more .small-note { font-size: 0.92rem; color: #4a5a6a; margin: 4px 0 16px; }
+.home-rights { margin-top: 36px; padding: 20px 22px; border-left: 4px solid var(--navy); background: #f2f6fb; border-radius: 8px; }
+.home-rights h3 { margin: 0 0 8px; color: var(--navy); }
+.home-rights p { margin: 0 0 8px; }
+.page-hero .eyebrow { color: var(--orange, #ff6b35); font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; font-size: 0.85rem; margin: 0 0 8px; }
+.home-more .section-title { margin: 0 0 14px; }

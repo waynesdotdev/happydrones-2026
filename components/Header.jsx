@@ -12,7 +12,7 @@ const NAV = [
   { name: "Construction", href: "/construction/", match: "/construction" },
   { name: "Empty buildings", href: "/vacant-property-monitoring/", match: "/vacant-property-monitoring" },
   { name: "Roofs", href: "/roof-inspections/", match: "/roof-inspections" },
-  { name: "Homes", href: "/property/", match: "/property" },
+  { name: "For homeowners", href: "/property/", match: "/property" },
   { name: "Contact", href: "/#contact" },
 ];
 
