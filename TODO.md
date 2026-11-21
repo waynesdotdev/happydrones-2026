@@ -19,7 +19,7 @@ Claude:
 - [ ] Prospect list checked against the legal gate (Companies House, published emails, distance)
 
 ## Parked requests
-- [ ] **Tiered terms and clickwrap (Wayne, 21 Nov).** Spec and Claude's plan: `docs/requests/2026-11-21-tiered-terms-clickwrap.md`. Most of it exists already (signed agreement with fingerprint); new bits are a version number, proof in Stripe metadata, and a one-off / ongoing choice on the business form.
+- [ ] **Tiered terms and clickwrap (Wayne, 21 Nov).** Spec and Claude's plan: `docs/requests/2026-11-21-tiered-terms-clickwrap.md`. Most of it exists already (signed agreement with fingerprint); new bits are a version number, proof in Stripe metadata, and a one-off / ongoing choice on the business form. Workspace is now Business Standard (21 Nov), so the Business Terms get signed with Google eSignature.
 
 ## Next up
 From the 15 Nov review. Details for each are further down under "Accounts and bookings".
