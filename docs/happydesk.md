@@ -10,4 +10,4 @@ A separate project, not part of this website. Wayne's own replacement for Droned
 - Two systems take enquiries, quotes, invoices and payments: this site (bookings, signed agreement, Stripe, receipts, invoices) and Happydesk (leads, quotes, invoices, Stripe links). Decide which is the record for what before using both for real customers.
 - Its enquiry form must not be pasted into this site without a security review: every outside address it loads from has to go into the CSP in `public/_headers`, and `scripts/check-security.mjs` will fail the build otherwise. Bookings already have their own form here.
 - RAMS from Happydesk are what the outreach emails promise for site work.
-- Credentials must match: Happydesk's notes (21 Nov) say the A2 CofC isn't held yet, while `lib/site.js` lists it. Check with Wayne before relying on either.
+- Credentials: Wayne confirmed on 21 Nov that he holds the A2 CofC and has paid the ICO fee. Happydesk's own notes saying "A2 CofC not yet" and "check the ICO fee" are out of date and should be updated there.
