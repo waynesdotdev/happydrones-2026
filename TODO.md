@@ -13,7 +13,13 @@ Each phase ends with tests, a changelog entry and, when Wayne says "publish", a 
 - [ ] ★ Review the `business` branch (business-first homepage, For homeowners page); merge, test, publish
 - [ ] ★ Check happydrones.co.uk/privacy shows "If I've contacted your business"
 
-**Phase 2. Contracts and proof of agreement**
+**Phase 2. Customer journey and contracts (Wayne's request, 21 Nov evening; spec: `docs/requests/2026-11-21-customer-journey.md`)**
+- [ ] Company accounts with a main and second contact, credit limit and payment terms (moved up from Phase 6)
+- [ ] Admin: add lead, invite, or create the account and send a welcome link
+- [ ] Journey view for Wayne (stage, days waiting, next action, one-tap reminders) and a to-do panel for the customer
+- [ ] Business Terms through Google eSignature, tracked in admin; credit-limit stop rule
+- [ ] Reset any stage, logged; reminders after N days; Happydesk link on each job
+- [ ] Test suite walking the six business profiles through every stage
 - [ ] ★ Business Terms: Wayne's 6 decisions → final wording → Google Doc with eSignature fields (Business Standard) → FSB helpline or solicitor check
 - [ ] Agreement version number (v1.0) on /terms and on every signature; proof in Stripe metadata (version, signed time, fingerprint, owner permission). Plan: `docs/requests/2026-11-21-tiered-terms-clickwrap.md`
 - [ ] Business form: "One-off project" / "Ongoing partner" choice and the signing note
@@ -34,7 +40,7 @@ Each phase ends with tests, a changelog entry and, when Wayne says "publish", a 
 - [ ] Only if decided: Happydesk enquiry form on the site, after a security (CSP) review
 
 **Phase 6. When the first agency is close to signing**
-- [ ] Company accounts by email domain (C1, C4), purchase order numbers, visit schedules
+- [ ] Purchase order numbers, visit schedules (company accounts moved to Phase 2)
 
 ## Weekend of 21–22 Nov: ready for the first outreach on Monday 23 Nov
 Wayne:
