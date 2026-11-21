@@ -18,6 +18,9 @@ Claude:
 - [ ] Sample outreach drafts in Gmail for Wayne to approve the style
 - [ ] Prospect list checked against the legal gate (Companies House, published emails, distance)
 
+## Parked requests
+- [ ] **Tiered terms and clickwrap (Wayne, 21 Nov).** Spec and Claude's plan: `docs/requests/2026-11-21-tiered-terms-clickwrap.md`. Most of it exists already (signed agreement with fingerprint); new bits are a version number, proof in Stripe metadata, and a one-off / ongoing choice on the business form.
+
 ## Next up
 From the 15 Nov review. Details for each are further down under "Accounts and bookings".
 - [x] **Publish the business-first website.** Live since 16 Nov. New /business page, homepage and menu now lead with agents, builders and people who look after buildings. On `main`, tested (175 checks), not live yet. Goes live together with the reviewed build below.
