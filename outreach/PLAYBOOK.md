@@ -70,52 +70,55 @@ Write what was checked in the Notes column, for example: `Ltd active (CH 0711733
 
 ## Writing the first email
 
-- From Wayne, in his voice: plain, friendly, local, UK English. Under 150 words. Plain text, no attachments, no images, no tracking.
-- Subject: plain and true, under 8 words, e.g. `Drone photos for Smith & Friends listings`. No "Re:", no fake urgency.
-- Open with one specific, true line about them from their own website (a branch opening, a development, a type of work). Never pretend you've met or spoken before.
-- Say who Wayne is and what he does for their kind of business, in one or two lines.
-- One credential line: CAA-registered operator with A2 CofC, £10m public liability, ICO registered. Add "risk assessments and method statements for site work" for builders, roofers, developers, councils and commercial property.
-- One link to the right page (below).
-- A soft ask: "If it's useful, reply and I'll send examples from jobs like yours," or "Happy to pop in for ten minutes if that's easier."
-- End with the signature and the stop line, exactly as below.
+**Style: friendly local lad (Wayne chose this, 21 Nov).** Write it the way Wayne would talk over the counter: warm, chatty and plain, with short sentences and UK English. "Hi," to open and "Cheers, Wayne" to close. Under 150 words, plain text, no attachments, no images, no tracking.
 
-**Signature and stop line (on every email, first and follow-up):**
+- Subject: plain and true, under 8 words, e.g. `Drone photos for your listings`. No "Re:" and no fake urgency.
+- Open with who Wayne is: "I'm Wayne, I run Happy Drones from Stockton…"
+- One line on why it helps their kind of business, in everyday words ("the shot that gets people to stop scrolling on Rightmove", "without getting the ladders out").
+- Mention something about them only if it's a plain public fact ("I saw Jomast are behind Wynyard Living"). **Never** pretend to have followed, looked at, met or spoken to them.
+- Credentials in one relaxed line: "I'm CAA registered and fully insured". Add "and I'll send over a risk assessment and method statement before I set foot on site" for builders, roofers, developers, councils and commercial property.
+- For roofers and surveyors, say plainly that it's a record, not a survey: "I'm not a surveyor, I leave the roofing to you lot!"
+- A soft ask: "If you fancy seeing what I mean, just reply and I'll send you a few examples," and optionally "Or I'm happy to pop in for ten minutes."
+- No sales words: no "solutions", "leverage", "elevate", "stunning", "game-changer", "I hope this email finds you well", and no exclamation marks except one joke at most.
+- A link to the right page is optional (see the table), at most one.
+
+**Signature and stop line (on every email, first and follow-up, exactly as below):**
 
 ```
-Wayne Fox
-Happy Drones, 4 Killerby Close, Stockton-on-Tees, TS19 8BT
-07888 625623 · happydrones.co.uk
+Cheers,
+Wayne
 
-You're getting this because your business publishes this address for enquiries. If you'd rather not hear from me, reply "stop" and I won't contact you again. How I handle business contacts: happydrones.co.uk/privacy/#business-contacts
+Wayne Fox, Happy Drones
+4 Killerby Close, Stockton-on-Tees, TS19 8BT · 07888 625623 · happydrones.co.uk
+
+Not for you? Just reply "stop" and I won't email again. How I handle business details: happydrones.co.uk/privacy
 ```
 
 **What to say, and where to link, by type of business:**
 
 | Type | What they get | Link |
 | --- | --- | --- |
-| Estate and letting agents | Listing photos and aerials in 48 to 72 hours, portal-ready, white label available, agent accounts and listing bundles | happydrones.co.uk/estate-agents |
-| Roofers | Roof photos and video from the air before quoting and after the job, without ladders or scaffold. A visual record, never "a survey" or "an inspection report" | happydrones.co.uk/roof-inspections |
-| Builders, developers, construction | Monthly progress flights for clients, lenders and marketing; before and after footage for social media | happydrones.co.uk/construction |
+| Estate and letting agents | Listing photos and aerials back in 48 to 72 hours, ready for the portals; can carry their branding only | happydrones.co.uk/estate-agents |
+| Roofers | The whole roof seen before pricing and after the job, without ladders or scaffold. A record, never "a survey" or "an inspection report" | happydrones.co.uk/roof-inspections |
+| Builders, developers, construction | The same angles each month for the bank, investors and buyers; marketing footage when it's finished; before-and-after for social media | happydrones.co.uk/construction |
 | Councils, commercial property, property managers, housing associations | Aerial photos and video of buildings, estates and sites; empty-building checks; PR footage | happydrones.co.uk/commercial-property (empty buildings: /vacant-property-monitoring) |
-| Surveyors | Roof and high-level photos to support their own reports | happydrones.co.uk/roof-inspections |
+| Surveyors | Roof and high-level photos to back up their own reports | happydrones.co.uk/roof-inspections |
 | Anything else | Short and general | happydrones.co.uk/business |
 
-**Example (estate agent):**
+**Example (estate agent, approved style):**
 
 ```
-Subject: Drone photos for Michael Poole listings
+Subject: Drone photos for your listings
 
 Hi,
 
-I saw Michael Poole has seven offices across Teesside now, from Yarm to Redcar.
+I'm Wayne, I run Happy Drones from Stockton, doing drone photos and video of houses and buildings round Teesside.
 
-I'm Wayne, a local drone photographer in Stockton. I shoot listing photos and aerials for agents, delivered portal-ready in 48 to 72 hours, with your branding only if you'd like.
+Houses with a big garden, a nice plot or a park round the corner always look better from above, and it's the shot that gets people to stop scrolling on Rightmove.
 
-I'm CAA registered with an A2 CofC, carry £10m public liability insurance and I'm ICO registered.
+I can usually get out within a few days, and the photos come back to you within 48 to 72 hours, ready to go straight on the portals. I'm CAA registered and fully insured, so there's nothing for you to worry about on that side.
 
-There's more about how it works for agents here: happydrones.co.uk/estate-agents
-
-If it's useful, reply and I'll send a few examples from homes like the ones you're selling.
+If you fancy seeing what I mean, just reply and I'll send you a few examples. Or I'm happy to pop into the office for ten minutes if that's easier.
 
 [signature and stop line]
 ```
@@ -123,7 +126,7 @@ If it's useful, reply and I'll send a few examples from homes like the ones you'
 ## Follow-ups
 
 - Only one, and only if there's been no reply 7 or more days after the first email was **sent** (column P, from Gmail's Sent folder, not the draft date).
-- Draft it as a reply in the same Gmail thread. Three or four lines: a short nudge plus one useful thing (an example job or a seasonal point). Same signature and stop line.
+- Draft it as a reply in the same Gmail thread. Three or four friendly lines, e.g. "Just giving this a nudge in case it got buried", plus one useful thing (an example job or a seasonal point). Same signature and stop line.
 - Never if they replied in any way, opted out, or are on the do-not-contact list.
 - After the follow-up is sent and 14 more days pass with no reply, set Status to "No reply". Don't contact them again.
 
