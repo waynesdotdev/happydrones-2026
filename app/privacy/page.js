@@ -15,7 +15,7 @@ export default function PrivacyPage() {
       <section className="simple">
         <div className="wrap simple-inner">
           <h1 className="section-title">Privacy policy</h1>
-          <p><em>Last updated: 15 November 2026</em></p>
+          <p><em>Last updated: 21 November 2026</em></p>
 
           <h2>Who I am</h2>
           <p>Happy Drones is run by Wayne Fox, a sole trader, {SITE.base}, United Kingdom. Happy Drones is registered with the Information Commissioner&apos;s Office (ICO){SITE.icoNumber ? `, registration number ${SITE.icoNumber}` : ""}. I decide how your information is used, so I&apos;m responsible for it under UK data protection law (the UK GDPR and the Data Protection Act 2018). Contact me at <a href={`mailto:${SITE.email}`}>{SITE.email}</a> about anything on this page.</p>
@@ -62,6 +62,7 @@ export default function PrivacyPage() {
             <li><b>Resend</b> sends the enquiry, account and booking emails, from its Ireland (EU) region.</li>
             <li><b>Web3Forms</b> sends me a backup copy of enquiry forms by email.</li>
             <li><b>Google Workspace</b> hosts my business email and the folders I deliver your files in.</li>
+            <li><b>Anthropic</b> (Claude, an AI assistant) helps me find businesses to contact, keeps my list of business contacts, and drafts emails to them and replies. I read and send every email myself. See &ldquo;If I&apos;ve contacted your business&rdquo; below.</li>
             <li><b>The Met Office</b> and <b>postcodes.io</b> provide forecasts and postcode lookups. They receive the postcode or area only, never your name or email.</li>
             <li><b>YouTube</b> plays videos, only after you press play, in privacy-enhanced mode.</li>
             <li>The fonts are stored on this website, so no font service is contacted.</li>
@@ -72,7 +73,20 @@ export default function PrivacyPage() {
           <p>Every sign-in needs your password and a code sent to your email. Accounts lock for 15 minutes after repeated wrong passwords, the site only works over a secure connection, and only I can see the admin side. If something ever went wrong with your information, I&apos;d tell you and the ICO where the law requires it.</p>
 
           <h2>How this website is built</h2>
-          <p>The website and its tools were built with the help of AI and checked by Wayne before going live. No AI is used to handle your booking or your personal details: your enquiry goes to Wayne, and every price, date and decision about your job is made by a person.</p>
+          <p>The website and its tools were built with the help of AI and checked by Wayne before going live. No AI is used to handle your booking: your enquiry goes to Wayne, and every price, date and decision about your job is made by a person. AI does help me contact businesses, as the next section explains.</p>
+
+          <h2 id="business-contacts">If I&apos;ve contacted your business</h2>
+          <p>I contact businesses that might use drone photography, such as estate agents, roofers, builders, developers, property managers and councils, within about 25 miles of Stockton-on-Tees. Claude, an AI assistant made by Anthropic, helps me find them, keep the list and draft the emails. I check and send every email myself.</p>
+          <ul>
+            <li><b>Where your details came from:</b> your business&apos;s own website, Companies House, and public business directories and listings.</li>
+            <li><b>What I keep:</b> the business name, address, type of business and legal form, its company number, the contact email and phone number it publishes, and where I found them. If your business publishes your name and job title as its contact, I keep those too. I also note when I contacted you and any reply.</li>
+            <li><b>Why, and the lawful basis:</b> to offer my services to businesses that might need them. This is in my legitimate interests. I only use details that businesses publish for business contact, and I don&apos;t contact anyone about anything but their business.</li>
+            <li><b>Emails:</b> I only email limited companies, LLPs and public bodies without asking first, at a business address, and every email says how to stop them. I don&apos;t email sole traders or partnerships unless they&apos;ve agreed or are already customers. I check phone numbers against the Telephone Preference Service and the Corporate Telephone Preference Service before calling.</li>
+            <li><b>How often:</b> one email, and at most one follow-up. If there&apos;s no reply, I won&apos;t email again about the same thing.</li>
+            <li><b>To stop it:</b> reply &ldquo;stop&rdquo; or tell me in any way, and I won&apos;t contact you again. I&apos;ll keep only your business name, your email or phone number, and the date you asked, on a do-not-contact list, so that I don&apos;t contact you by mistake in future.</li>
+            <li><b>How long I keep it:</b> if nothing comes of it, I delete your details within 12 months of the last contact. Do-not-contact entries are kept for as long as I&apos;m contacting businesses.</li>
+          </ul>
+          <p>You have the rights below, including the absolute right to object to direct marketing.</p>
 
           <h2>Filming and people</h2>
           <p>I plan flights to avoid filming people who aren&apos;t part of the job. If you think you appear in my footage and want it removed, contact me.</p>

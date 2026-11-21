@@ -8,7 +8,8 @@ From the 15 Nov review. Details for each are further down under "Accounts and bo
 - [ ] **Publish the business-first website (Wayne says "publish").** New /business page, homepage and menu now lead with agents, builders and people who look after buildings. On `main`, tested (175 checks), not live yet. Goes live together with the reviewed build below.
 - [ ] **Business plan decisions (Wayne).** In the Claude Doc "Happy Drones Business Plan: winning business work" (https://claude.ai/artifact/EagvsnkEJu787wL8D5UNN1), last section: trial offer for agents, thank-you for introductions, a trade price for roofers, the income target, days available to fly.
 - [ ] **Three proof pieces (Wayne):** one listing (photos, aerial, walkthrough), one set of site progress photos, one roof or empty-building report. Needed before contacting businesses.
-- [ ] **Contact tracker (Claude, on request):** a simple sheet for the 10 businesses a week, with a do-not-contact list.
+- [x] **Contact tracker.** Done 19 Nov: the Claude Sheet "Happy Drones prospect list" (https://claude.ai/artifact/D43RUz556UsnrGL1s7B4v1), with a do-not-contact sheet.
+- [ ] **Outreach run by Claude (21 Nov).** Rules in `outreach/PLAYBOOK.md`. Monday 6:34am task drafts 10 emails into Gmail; weekday 5:38pm task checks replies. Wayne: (1) connect the Gmail connector in Claude, (2) say "publish" so the privacy section is live before sending, (3) read and send the drafts himself.
 - [ ] **Publish the reviewed build (Wayne says "publish").** Server-side prices, tighter data protection and the saved tests are on `main`, tested (171 checks), not live yet. The build before it is on the branch `previous-tested`.
 - [ ] **ICO number (Wayne):** send it to Claude when it arrives; it goes on the privacy policy.
 - [ ] **Move testing off the live site (Wayne + Claude, 20 minutes):** a private Cloudflare copy for testing, then test mode off for real visitors.
@@ -18,7 +19,7 @@ From the 15 Nov review. Details for each are further down under "Accounts and bo
 - [ ] **Solicitor's read of the booking agreement (Wayne)** before real customers.
 - [x] **Decide which services to focus on.** Done 16 Nov: business first (see the business plan). Original note: About 28 is a lot for one person. The review suggests leading with repeat work: estate agents, monthly vacant-property and construction visits, and roof checks through roofers and trades. Claude can then reshape the homepage and menus around them.
 - [ ] **Proof before features (Wayne):** first real jobs in the gallery, the Google review link, and the 14 draft blog posts approved (see "When ready").
-- [ ] **Sign three estate agents (Wayne).** Claude can draft the outreach emails and a one-page offer.
+- [ ] **Sign three estate agents (Wayne).** Outreach drafts now come every Monday (see above).
 
 ## Customer journey test, 16 Nov 2026: what to fix
 Five made-up customers were taken from a social link to a paid, delivered job on a private copy of the site: Harry (tiny estate agent), Josephine (large agency), Michael and Michelle (house buyers), Tony (Stockton council, bridges for PR) and Priya (property manager, three empty units). 74 checks: 32 worked, 42 showed a gap.

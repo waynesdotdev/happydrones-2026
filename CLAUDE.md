@@ -22,6 +22,9 @@ Every campaign or special offer must have a distance limit from Wayne's base:
 Check distances by postcode on the booking form, state them in the offer terms, and write them into the Job Details.
 Confirm the base, zone distances and fees with Wayne before building. He'd rather not drive hours for a cheap job.
 
+## Business outreach
+Claude runs Wayne's outreach to businesses from scheduled tasks. The rules are in `outreach/PLAYBOOK.md`: read it before any outreach work. Drafts only, never send; companies, LLPs and public bodies only by email; the privacy policy section `#business-contacts` must match what the playbook does.
+
 ## Log every change
 Every change to this site gets an entry at the top of `lib/changelog.js`.
 That includes code, content and settings done outside the code (Cloudflare, Stripe, Resend, Google, Web3Forms).
