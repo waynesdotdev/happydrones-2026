@@ -3,6 +3,39 @@
 ## Decision, 16 Nov 2026: stay on this site, feature freeze
 Wayne decided to stay on this website rather than move to Shopify or Squarespace. **No new features until a paying customer needs one.** Fixes, content and the items Wayne approves are fine. Review at the first 10 paid jobs: if the site keeps breaking or changes are a struggle, move the front pages to Squarespace with Acuity Scheduling.
 
+## Build plan in phases (made 21 Nov, start Sun 22 Nov)
+Each phase ends with tests, a changelog entry and, when Wayne says "publish", a publish. ★ = needs Wayne.
+
+**Phase 1. Ready for real customers (before Monday's outreach)**
+- [ ] ★ Test mode off on the live site; a private test copy for trying things (together, ~20 min)
+- [ ] ★ `BANK_DETAILS` in Cloudflare (Wayne, 5 min)
+- [ ] ★ ICO registration number on the privacy page (Wayne sends it, Claude adds it)
+- [ ] ★ Review the `business` branch (business-first homepage, For homeowners page); merge, test, publish
+- [ ] ★ Check happydrones.co.uk/privacy shows "If I've contacted your business"
+
+**Phase 2. Contracts and proof of agreement**
+- [ ] ★ Business Terms: Wayne's 6 decisions → final wording → Google Doc with eSignature fields (Business Standard) → FSB helpline or solicitor check
+- [ ] Agreement version number (v1.0) on /terms and on every signature; proof in Stripe metadata (version, signed time, fingerprint, owner permission). Plan: `docs/requests/2026-11-21-tiered-terms-clickwrap.md`
+- [ ] Business form: "One-off project" / "Ongoing partner" choice and the signing note
+- [ ] ★ Clause 3.10 wording approved, then the bundle size top-up (B2)
+
+**Phase 3. Getting found and staying safe**
+- [ ] ★ Google Business Profile and review link; Search Console sitemap; www → root redirect; DNSSEC; build command check (Wayne, Claude guides)
+- [ ] ★ Turnstile key, then the bot check on every form (Claude)
+
+**Phase 4. Prices and pages**
+- [ ] ★ Decide: Essentials price, trade roofs price and turnaround, facade check, 3D "coming soon"
+- [ ] Build the price changes and page checks (roof, walkthrough, local business, aerial)
+- [ ] ★ Examples from this weekend's shoots onto the site and into the outreach replies
+
+**Phase 5. Website and Happydesk joined up**
+- [ ] ★ Decide which system handles enquiries, quotes, invoices and payments (notes: `docs/happydesk.md`)
+- [ ] Happydesk priorities (its own repo): backups first, then two-step login for admins
+- [ ] Only if decided: Happydesk enquiry form on the site, after a security (CSP) review
+
+**Phase 6. When the first agency is close to signing**
+- [ ] Company accounts by email domain (C1, C4), purchase order numbers, visit schedules
+
 ## Weekend of 21–22 Nov: ready for the first outreach on Monday 23 Nov
 Wayne:
 - [ ] Shoot three examples: one listing (photos, aerial, walkthrough), one roof, one building or site from the air
