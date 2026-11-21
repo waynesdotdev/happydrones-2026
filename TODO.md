@@ -3,14 +3,29 @@
 ## Decision, 16 Nov 2026: stay on this site, feature freeze
 Wayne decided to stay on this website rather than move to Shopify or Squarespace. **No new features until a paying customer needs one.** Fixes, content and the items Wayne approves are fine. Review at the first 10 paid jobs: if the site keeps breaking or changes are a struggle, move the front pages to Squarespace with Acuity Scheduling.
 
+## Weekend of 21–22 Nov: ready for the first outreach on Monday 23 Nov
+Wayne:
+- [ ] Shoot three examples: one listing (photos, aerial, walkthrough), one roof, one building or site from the air
+- [ ] Look at the `business` branch (business-first homepage, For homeowners page) and say if it goes live
+- [ ] Test mode off for real visitors (with Claude, 20 minutes)
+- [ ] `BANK_DETAILS` in Cloudflare
+- [ ] Business Terms: the 6 decisions in the doc (https://claude.ai/artifact/9Zvfe7v8iPxPkvGWzjZ3ci), then FSB helpline or solicitor
+- [ ] Prices: Essentials, trade roofs and turnaround, facade check, 3D "coming soon"
+- [ ] Business plan decisions; clause 3.10 wording (B2); council paperwork by hand?
+- [ ] Quick wins: Google Business Profile and review link, Search Console sitemap, www redirect, DNSSEC, build command, ICO number, Turnstile key, residents' notice mobile number
+Claude:
+- [x] Publish the privacy section for business contacts (21 Nov)
+- [ ] Sample outreach drafts in Gmail for Wayne to approve the style
+- [ ] Prospect list checked against the legal gate (Companies House, published emails, distance)
+
 ## Next up
 From the 15 Nov review. Details for each are further down under "Accounts and bookings".
-- [ ] **Publish the business-first website (Wayne says "publish").** New /business page, homepage and menu now lead with agents, builders and people who look after buildings. On `main`, tested (175 checks), not live yet. Goes live together with the reviewed build below.
+- [x] **Publish the business-first website.** Live since 16 Nov. New /business page, homepage and menu now lead with agents, builders and people who look after buildings. On `main`, tested (175 checks), not live yet. Goes live together with the reviewed build below.
 - [ ] **Business plan decisions (Wayne).** In the Claude Doc "Happy Drones Business Plan: winning business work" (https://claude.ai/artifact/EagvsnkEJu787wL8D5UNN1), last section: trial offer for agents, thank-you for introductions, a trade price for roofers, the income target, days available to fly.
 - [ ] **Three proof pieces (Wayne):** one listing (photos, aerial, walkthrough), one set of site progress photos, one roof or empty-building report. Needed before contacting businesses.
 - [x] **Contact tracker.** Done 19 Nov: the Claude Sheet "Happy Drones prospect list" (https://claude.ai/artifact/D43RUz556UsnrGL1s7B4v1), with a do-not-contact sheet.
-- [ ] **Outreach run by Claude (21 Nov).** Rules in `outreach/PLAYBOOK.md`. Monday 6:34am task drafts 10 emails into Gmail; weekday 5:38pm task checks replies. Gmail connected 21 Nov (wayne@happydrones.co.uk). Wayne: (2) say "publish" so the privacy section is live before sending, (3) read and send the drafts himself.
-- [ ] **Publish the reviewed build (Wayne says "publish").** Server-side prices, tighter data protection and the saved tests are on `main`, tested (171 checks), not live yet. The build before it is on the branch `previous-tested`.
+- [ ] **Outreach run by Claude (21 Nov).** Rules in `outreach/PLAYBOOK.md`. Monday 6:34am task drafts 10 emails into Gmail; weekday 5:38pm task checks replies. Gmail connected 21 Nov (wayne@happydrones.co.uk). Privacy section published 21 Nov. Wayne reads and sends the drafts himself.
+- [x] **Publish the reviewed build.** Live since 16 Nov. Server-side prices, tighter data protection and the saved tests are on `main`, tested (171 checks), not live yet. The build before it is on the branch `previous-tested`.
 - [ ] **ICO number (Wayne):** send it to Claude when it arrives; it goes on the privacy policy.
 - [ ] **Move testing off the live site (Wayne + Claude, 20 minutes):** a private Cloudflare copy for testing, then test mode off for real visitors.
 - [ ] **Bot check on the forms (Wayne + Claude):** Wayne creates a free Cloudflare Turnstile key; Claude adds it.
